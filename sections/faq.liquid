@@ -1,4 +1,4 @@
-<section class="faq-section" data-section-id="{{ section.id }}" style="--faq-bg: {{ section.settings.background_color | default: 'transparent' }};">
+<section class="faq-section full-width" data-section-id="{{ section.id }}" style="--faq-bg: {{ section.settings.background_color | default: 'transparent' }};">
   <div class="faq-section__inner">
     {%- if section.settings.eyebrow != blank -%}
       <p class="faq-section__eyebrow">{{ section.settings.eyebrow | escape }}</p>
@@ -29,9 +29,8 @@
   }
 
   .faq-section__inner {
-    max-width: 980px;
+    width: min(100%, var(--content-width));
     margin-inline: auto;
-    padding-inline: var(--page-margin, 18px);
   }
 
   .faq-section__eyebrow {
@@ -84,6 +83,7 @@
       gap: clamp(24px, 4vw, 56px);
     }
   }
+
 {% endstylesheet %}
 
 {% schema %}
