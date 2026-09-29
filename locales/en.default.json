@@ -1,0 +1,97 @@
+{
+  "404": {
+    "title": "404",
+    "not_found": "Page not found.",
+    "back_to_shopping": "Back to shopping"
+  },
+  "blog": {
+    "article_comments": "Comments",
+    "article_metadata_html": "{{ date }} by {{ author }}",
+    "comment_form_body": "Comment",
+    "comment_form_email": "Email",
+    "comment_form_name": "Name",
+    "comment_form_submit": "Post",
+    "comment_form_title": "Add a comment"
+  },
+  "cart": {
+    "checkout": "Checkout",
+    "title": "Cart",
+    "update": "Update",
+    "remove": "Remove"
+  },
+  "customers": {
+    "login": {
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "title": "Login"
+    }
+  },
+  "collections": {
+    "title": "Collections"
+  },
+  "gift_card": {
+    "add_to_apple_wallet": "Add to Apple Wallet",
+    "card": "Gift card",
+    "expired": "This gift card has expired",
+    "expires_on": "Expires on {{ expires_on }}",
+    "use_at_checkout": "Use this gift card at checkout"
+  },
+  "password": {
+    "title": "This shop is private",
+    "password": "Password",
+    "enter": "Enter"
+  },
+  "products": {
+    "featured_collection": {
+      "empty": "Choose a collection in this section's settings to display products.",
+      "select_collection": "Select a collection to feature.",
+      "view_all": "View all"
+    },
+    "product": {
+      "add_to_cart": "Add to cart",
+      "choose_option": "Choose an option",
+      "choose_size": "Choose a size",
+      "combination_unavailable": "This combination is unavailable",
+      "color_load_error": "We couldn't load that color. Opening its product page instead.",
+      "color": "Color",
+      "decrease_quantity": "Decrease quantity",
+      "gallery_thumbnails": "Product images",
+      "gallery_position": "Image {{ current }} of {{ total }}",
+      "home": "Home",
+      "image_count": "{{ count }} images",
+      "in_stock": "In stock",
+      "image_viewer": "Product image viewer",
+      "loading_color": "Loading selected color",
+      "increase_quantity": "Increase quantity",
+      "only_left": "Only {{ count }} left",
+      "open_image": "Open product image",
+      "close_image": "Close image viewer",
+      "next_image": "Next image",
+      "previous_image": "Previous image",
+      "quantity": "Quantity",
+      "returns": "Returns",
+      "sale": "Sale",
+      "select_available_variant": "This option is unavailable. Please choose another.",
+      "shipping": "Shipping",
+      "size_chart": "Size chart guide",
+      "sku": "SKU:",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "view_image": "View image {{ number }}",
+      "view_color": "View {{ color }} color",
+      "settings": {
+        "returns_note": "Returns details",
+        "shipping_note": "Shipping details",
+        "size_chart_page": "Size chart page"
+      }
+    }
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search articles, pages, or products",
+    "submit": "Search",
+    "no_results_html": "No results found for {{ terms }}",
+    "results_for_html": "{{ count }} results found for {{ terms }}"
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "products": {
+    "product": {
+      "settings": {
+        "returns_note": "Returns details",
+        "shipping_note": "Shipping details",
+        "size_chart_page": "Size chart page"
+      }
+    }
+  },
+  "general": {
+    "404": "Not found",
+    "announcement": "Announcement bar",
+    "article": "Article",
+    "block": "Block",
+    "blog": "Blog",
+    "cart": "Cart",
+    "collection": "Collection",
+    "collections": "Collections",
+    "collection_card": "Collection card",
+    "collections_grid": "Collections grid",
+    "colors": "Colors",
+    "column": "Column",
+    "content": "Content",
+    "custom_section": "Custom section",
+    "fonts": "Fonts",
+    "footer": "Footer",
+    "featured_collection": "Featured collection",
+    "group": "Group",
+    "header": "Header",
+    "home_hero": "Homepage hero",
+    "layout": "Layout",
+    "logo": "Logo",
+    "main": "Main",
+    "page": "Page",
+    "password": "Password",
+    "primary": "Primary",
+    "product": "Product",
+    "row": "Row",
+    "search": "Search",
+    "secondary": "Secondary",
+    "section": "Section",
+    "settings": "Settings",
+    "sidebar": "Sidebar",
+    "text": "Text",
+    "theme": "Theme",
+    "typography": "Typography"
+  },
+  "sections": {
+    "featured_collection": {
+      "settings": {
+        "collection": { "label": "Collection" },
+        "columns_desktop": { "label": "Columns on desktop" },
+        "columns_mobile": { "label": "Products on mobile" },
+        "eyebrow": { "label": "Eyebrow" },
+        "heading": { "label": "Heading" },
+        "products_to_show": { "label": "Products to show" },
+        "show_view_all": { "label": "Show view all link" }
+      },
+      "options": {
+        "columns_mobile": {
+          "one": "1 item",
+          "two": "2 items"
+        }
+      }
+    },
+    "logo": {
+      "settings": {
+        "image": { "label": "Logo image" },
+        "width": { "label": "Logo width" }
+      }
+    },
+    "announcement": {
+      "settings": {
+        "background_color": { "label": "Background color" },
+        "message_1": { "label": "Message 1" },
+        "message_2": { "label": "Message 2" },
+        "message_3": { "label": "Message 3" },
+        "message_4": { "label": "Message 4" },
+        "message_5": { "label": "Message 5" },
+        "rotation_interval": { "label": "Change message every" },
+        "text_color": { "label": "Text color" },
+        "uppercase": { "label": "Use uppercase text" },
+        "vertical_padding": { "label": "Vertical spacing" }
+      }
+    },
+    "home_hero": {
+      "settings": {
+        "button_label": { "label": "Button label" },
+        "button_link": { "label": "Button link" },
+        "desktop_height": { "label": "Desktop height" },
+        "desktop_image": { "label": "Desktop image" },
+        "eyebrow": { "label": "Eyebrow" },
+        "heading": { "label": "Heading" },
+        "mobile_height": { "label": "Mobile height" },
+        "mobile_image": { "label": "Mobile image" },
+        "overlay_color": { "label": "Overlay color" },
+        "overlay_opacity": { "label": "Overlay strength" },
+        "subheading": { "label": "Supporting text" },
+        "text_alignment": { "label": "Text alignment" },
+        "text_color": { "label": "Text color" },
+        "vertical_alignment": { "label": "Vertical position" }
+      }
+    }
+  },
+  "collections": {
+    "hero": {
+      "alignment": "Hero text alignment",
+      "height": "Hero height",
+      "overlay": "Image overlay strength",
+      "show_description": "Show collection description",
+      "show_image": "Show collection image"
+    }
+  },
+  "labels": {
+    "alignment": "Alignment",
+    "background": "Background",
+    "foreground": "Foreground",
+    "grid_gap": "Grid spacing",
+    "grid_item_width": "Grid item width",
+    "input_corner_radius": "Input corner radius",
+    "layout_direction": "Layout direction",
+    "menu": "Menu",
+    "customer_account_menu": "Customer account menu",
+    "padding": "Padding",
+    "page_margin": "Page margin",
+    "page_width": "Page width",
+    "show_payment_icons": "Show payment icons",
+    "text_style": "Text style",
+    "text": "Text"
+  },
+  "options": {
+    "alignment": {
+      "left": "Left",
+      "center": "Center",
+      "right": "Right"
+    },
+    "direction": {
+      "horizontal": "Horizontal",
+      "vertical": "Vertical"
+    },
+    "page_width": {
+      "narrow": "Narrow",
+      "wide": "Wide"
+    },
+    "size": {
+      "large": "Large",
+      "small": "Small"
+    },
+    "text_style": {
+      "title": "Title",
+      "subtitle": "Subtitle",
+      "normal": "Normal text"
+    },
+    "vertical_alignment": {
+      "top": "Top",
+      "center": "Center",
+      "bottom": "Bottom"
+    }
+  }
+}

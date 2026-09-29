@@ -1,0 +1,244 @@
+{%- liquid
+  assign has_announcement_messages = false
+  if section.settings.message_1 != blank or section.settings.message_2 != blank or section.settings.message_3 != blank or section.settings.message_4 != blank or section.settings.message_5 != blank
+    assign has_announcement_messages = true
+  endif
+-%}
+{%- if has_announcement_messages -%}
+  <div
+    class="announcement-bar full-width{% if section.settings.uppercase %} announcement-bar--uppercase{% endif %}"
+    data-announcement-bar
+    data-announcement-interval="{{ section.settings.rotation_interval | times: 1000 }}"
+    aria-live="polite"
+    aria-atomic="true"
+    style="--announcement-background: {{ section.settings.background_color }}; --announcement-foreground: {{ section.settings.text_color }}; --announcement-padding: {{ section.settings.vertical_padding }}px"
+  >
+    {%- assign has_rendered_announcement = false -%}
+    {%- if section.settings.message_1 != blank -%}
+      <p class="announcement-bar__message" data-announcement-message>{{ section.settings.message_1 | escape }}</p>
+      {%- assign has_rendered_announcement = true -%}
+    {%- endif -%}
+    {%- if section.settings.message_2 != blank -%}
+      <p class="announcement-bar__message" data-announcement-message{% if has_rendered_announcement %} hidden{% endif %}>{{ section.settings.message_2 | escape }}</p>
+      {%- assign has_rendered_announcement = true -%}
+    {%- endif -%}
+    {%- if section.settings.message_3 != blank -%}
+      <p class="announcement-bar__message" data-announcement-message{% if has_rendered_announcement %} hidden{% endif %}>{{ section.settings.message_3 | escape }}</p>
+      {%- assign has_rendered_announcement = true -%}
+    {%- endif -%}
+    {%- if section.settings.message_4 != blank -%}
+      <p class="announcement-bar__message" data-announcement-message{% if has_rendered_announcement %} hidden{% endif %}>{{ section.settings.message_4 | escape }}</p>
+      {%- assign has_rendered_announcement = true -%}
+    {%- endif -%}
+    {%- if section.settings.message_5 != blank -%}
+      <p class="announcement-bar__message" data-announcement-message{% if has_rendered_announcement %} hidden{% endif %}>{{ section.settings.message_5 | escape }}</p>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .announcement-bar {
+    display: grid;
+    min-height: 36px;
+    padding: var(--announcement-padding) 16px;
+    place-items: center;
+    background: var(--announcement-background);
+    color: var(--announcement-foreground);
+    text-align: center;
+  }
+
+  .announcement-bar__message,
+  .announcement-bar__link {
+    margin: 0;
+    color: inherit;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .announcement-bar__link {
+    text-decoration: none;
+  }
+
+  .announcement-bar__message[hidden],
+  .announcement-bar__link[hidden] {
+    display: none;
+  }
+
+  .announcement-bar__message:not([hidden]),
+  .announcement-bar__link:not([hidden]) {
+    animation: announcement-message-enter 240ms ease both;
+  }
+
+  @keyframes announcement-message-enter {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .announcement-bar__link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .announcement-bar--uppercase .announcement-bar__message,
+  .announcement-bar--uppercase .announcement-bar__link {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 680px) {
+    .announcement-bar {
+      padding-inline: 12px;
+    }
+
+    .announcement-bar__message,
+    .announcement-bar__link {
+      font-size: 12px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .announcement-bar__message,
+    .announcement-bar__link {
+      animation: none;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const barSelector = '[data-announcement-bar]';
+
+    const initializeAnnouncementBar = (bar) => {
+      const messages = Array.from(bar.querySelectorAll('[data-announcement-message]'));
+      if (messages.length < 2 || bar.dataset.announcementInitialized === 'true') return;
+
+      let activeIndex = messages.findIndex((message) => !message.hidden);
+      if (activeIndex < 0) return;
+
+      const interval = Number.parseInt(bar.dataset.announcementInterval, 10);
+      if (!Number.isFinite(interval) || interval <= 0) return;
+
+      bar.dataset.announcementInitialized = 'true';
+      bar.dataset.announcementTimer = String(window.setInterval(() => {
+        if (bar.matches(':hover, :focus-within')) return;
+
+        const nextIndex = (activeIndex + 1) % messages.length;
+        messages[activeIndex].hidden = true;
+        messages[nextIndex].hidden = false;
+        activeIndex = nextIndex;
+      }, interval));
+    };
+
+    const eachAnnouncementBar = (root, callback) => {
+      if (root.matches?.(barSelector)) callback(root);
+      root.querySelectorAll?.(barSelector).forEach(callback);
+    };
+
+    const stopAnnouncementBar = (bar) => {
+      if (bar.dataset.announcementTimer) {
+        window.clearInterval(Number(bar.dataset.announcementTimer));
+      }
+      delete bar.dataset.announcementTimer;
+      delete bar.dataset.announcementInitialized;
+    };
+
+    eachAnnouncementBar(document, initializeAnnouncementBar);
+    document.addEventListener('shopify:section:load', (event) => {
+      eachAnnouncementBar(event.target, initializeAnnouncementBar);
+    });
+    document.addEventListener('shopify:section:unload', (event) => {
+      eachAnnouncementBar(event.target, stopAnnouncementBar);
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:general.announcement",
+  "settings": [
+    {
+      "type": "text",
+      "id": "message_1",
+      "label": "t:sections.announcement.settings.message_1.label",
+      "default": "Free delivery"
+    },
+    {
+      "type": "text",
+      "id": "message_2",
+      "label": "t:sections.announcement.settings.message_2.label",
+      "default": "South Africa's #1 premium EVA baby mat supplier"
+    },
+    {
+      "type": "text",
+      "id": "message_3",
+      "label": "t:sections.announcement.settings.message_3.label"
+    },
+    {
+      "type": "text",
+      "id": "message_4",
+      "label": "t:sections.announcement.settings.message_4.label"
+    },
+    {
+      "type": "text",
+      "id": "message_5",
+      "label": "t:sections.announcement.settings.message_5.label"
+    },
+    {
+      "type": "range",
+      "id": "rotation_interval",
+      "label": "t:sections.announcement.settings.rotation_interval.label",
+      "min": 3,
+      "max": 15,
+      "step": 1,
+      "unit": "s",
+      "default": 5
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "t:sections.announcement.settings.background_color.label",
+      "default": "#20211e"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:sections.announcement.settings.text_color.label",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "label": "t:sections.announcement.settings.vertical_padding.label",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "uppercase",
+      "label": "t:sections.announcement.settings.uppercase.label",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.announcement",
+      "settings": {
+        "message_1": "Free delivery",
+        "message_2": "South Africa's #1 premium EVA baby mat supplier"
+      }
+    }
+  ]
+}
+{% endschema %}

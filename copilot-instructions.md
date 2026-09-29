@@ -1,0 +1,1 @@
+/Users/jeremyquinton/Development/maxie_and_moo_ai/AGENTS.md

@@ -1,0 +1,383 @@
+{% comment %}
+  This section is used in the collection template to render collection page
+  listing all products within a collection.
+
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
+{% endcomment %}
+
+<header
+  class="collection-hero full-width{% if collection.image == blank or section.settings.show_collection_image == false %} collection-hero--without-image{% endif %} collection-hero--{{ section.settings.content_alignment }}"
+  style="--collection-hero-height: {{ section.settings.hero_height }}px; --collection-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }}"
+>
+  {%- if section.settings.show_collection_image and collection.image != blank -%}
+    <div class="collection-hero__media">
+      {{ collection.image | image_url: width: 2400 | image_tag: class: 'collection-hero__image', widths: '750, 1100, 1500, 1900, 2400', sizes: '100vw', loading: 'eager', alt: collection.image.alt | default: collection.title }}
+    </div>
+  {%- endif -%}
+  <div class="collection-hero__content">
+    <h1>{{ collection.title | escape }}</h1>
+    {%- if section.settings.show_description and collection.description != blank -%}
+      <div class="collection-hero__description rte">{{ collection.description }}</div>
+    {%- endif -%}
+  </div>
+</header>
+
+<div class="collection-products">
+  {% paginate collection.products by 20 %}
+    {% for product in collection.products %}
+      {% assign preview_image = product.images[1] %}
+      {% assign related_color_products = product.metafields.custom.colour_products.value %}
+      {% capture card_price %}
+        {% if product.price_varies %}{{ product.price_min | money }} – {{ product.price_max | money }}{% else %}{{ product.price | money }}{% endif %}
+      {% endcapture %}
+      <div class="collection-product" data-product-card>
+        <a class="collection-product__image{% if preview_image != blank %} has-preview{% endif %}" href="{{ product.url }}" data-card-main-link>
+          {% if product.featured_image %}
+            {{ product.featured_image | image_url: width: 900 | image_tag: class: 'collection-product__image-primary', widths: '300, 450, 600, 750, 900', sizes: '(min-width: 1200px) 25vw, (min-width: 700px) 33vw, 50vw', loading: 'lazy', alt: product.featured_image.alt | default: product.title, data-card-primary-image: '' }}
+            {% if preview_image != blank %}
+              {{ preview_image | image_url: width: 900 | image_tag: class: 'collection-product__image-alternate', widths: '300, 450, 600, 750, 900', sizes: '(min-width: 1200px) 25vw, (min-width: 700px) 33vw, 50vw', loading: 'lazy', alt: preview_image.alt | default: product.title, data-card-alternate-image: '' }}
+            {% endif %}
+          {% else %}
+            {{ 'product-1' | placeholder_svg_tag: 'collection-product__placeholder' }}
+          {% endif %}
+          <span class="collection-product__placeholder-fallback" data-card-placeholder hidden>{{ 'product-1' | placeholder_svg_tag: 'collection-product__placeholder' }}</span>
+          <span class="collection-product__badges" data-sale-label="{{ 'products.product.sale' | t | escape }}" data-sold-out-label="{{ 'products.product.sold_out' | t | escape }}">
+            {%- if product.available == false -%}
+              <span class="collection-product__badge">{{ 'products.product.sold_out' | t }}</span>
+            {%- elsif product.compare_at_price_min > product.price_min -%}
+              <span class="collection-product__badge collection-product__badge--sale">{{ 'products.product.sale' | t }}</span>
+            {%- endif -%}
+          </span>
+        </a>
+        <div class="collection-product__content">
+          <div class="collection-product__details">
+            <h2><a href="{{ product.url }}" data-card-title-link>{{ product.title | escape }}</a></h2>
+            <p class="collection-product__price">
+              <span data-card-displayed-price>{{ card_price | strip }}</span>
+              <s data-card-displayed-compare-price{% unless product.compare_at_price_min > product.price_min %} hidden{% endunless %}>{{ product.compare_at_price_min | money }}</s>
+            </p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+
+    {{ paginate | default_pagination }}
+  {% endpaginate %}
+</div>
+
+<script src="{{ 'collection-color-cards.js' | asset_url }}" defer="defer"></script>
+
+{% stylesheet %}
+  .collection-hero {
+    position: relative;
+    display: flex;
+    min-height: var(--collection-hero-height);
+    align-items: center;
+    overflow: hidden;
+    padding: clamp(28px, 6vw, 84px);
+    background: #e8e8e1;
+    color: #20211e;
+  }
+
+  .collection-hero:not(.collection-hero--without-image) {
+    color: #fff;
+  }
+
+  .collection-hero__media,
+  .collection-hero__media::after {
+    position: absolute;
+    inset: 0;
+  }
+
+  .collection-hero__media::after {
+    background: rgb(0 0 0 / var(--collection-overlay-opacity));
+    content: '';
+  }
+
+  .collection-hero__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .collection-hero__content {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 760px);
+  }
+
+  .collection-hero--center .collection-hero__content {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .collection-hero--right .collection-hero__content {
+    margin-inline-start: auto;
+    text-align: right;
+  }
+
+  .collection-hero h1 {
+    margin: 0;
+    font-family: var(--font-primary--family);
+    font-size: clamp(32px, 5vw, 64px);
+    font-weight: 600;
+    line-height: 1.05;
+  }
+
+  .collection-hero__description {
+    max-width: 620px;
+    margin-block-start: 14px;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .collection-hero--center .collection-hero__description {
+    margin-inline: auto;
+  }
+
+  .collection-hero--right .collection-hero__description {
+    margin-inline-start: auto;
+  }
+
+  .collection-products {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 28px 16px;
+  }
+
+  .collection-product {
+    min-width: 0;
+  }
+
+  .collection-product__image {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    background: #f5f5f1;
+  }
+
+  .collection-product__image img,
+  .collection-product__placeholder {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .collection-product__placeholder-fallback {
+    position: absolute;
+    inset: 0;
+  }
+
+  .collection-product__placeholder-fallback[hidden] {
+    display: none;
+  }
+
+  .collection-product__image-alternate {
+    opacity: 0;
+    transition: opacity 220ms ease;
+  }
+
+  .collection-product__badges {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 6px;
+  }
+
+  .collection-product__badge {
+    padding: 5px 8px;
+    background: #fff;
+    color: #20211e;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .collection-product__badge--sale {
+    background: #efcc38;
+  }
+
+  .collection-product__content {
+    display: grid;
+    gap: 9px;
+    padding-block-start: 11px;
+  }
+
+  .collection-product__colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .collection-product__colors .product-colors__swatch {
+    display: grid;
+    width: 28px;
+    aspect-ratio: 1;
+    overflow: hidden;
+    place-items: center;
+    border: 1px solid #d8d9d2;
+    border-radius: 50%;
+    background: #f5f5f1;
+    color: #777971;
+    font-size: 9px;
+  }
+
+  .collection-product__colors .product-colors__swatch.is-active {
+    outline: 1px solid #20211e;
+    outline-offset: 2px;
+  }
+
+  .collection-product__colors .product-colors__swatch img,
+  .collection-product__colors .product-colors__swatch-color {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit: cover;
+  }
+
+  .collection-product__colors .product-colors__swatch-color {
+    background-color: var(--product-swatch-color);
+  }
+
+  .collection-product__details {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 12px;
+  }
+
+  .collection-product__details h2 {
+    min-width: 0;
+    font-size: inherit;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .collection-product__price {
+    flex: 0 0 auto;
+    font-size: inherit;
+  }
+
+  .collection-product__price s {
+    display: block;
+    color: #777971;
+    font-size: 11px;
+  }
+
+  .collection-product__details[data-sold-out='true'] .collection-product__price {
+    color: #777971;
+  }
+
+  .collection-product__details a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .collection-product__image.has-preview:hover .collection-product__image-alternate,
+    .collection-product__image.has-preview:focus-visible .collection-product__image-alternate {
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 1000px) {
+    .collection-products {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 700px) {
+    .collection-hero {
+      min-height: min(var(--collection-hero-height), 420px);
+      padding: 28px 20px;
+    }
+
+    .collection-hero h1 {
+      font-size: 34px;
+    }
+
+    .collection-hero__description {
+      font-size: 13px;
+    }
+
+    .collection-products {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px 10px;
+    }
+
+    .collection-product__content {
+      gap: 8px;
+    }
+
+    .collection-product__details {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 3px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .collection-product__image-alternate {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.collection",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_collection_image",
+      "label": "t:collections.hero.show_image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "t:collections.hero.show_description",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "hero_height",
+      "label": "t:collections.hero.height",
+      "min": 280,
+      "max": 620,
+      "step": 20,
+      "unit": "px",
+      "default": 460
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "t:collections.hero.overlay",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 25
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "t:collections.hero.alignment",
+      "options": [
+        { "value": "left", "label": "t:options.alignment.left" },
+        { "value": "center", "label": "t:options.alignment.center" },
+        { "value": "right", "label": "t:options.alignment.right" }
+      ],
+      "default": "left"
+    }
+  ]
+}
+{% endschema %}

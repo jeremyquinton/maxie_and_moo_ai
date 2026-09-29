@@ -1,0 +1,118 @@
+{% doc %}
+  Renders one linked color swatch for a separate Shopify product.
+
+  @param {product} color_product - Product represented by this swatch
+  @param {product} current_product - Product currently being rendered
+  @param {boolean} has_selected_variant - Whether the customer selected a valid variant
+  @param {string} [selected_size] - Currently selected size, when present
+  @param {boolean} [show_swatch_label] - Whether to show the color name beside the swatch
+
+  @example
+  {% render 'product-color-swatch', color_product: related_product, current_product: product, has_selected_variant: has_selected_variant, selected_size: selected_size %}
+{% enddoc %}
+
+{%- liquid
+  assign color_name = color_product.metafields.custom.colour_name.value | default: color_product.title
+  assign swatch_color = color_product.metafields.custom.colour_swatch.value
+  assign swatch_color_hex = swatch_color | color_to_hex
+  assign swatch_icon_image = color_product.metafields.custom.colour_swatch_image.value
+  assign swatch_image = color_product.featured_image
+  assign preview_image = color_product.images[1]
+  assign color_variant = blank
+  assign size_option_index = blank
+
+  if has_selected_variant
+    for option in color_product.options_with_values
+      assign option_name = option.name | downcase
+      if option_name contains 'size'
+        assign size_option_index = forloop.index0
+        break
+      endif
+    endfor
+
+    if selected_size != blank and size_option_index != blank
+      for variant in color_product.variants
+        if variant.options[size_option_index] == selected_size
+          assign color_variant = variant
+          break
+        endif
+      endfor
+    elsif color_product.has_only_default_variant
+      assign color_variant = color_product.selected_or_first_available_variant
+    endif
+  endif
+
+  if color_variant == blank and color_product.has_only_default_variant
+    assign color_variant = color_product.selected_or_first_available_variant
+  endif
+
+  if color_variant != blank and color_variant.featured_media.preview_image != blank
+    assign swatch_image = color_variant.featured_media.preview_image
+  endif
+
+  assign swatch_url = color_product.url
+  if color_variant != blank
+    assign swatch_url = color_product.url | append: '?variant=' | append: color_variant.id
+  endif
+
+  capture card_price
+    if color_product.price_varies
+      echo color_product.price_min | money
+      echo ' – '
+      echo color_product.price_max | money
+    else
+      echo color_product.price | money
+    endif
+  endcapture
+
+  capture card_gallery
+    echo '['
+    for image in color_product.images
+      echo '{"src":'
+      echo image | image_url: width: 900 | json
+      echo ',"alt":'
+      assign image_alt = image.alt | default: color_product.title
+      echo image_alt | json
+      echo '}'
+      unless forloop.last
+        echo ','
+      endunless
+    endfor
+    echo ']'
+  endcapture
+-%}
+
+<a
+  class="product-colors__swatch{% if color_product.id == current_product.id %} is-active{% endif %}"
+  href="{{ swatch_url }}"
+  data-color-product-link
+  data-product-url="{{ color_product.url }}"
+  data-product-options="{{ color_product.options | json | escape }}"
+  data-product-variants="{{ color_product.variants | json | escape }}"
+  data-variant-id="{{ color_variant.id }}"
+  data-canonical-url="{{ color_product.url }}"
+  data-color-card-title="{{ color_product.title | escape }}"
+  data-color-card-price="{{ card_price | strip | escape }}"
+  data-color-card-compare-price="{{ color_product.compare_at_price_min | money | escape }}"
+  data-color-card-on-sale="{% if color_product.compare_at_price_min > color_product.price_min %}true{% else %}false{% endif %}"
+  data-color-card-available="{{ color_product.available }}"
+  data-color-card-primary-image="{% if swatch_image != blank %}{{ swatch_image | image_url: width: 900 }}{% endif %}"
+  data-color-card-secondary-image="{% if preview_image != blank %}{{ preview_image | image_url: width: 900 }}{% endif %}"
+  data-color-card-gallery="{{ card_gallery | strip | escape }}"
+  title="{{ color_name | escape }}"
+  aria-label="{{ 'products.product.view_color' | t: color: color_name | escape }}"
+  {% if color_product.id == current_product.id %}aria-current="page"{% endif %}
+>
+  {%- if swatch_icon_image != blank -%}
+    {{ swatch_icon_image | image_url: width: 120, height: 120, crop: 'center' | image_tag: class: 'product-colors__swatch-image', loading: 'lazy', alt: '' }}
+  {%- elsif swatch_color_hex != blank -%}
+    <span class="product-colors__swatch-color" style="--product-swatch-color: {{ swatch_color_hex }}" aria-hidden="true"></span>
+  {%- elsif swatch_image != blank -%}
+    {{ swatch_image | image_url: width: 120, height: 120, crop: 'center' | image_tag: class: 'product-colors__swatch-image', loading: 'lazy', alt: '', width: 48, height: 48 }}
+  {%- else -%}
+    <span class="product-colors__swatch-fallback" aria-hidden="true">{{ color_name | slice: 0 | escape }}</span>
+  {%- endif -%}
+  {%- if show_swatch_label -%}
+    <span class="product-colors__swatch-name">{{ color_name | escape }}</span>
+  {%- endif -%}
+</a>

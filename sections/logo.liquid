@@ -1,0 +1,79 @@
+<div class="site-logo" style="--site-logo-width: {{ section.settings.logo_width }}px">
+  <a class="site-logo__link" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+    {%- if section.settings.logo != blank -%}
+      {{ section.settings.logo | image_url: width: 1000 | image_tag: class: 'site-logo__image', widths: '160, 240, 320, 480, 640, 800, 1000', sizes: '(max-width: 600px) 70vw, 320px', loading: 'eager', alt: shop.name }}
+    {%- else -%}
+      <span class="site-logo__text">{{ shop.name | escape }}</span>
+    {%- endif -%}
+  </a>
+</div>
+
+{% stylesheet %}
+  .site-logo {
+    display: flex;
+    min-height: 72px;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 16px;
+  }
+
+  .site-logo__link {
+    display: inline-flex;
+    max-width: 100%;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .site-logo__image {
+    display: block;
+    width: min(var(--site-logo-width), calc(100vw - 32px));
+    max-height: 80px;
+    object-fit: contain;
+  }
+
+  .site-logo__text {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  @media (max-width: 600px) {
+    .site-logo {
+      min-height: 60px;
+      padding-block: 8px;
+    }
+
+    .site-logo__image {
+      max-height: 56px;
+    }
+
+    .site-logo__text {
+      font-size: 20px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.logo",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "t:sections.logo.settings.image.label"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "t:sections.logo.settings.width.label",
+      "min": 100,
+      "max": 500,
+      "step": 20,
+      "unit": "px",
+      "default": 240
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,36 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "t:general.header",
+  "sections": {
+    "announcement": {
+      "type": "announcement",
+      "settings": {
+        "message_1": "Free delivery",
+        "message_2": "South Africa's #1 premium EVA baby mat supplier",
+        "rotation_interval": 5
+      }
+    },
+    "logo": {
+      "type": "logo",
+      "settings": {}
+    },
+    "header": {
+      "type": "header",
+      "settings": {}
+    }
+  },
+  "order": [
+    "announcement",
+    "logo",
+    "header"
+  ]
+}
