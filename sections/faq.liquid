@@ -1,0 +1,136 @@
+<section class="faq-section" data-section-id="{{ section.id }}" style="--faq-bg: {{ section.settings.background_color | default: 'transparent' }};">
+  <div class="faq-section__inner">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="faq-section__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    {%- endif -%}
+
+    <div class="faq-section__header">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="faq-section__heading">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.subheading != blank -%}
+        <div class="faq-section__subheading rte">{{ section.settings.subheading }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="faq-section__items">
+      {% content_for 'blocks' %}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .faq-section {
+    width: 100%;
+    padding-block: clamp(32px, 6vw, 72px);
+    color: var(--faq-ink, #20211e);
+    background: var(--faq-bg, transparent);
+  }
+
+  .faq-section__inner {
+    max-width: 980px;
+    margin-inline: auto;
+    padding-inline: var(--page-margin, 18px);
+  }
+
+  .faq-section__eyebrow {
+    margin: 0 0 10px;
+    color: var(--faq-muted, #777971);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .faq-section__header {
+    display: grid;
+    gap: 14px;
+    margin-block-end: 26px;
+  }
+
+  .faq-section__heading {
+    margin: 0;
+    font-family: var(--font-primary--family);
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 500;
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+  }
+
+  .faq-section__subheading {
+    max-width: 68ch;
+    color: #51534d;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .faq-section__subheading > :first-child {
+    margin-block-start: 0;
+  }
+
+  .faq-section__subheading > :last-child {
+    margin-block-end: 0;
+  }
+
+  .faq-section__items {
+    display: block;
+  }
+
+  @media (min-width: 900px) {
+    .faq-section__header {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+      align-items: start;
+      gap: clamp(24px, 4vw, 56px);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAQ",
+  "blocks": [
+    { "type": "faq-item" }
+  ],
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently asked questions"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Supporting text"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        {
+          "type": "faq-item"
+        },
+        {
+          "type": "faq-item"
+        },
+        {
+          "type": "faq-item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

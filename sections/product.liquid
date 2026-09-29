@@ -316,26 +316,47 @@
           <p class="product-form-error" data-form-error role="alert" hidden>{{ 'products.product.select_available_variant' | t }}</p>
           {% if form.errors %}<div class="product-form-error" role="alert">{{ form.errors | default_errors }}</div>{% endif %}
           <div class="product-payment-terms">{{ form | payment_terms }}</div>
+
+          <div class="product-tabs" data-product-tabs>
+            <div class="product-tabs__nav" role="tablist" aria-label="{{ 'products.product.tabs_label' | t }}">
+              <button class="product-tabs__button is-active" type="button" role="tab" aria-selected="true" aria-controls="ProductTabDescription-{{ section.id }}" id="ProductTabButtonDescription-{{ section.id }}" data-product-tab-button="description">{{ 'products.product.tab_description' | t }}</button>
+              <button class="product-tabs__button" type="button" role="tab" aria-selected="false" aria-controls="ProductTabKeyDetails-{{ section.id }}" id="ProductTabButtonKeyDetails-{{ section.id }}" data-product-tab-button="key_details">{{ 'products.product.tab_key_details' | t }}</button>
+              <button class="product-tabs__button" type="button" role="tab" aria-selected="false" aria-controls="ProductTabDelivery-{{ section.id }}" id="ProductTabButtonDelivery-{{ section.id }}" data-product-tab-button="delivery">{{ 'products.product.tab_delivery' | t }}</button>
+            </div>
+
+            <div class="product-tabs__panels">
+              <div class="product-tabs__panel is-active" role="tabpanel" tabindex="0" aria-labelledby="ProductTabButtonDescription-{{ section.id }}" id="ProductTabDescription-{{ section.id }}" data-product-tab-panel="description">
+                {%- if product.description != blank -%}
+                  <div class="product-description rte">{{ product.description }}</div>
+                {%- endif -%}
+              </div>
+
+              <div class="product-tabs__panel" role="tabpanel" tabindex="0" aria-labelledby="ProductTabButtonKeyDetails-{{ section.id }}" id="ProductTabKeyDetails-{{ section.id }}" data-product-tab-panel="key_details" hidden>
+                {%- if section.settings.key_details != blank -%}
+                  {%- capture key_details_markup -%}{{ section.settings.key_details | escape | newline_to_br }}{%- endcapture -%}
+                  {%- assign key_details_items = key_details_markup | split: '<br />' -%}
+                  <div class="product-tabs__content">
+                    <ul class="product-tabs__list">
+                      {%- for item in key_details_items -%}
+                        {%- assign key_detail_item = item | strip -%}
+                        {%- if key_detail_item != blank -%}
+                          <li>{{ key_detail_item }}</li>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </ul>
+                  </div>
+                {%- endif -%}
+              </div>
+
+              <div class="product-tabs__panel" role="tabpanel" tabindex="0" aria-labelledby="ProductTabButtonDelivery-{{ section.id }}" id="ProductTabDelivery-{{ section.id }}" data-product-tab-panel="delivery" hidden>
+                {%- if section.settings.shipping_note != blank -%}
+                  <div class="product-tabs__content rte">{{ section.settings.shipping_note | escape | newline_to_br }}</div>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
         {%- endform -%}
 
-        {%- if product.description != blank -%}
-          <div class="product-description rte">{{ product.description }}</div>
-        {%- endif -%}
-
-        <div class="product-accordions">
-          {%- if section.settings.shipping_note != blank -%}
-            <details>
-              <summary>{{ 'products.product.shipping' | t }}</summary>
-              <div class="product-accordion-content">{{ section.settings.shipping_note | escape | newline_to_br }}</div>
-            </details>
-          {%- endif -%}
-          {%- if section.settings.returns_note != blank -%}
-            <details>
-              <summary>{{ 'products.product.returns' | t }}</summary>
-              <div class="product-accordion-content">{{ section.settings.returns_note | escape | newline_to_br }}</div>
-            </details>
-          {%- endif -%}
-        </div>
       </div>
     </div>
   </div>
@@ -351,7 +372,7 @@
     --product-surface: #f5f5f1;
     --product-accent: #efcc38;
     width: 100%;
-    padding-block: 18px 72px;
+    padding-block: 18px 0;
     color: var(--product-ink);
   }
 
@@ -1010,9 +1031,10 @@
     justify-content: center;
     gap: 12px;
     padding-inline: 17px;
-    border: 1px solid var(--product-ink);
-    background: var(--product-ink);
-    color: #fff;
+    border: 1px solid #000;
+    border-radius: 0;
+    background: transparent;
+    color: #000;
     font: inherit;
     font-size: 13px;
     font-weight: 600;
@@ -1022,9 +1044,8 @@
   }
 
   .product-add:hover:not(:disabled) {
-    border-color: var(--product-accent);
-    background: var(--product-accent);
-    color: var(--product-ink);
+    background: rgb(0 0 0 / 6%);
+    color: #000;
   }
 
   .product-add:disabled {
@@ -1041,6 +1062,66 @@
   .product-payment-terms {
     margin-block: 0 15px;
     font-size: 11px;
+  }
+
+  .product-tabs {
+    margin-block: 6px 0;
+    border-top: 1px solid var(--product-line);
+  }
+
+  .product-tabs__nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .product-tabs__button {
+    min-height: 44px;
+    padding: 10px 10px 12px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--product-muted);
+    font: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .product-tabs__button.is-active {
+    border-bottom-color: var(--product-ink);
+    color: var(--product-ink);
+  }
+
+  .product-tabs__panels {
+    padding-block: 14px 0;
+  }
+
+  .product-tabs__panel {
+    color: #51534d;
+    font-size: 13px;
+    line-height: 1.75;
+  }
+
+  .product-tabs__panel .product-description {
+    margin-block: 0;
+  }
+
+  .product-tabs__content > :first-child {
+    margin-block-start: 0;
+  }
+
+  .product-tabs__content > :last-child {
+    margin-block-end: 0;
+  }
+
+  .product-tabs__list {
+    margin: 0;
+    padding-inline-start: 20px;
+  }
+
+  .product-tabs__list li + li {
+    margin-block-start: 8px;
   }
 
   .product-description {
@@ -1061,47 +1142,6 @@
   .product-description ul,
   .product-description ol {
     padding-inline-start: 20px;
-  }
-
-  .product-accordions {
-    border-top: 1px solid var(--product-line);
-  }
-
-  .product-accordions details {
-    border-bottom: 1px solid var(--product-line);
-  }
-
-  .product-accordions summary {
-    position: relative;
-    padding-block: 16px;
-    padding-inline-end: 28px;
-    cursor: pointer;
-    list-style: none;
-    font-size: 12px;
-    font-weight: 600;
-  }
-
-  .product-accordions summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .product-accordions summary::after {
-    position: absolute;
-    inset-inline-end: 2px;
-    content: '+';
-    font-size: 18px;
-    font-weight: 400;
-  }
-
-  .product-accordions details[open] summary::after {
-    content: '−';
-  }
-
-  .product-accordion-content {
-    padding-block: 0 16px;
-    color: var(--product-muted);
-    font-size: 12px;
-    line-height: 1.7;
   }
 
   @keyframes product-image-reveal {
@@ -1126,7 +1166,7 @@
 
   @media (max-width: 680px) {
     .product-page {
-      padding-block: 10px 48px;
+      padding-block: 10px 0;
     }
 
     .product-breadcrumbs {
@@ -1231,6 +1271,20 @@
     .product-option__dropdown-item {
       min-height: 50px;
     }
+
+    .product-tabs__nav {
+      overflow-x: auto;
+      grid-template-columns: repeat(3, minmax(110px, 1fr));
+      scrollbar-width: none;
+    }
+
+    .product-tabs__nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .product-tabs__button {
+      white-space: nowrap;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1265,6 +1319,11 @@
         this.lightboxImage = this.lightbox.querySelector('[data-lightbox-image]');
         this.lightboxCount = this.lightbox.querySelector('[data-lightbox-count]');
         this.colorStatus = this.querySelector('[data-color-status]');
+        this.tabButtons = [...this.querySelectorAll('[data-product-tab-button]')];
+        this.tabPanels = [...this.querySelectorAll('[data-product-tab-panel]')];
+        this.tabButtons.forEach((button) => {
+          button.addEventListener('click', () => this.activateTab(button.dataset.productTabButton), { signal });
+        });
         this.form.querySelectorAll('[data-size-dropdown-toggle]').forEach((button) => {
           button.addEventListener('click', () => this.toggleSizeDropdown(button.closest('[data-size-dropdown]')), { signal });
         });
@@ -1332,6 +1391,7 @@
 
         this.updateSizeOptionPrices();
         this.updateVariant();
+        this.activateTab('description');
       }
 
       disconnectedCallback() {
@@ -1592,6 +1652,21 @@
         });
       }
 
+      activateTab(tabName) {
+        if (!tabName) return;
+        this.tabButtons?.forEach((button) => {
+          const active = button.dataset.productTabButton === tabName;
+          button.classList.toggle('is-active', active);
+          button.setAttribute('aria-selected', String(active));
+          button.tabIndex = active ? 0 : -1;
+        });
+        this.tabPanels?.forEach((panel) => {
+          const active = panel.dataset.productTabPanel === tabName;
+          panel.hidden = !active;
+          panel.classList.toggle('is-active', active);
+        });
+      }
+
       showImage(imageId) {
         const gallery = this.querySelector('[data-product-gallery]');
         gallery.querySelectorAll('[data-gallery-thumbnail]').forEach((thumbnail) => {
@@ -1640,6 +1715,11 @@
       "type": "page",
       "id": "size_chart_page",
       "label": "t:products.product.settings.size_chart_page"
+    },
+    {
+      "type": "textarea",
+      "id": "key_details",
+      "label": "t:products.product.settings.key_details"
     },
     {
       "type": "textarea",

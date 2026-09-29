@@ -2,6 +2,7 @@
   "products": {
     "product": {
       "settings": {
+        "key_details": "Key details",
         "returns_note": "Returns details",
         "shipping_note": "Shipping details",
         "size_chart_page": "Size chart page"
@@ -11,7 +12,6 @@
   "general": {
     "404": "Not found",
     "announcement": "Announcement bar",
-    "article": "Article",
     "block": "Block",
     "blog": "Blog",
     "cart": "Cart",
@@ -19,9 +19,13 @@
     "collections": "Collections",
     "collection_card": "Collection card",
     "collections_grid": "Collections grid",
+    "faq": "FAQ",
+    "faq_item": "FAQ item",
+    "answer": "Answer",
     "colors": "Colors",
     "column": "Column",
     "content": "Content",
+    "open_by_default": "Open by default",
     "custom_section": "Custom section",
     "fonts": "Fonts",
     "footer": "Footer",
@@ -62,6 +66,13 @@
           "one": "1 item",
           "two": "2 items"
         }
+      }
+    },
+    "faq": {
+      "settings": {
+        "eyebrow": { "label": "Eyebrow" },
+        "heading": { "label": "Heading" },
+        "subheading": { "label": "Supporting text" }
       }
     },
     "logo": {
@@ -115,6 +126,7 @@
   "labels": {
     "alignment": "Alignment",
     "background": "Background",
+    "answer": "Answer",
     "foreground": "Foreground",
     "grid_gap": "Grid spacing",
     "grid_item_width": "Grid item width",
@@ -122,9 +134,11 @@
     "layout_direction": "Layout direction",
     "menu": "Menu",
     "customer_account_menu": "Customer account menu",
+    "open_by_default": "Open by default",
     "padding": "Padding",
     "page_margin": "Page margin",
     "page_width": "Page width",
+    "question": "Question",
     "show_payment_icons": "Show payment icons",
     "text_style": "Text style",
     "text": "Text"

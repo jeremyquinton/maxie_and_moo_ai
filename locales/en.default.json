@@ -30,6 +30,10 @@
   "collections": {
     "title": "Collections"
   },
+  "general": {
+    "faq": "FAQ",
+    "faq_item": "FAQ item"
+  },
   "gift_card": {
     "add_to_apple_wallet": "Add to Apple Wallet",
     "card": "Gift card",
@@ -67,8 +71,12 @@
       "only_left": "Only {{ count }} left",
       "open_image": "Open product image",
       "close_image": "Close image viewer",
+      "tab_delivery": "Delivery",
+      "tab_description": "Description",
+      "tab_key_details": "Key details",
       "next_image": "Next image",
       "previous_image": "Previous image",
+      "tabs_label": "Product details tabs",
       "quantity": "Quantity",
       "returns": "Returns",
       "sale": "Sale",
@@ -81,6 +89,7 @@
       "view_image": "View image {{ number }}",
       "view_color": "View {{ color }} color",
       "settings": {
+        "key_details": "Key details",
         "returns_note": "Returns details",
         "shipping_note": "Shipping details",
         "size_chart_page": "Size chart page"
