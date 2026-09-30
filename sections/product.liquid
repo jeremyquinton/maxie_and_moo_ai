@@ -75,6 +75,9 @@
               <button class="product-gallery__open" type="button" data-gallery-open aria-label="{{ 'products.product.open_image' | t }}">
                 {{ media.preview_image | image_url: width: 1800 | image_tag: class: 'product-gallery__photo', widths: '600, 900, 1200, 1600, 1800', sizes: '(min-width: 1000px) 56vw, 100vw', loading: image_loading, alt: media.alt | default: product.title }}
               </button>
+              {%- if forloop.first and product_images.size > 1 -%}
+                <span class="product-gallery__swipe-hint">{{ 'products.product.swipe_to_view_more' | t }}</span>
+              {%- endif -%}
             </div>
           {%- endfor -%}
         {%- else -%}
@@ -132,20 +135,16 @@
 
         {%- if related_color_products != blank -%}
           <div class="product-colors">
-            <p class="product-colors__label">
-              <span>{{ 'products.product.color' | t }}</span> - 
-              <span class="product-colors__label_fw" data-current-color>{{ product.metafields.custom.colour_name.value | default: product.title | escape }}</span>
-            </p>
             <div class="product-colors__swatches" role="group" aria-label="{{ 'products.product.color' | t }}">
               {%- assign family_includes_current_product = false -%}
               {%- for color_product in related_color_products -%}
                 {%- if color_product.id == product.id -%}
                   {%- assign family_includes_current_product = true -%}
                 {%- endif -%}
-                {% render 'product-color-swatch', color_product: color_product, current_product: product, has_selected_variant: has_selected_variant, selected_size: selected_size, show_swatch_label: true %}
+                {% render 'product-color-swatch', color_product: color_product, current_product: product, has_selected_variant: has_selected_variant, selected_size: selected_size, use_product_primary_image: true %}
               {%- endfor -%}
               {%- unless family_includes_current_product -%}
-                {% render 'product-color-swatch', color_product: product, current_product: product, has_selected_variant: has_selected_variant, selected_size: selected_size, show_swatch_label: true %}
+                {% render 'product-color-swatch', color_product: product, current_product: product, has_selected_variant: has_selected_variant, selected_size: selected_size, use_product_primary_image: true %}
               {%- endunless -%}
             </div>
             <p class="product-color-status" data-color-status role="status" aria-live="polite" hidden></p>
@@ -492,6 +491,10 @@
     font-size: 10px;
   }
 
+  .product-gallery__swipe-hint {
+    display: none;
+  }
+
   .product-gallery__step {
     position: absolute;
     top: 50%;
@@ -657,16 +660,6 @@
     margin-block-end: 20px;
   }
 
-  .product-colors__label {
-    margin-block-end: 9px;
-    font-size: 15px;
-    font-weight: 600;
-  }
-
-  .product-colors__label_fw {
-    font-weight: 400;
-  }
-
   .product-colors__swatches {
     display: flex;
     flex-wrap: wrap;
@@ -674,21 +667,16 @@
   }
 
   .product-colors__swatch {
-    display: flex;
+    display: block;
     flex: 0 0 calc((100% - 18px) / 3);
     min-width: 0;
-    height: 46px;
-    min-height: 46px;
-    align-items: center;
+    aspect-ratio: 1;
     overflow: hidden;
-    gap: 8px;
-    padding: 8px;
+    padding: 0;
     border: 1px solid var(--product-line);
     border-radius: 0;
     background: #fff;
     color: var(--product-ink);
-    font-size: 11px;
-    line-height: 1.2;
     text-decoration: none;
   }
 
@@ -723,18 +711,21 @@
     color: var(--product-muted);
   }
 
-  .product-colors__swatch-name {
-    min-width: 0;
-    overflow: hidden;
-    color: var(--product-muted);
-    text-align: left;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  .product-colors__swatch--image-only > .product-colors__swatch-image,
+  .product-colors__swatch--image-only > .product-colors__swatch-color,
+  .product-colors__swatch--image-only > .product-colors__swatch-fallback {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
-  .product-colors__swatch.is-active .product-colors__swatch-name {
-    color: var(--product-ink);
-    font-weight: 600;
+  .product-colors__swatch--image-only > .product-colors__swatch-color {
+    flex-basis: 100%;
+  }
+
+  .product-colors__swatch--image-only > .product-colors__swatch-fallback {
+    display: grid;
+    flex-basis: 100%;
   }
 
   .product-color-status {
@@ -1195,7 +1186,7 @@
     }
 
     .product-gallery__thumbnail {
-      flex-basis: calc((100% - 40px) / 6);
+      flex-basis: calc((100vw - 64px) / 5);
       width: auto;
       aspect-ratio: 1;
     }
@@ -1210,7 +1201,8 @@
     }
 
     .product-gallery__stage {
-      width: 100%;
+      width: 95%;
+      margin-inline: auto;
       height: auto;
       min-height: 0;
       overflow: hidden;
@@ -1219,6 +1211,22 @@
 
     .product-gallery__stage > .product-gallery__step {
       display: none;
+    }
+
+    .product-gallery__swipe-hint {
+      position: absolute;
+      z-index: 1;
+      bottom: 12px;
+      left: 50%;
+      display: block;
+      padding: 7px 10px;
+      transform: translateX(-50%);
+      background: rgb(255 255 255 / 90%);
+      color: var(--product-ink);
+      font-size: 11px;
+      line-height: 1.2;
+      white-space: nowrap;
+      pointer-events: none;
     }
 
     .product-gallery__image,

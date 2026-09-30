@@ -14,10 +14,21 @@
     "comment_form_title": "Add a comment"
   },
   "cart": {
+    "added": "Added to your cart",
+    "adding": "Adding to cart...",
+    "close_drawer": "Close cart drawer",
     "checkout": "Checkout",
+    "continue_shopping": "Continue shopping",
+    "empty": "Your cart is empty",
+    "error": "We couldn't update your cart. Please try again.",
+    "loading": "Loading your cart...",
     "title": "Cart",
+    "subtotal": "Subtotal",
+    "updating": "Updating cart...",
     "update": "Update",
-    "remove": "Remove"
+    "remove": "Remove",
+    "shipping_note": "Taxes and shipping calculated at checkout.",
+    "view_cart": "View cart"
   },
   "customers": {
     "login": {
@@ -76,6 +87,7 @@
       "tab_key_details": "Key details",
       "next_image": "Next image",
       "previous_image": "Previous image",
+      "swipe_to_view_more": "Swipe to view more images",
       "tabs_label": "Product details tabs",
       "quantity": "Quantity",
       "returns": "Returns",

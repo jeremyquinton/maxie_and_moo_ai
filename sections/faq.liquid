@@ -43,8 +43,7 @@
   }
 
   .faq-section__header {
-    display: grid;
-    gap: 14px;
+    display: block;
     margin-block-end: 26px;
   }
 
@@ -78,9 +77,7 @@
 
   @media (min-width: 900px) {
     .faq-section__header {
-      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
-      align-items: start;
-      gap: clamp(24px, 4vw, 56px);
+      display: block;
     }
   }
 

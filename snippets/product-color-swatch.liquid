@@ -5,7 +5,7 @@
   @param {product} current_product - Product currently being rendered
   @param {boolean} has_selected_variant - Whether the customer selected a valid variant
   @param {string} [selected_size] - Currently selected size, when present
-  @param {boolean} [show_swatch_label] - Whether to show the color name beside the swatch
+  @param {boolean} [use_product_primary_image] - Use the product image instead of a size-specific variant image
 
   @example
   {% render 'product-color-swatch', color_product: related_product, current_product: product, has_selected_variant: has_selected_variant, selected_size: selected_size %}
@@ -46,9 +46,11 @@
     assign color_variant = color_product.selected_or_first_available_variant
   endif
 
-  if color_variant != blank and color_variant.featured_media.preview_image != blank
-    assign swatch_image = color_variant.featured_media.preview_image
-  endif
+  unless use_product_primary_image
+    if color_variant != blank and color_variant.featured_media.preview_image != blank
+      assign swatch_image = color_variant.featured_media.preview_image
+    endif
+  endunless
 
   assign swatch_url = color_product.url
   if color_variant != blank
@@ -83,7 +85,7 @@
 -%}
 
 <a
-  class="product-colors__swatch{% if color_product.id == current_product.id %} is-active{% endif %}"
+  class="product-colors__swatch{% if use_product_primary_image %} product-colors__swatch--image-only{% endif %}{% if color_product.id == current_product.id %} is-active{% endif %}"
   href="{{ swatch_url }}"
   data-color-product-link
   data-product-url="{{ color_product.url }}"
@@ -105,14 +107,13 @@
 >
   {%- if swatch_icon_image != blank -%}
     {{ swatch_icon_image | image_url: width: 120, height: 120, crop: 'center' | image_tag: class: 'product-colors__swatch-image', loading: 'lazy', alt: '' }}
+  {%- elsif use_product_primary_image and swatch_image != blank -%}
+    {{ swatch_image | image_url: width: 320, height: 320, crop: 'center' | image_tag: class: 'product-colors__swatch-image', loading: 'lazy', alt: '', width: 72, height: 72 }}
   {%- elsif swatch_color_hex != blank -%}
     <span class="product-colors__swatch-color" style="--product-swatch-color: {{ swatch_color_hex }}" aria-hidden="true"></span>
   {%- elsif swatch_image != blank -%}
     {{ swatch_image | image_url: width: 120, height: 120, crop: 'center' | image_tag: class: 'product-colors__swatch-image', loading: 'lazy', alt: '', width: 48, height: 48 }}
   {%- else -%}
     <span class="product-colors__swatch-fallback" aria-hidden="true">{{ color_name | slice: 0 | escape }}</span>
-  {%- endif -%}
-  {%- if show_swatch_label -%}
-    <span class="product-colors__swatch-name">{{ color_name | escape }}</span>
   {%- endif -%}
 </a>

@@ -28,9 +28,11 @@
 
   <body>
     {% sections 'header-group' %}
+    {% render 'cart-drawer' %}
 
     {{ content_for_layout }}
 
     {% sections 'footer-group' %}
+    <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
   </body>
 </html>
