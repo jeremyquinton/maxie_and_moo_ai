@@ -1,0 +1,326 @@
+{% doc %}
+  Renders the global cart drawer.
+
+  @example
+  {% render 'cart-drawer' %}
+{% enddoc %}
+
+<dialog
+  id="CartDrawer"
+  class="cart-drawer"
+  data-cart-drawer
+  data-cart-url="{{ routes.cart_url | append: '.js' }}"
+  data-cart-add-url="{{ routes.cart_url | append: '/add.js' }}"
+  data-cart-change-url="{{ routes.cart_url | append: '/change.js' }}"
+  data-cart-page-url="{{ routes.cart_url }}"
+  data-money-format="{{ shop.money_format | escape }}"
+  data-currency="{{ cart.currency.iso_code | default: shop.currency | escape }}"
+  data-label-added="{{ 'cart.added' | t | escape }}"
+  data-label-adding="{{ 'cart.adding' | t | escape }}"
+  data-label-loading="{{ 'cart.loading' | t | escape }}"
+  data-label-error="{{ 'cart.error' | t | escape }}"
+  data-label-updating="{{ 'cart.updating' | t | escape }}"
+  data-label-remove="{{ 'cart.remove' | t | escape }}"
+  data-label-quantity="{{ 'products.product.quantity' | t | escape }}"
+  data-label-decrease="{{ 'products.product.decrease_quantity' | t | escape }}"
+  data-label-increase="{{ 'products.product.increase_quantity' | t | escape }}"
+  aria-label="{{ 'cart.title' | t | escape }}"
+>
+  <div class="cart-drawer__panel">
+    <header class="cart-drawer__header">
+      <h2>{{ 'cart.title' | t }}</h2>
+      <button class="cart-drawer__close" type="button" data-cart-drawer-close aria-label="{{ 'cart.close_drawer' | t | escape }}">&times;</button>
+    </header>
+
+    <p class="cart-drawer__status" data-cart-drawer-status role="status" aria-live="polite"></p>
+
+    <div class="cart-drawer__body">
+      <p class="cart-drawer__empty" data-cart-drawer-empty hidden>{{ 'cart.empty' | t }}</p>
+      <ul class="cart-drawer__items" data-cart-drawer-items hidden></ul>
+    </div>
+
+    <footer class="cart-drawer__footer" data-cart-drawer-footer hidden>
+      <div class="cart-drawer__subtotal">
+        <span>{{ 'cart.subtotal' | t }}</span>
+        <strong data-cart-drawer-total></strong>
+      </div>
+      <p class="cart-drawer__note">{{ 'cart.shipping_note' | t }}</p>
+      <a class="cart-drawer__view-cart" href="{{ routes.cart_url }}">{{ 'cart.view_cart' | t }}</a>
+      <form action="{{ routes.cart_url }}" method="post">
+        <button class="cart-drawer__checkout" type="submit" name="checkout">{{ 'cart.checkout' | t }}</button>
+      </form>
+      <button class="cart-drawer__continue" type="button" data-cart-drawer-close>{{ 'cart.continue_shopping' | t }}</button>
+    </footer>
+  </div>
+</dialog>
+
+{% stylesheet %}
+  .cart-drawer {
+    position: fixed;
+    inset: 0 0 0 auto;
+    width: min(460px, 100vw);
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    background: #fff;
+    color: #20211e;
+  }
+
+  .cart-drawer[open] {
+    display: flex;
+  }
+
+  .cart-drawer::backdrop {
+    background: rgb(0 0 0 / 42%);
+  }
+
+  .cart-drawer__panel {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    background: #fff;
+    box-shadow: -8px 0 32px rgb(0 0 0 / 12%);
+  }
+
+  .cart-drawer[open] .cart-drawer__panel {
+    animation: cart-drawer-enter 240ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  }
+
+  @keyframes cart-drawer-enter {
+    from { opacity: 0; transform: translateX(24px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .cart-drawer [hidden] {
+    display: none;
+  }
+
+  .cart-drawer__header {
+    display: flex;
+    min-height: 64px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  .cart-drawer__header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .cart-drawer__close {
+    display: grid;
+    width: 40px;
+    aspect-ratio: 1;
+    place-items: center;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 28px;
+    cursor: pointer;
+  }
+
+  .cart-drawer__status {
+    margin: 0;
+    padding-inline: 20px;
+    color: #555;
+    font-size: 12px;
+  }
+
+  .cart-drawer__status:empty {
+    display: none;
+  }
+
+  .cart-drawer__body {
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 0 20px;
+  }
+
+  .cart-drawer__empty {
+    margin: 28px 0;
+    color: #555;
+    font-size: 14px;
+  }
+
+  .cart-drawer__items {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cart-drawer__item {
+    display: grid;
+    grid-template-columns: 82px minmax(0, 1fr);
+    gap: 14px;
+    padding-block: 16px;
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  .cart-drawer__item-image {
+    display: block;
+    width: 82px;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #f5f5f1;
+  }
+
+  .cart-drawer__item-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .cart-drawer__item-details {
+    display: grid;
+    align-content: start;
+    gap: 7px;
+    min-width: 0;
+  }
+
+  .cart-drawer__item-title {
+    color: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .cart-drawer__item-options {
+    margin: 0;
+    color: #666;
+    font-size: 11px;
+  }
+
+  .cart-drawer__item-price {
+    margin: 0;
+    font-size: 12px;
+  }
+
+  .cart-drawer__item-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-block-start: 4px;
+  }
+
+  .cart-drawer__quantity {
+    display: grid;
+    min-height: 34px;
+    grid-template-columns: 32px 38px 32px;
+    align-items: center;
+    border: 1px solid #d8d9d2;
+  }
+
+  .cart-drawer__quantity button,
+  .cart-drawer__quantity input {
+    width: 100%;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: center;
+  }
+
+  .cart-drawer__quantity button {
+    cursor: pointer;
+  }
+
+  .cart-drawer__quantity input {
+    appearance: textfield;
+  }
+
+  .cart-drawer__quantity input::-webkit-inner-spin-button,
+  .cart-drawer__quantity input::-webkit-outer-spin-button {
+    appearance: none;
+  }
+
+  .cart-drawer__remove,
+  .cart-drawer__view-cart,
+  .cart-drawer__continue {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 12px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .cart-drawer__footer {
+    display: grid;
+    gap: 12px;
+    padding: 16px 20px 22px;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  .cart-drawer__footer form {
+    margin: 0;
+  }
+
+  .cart-drawer__subtotal {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+
+  .cart-drawer__note {
+    margin: 0;
+    color: #666;
+    font-size: 11px;
+  }
+
+  .cart-drawer__checkout {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 16px;
+    border: 1px solid #000;
+    background: #000;
+    color: #fff;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .cart-drawer__checkout:hover {
+    background: #292929;
+  }
+
+  .cart-drawer__view-cart,
+  .cart-drawer__continue {
+    justify-self: center;
+  }
+
+  .cart-drawer :focus-visible {
+    outline: 2px solid #537648;
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 600px) {
+    .cart-drawer {
+      width: 100vw;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cart-drawer[open] .cart-drawer__panel {
+      animation: none;
+    }
+  }
+{% endstylesheet %}
