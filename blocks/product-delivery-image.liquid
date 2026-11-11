@@ -1,0 +1,39 @@
+{% doc %}
+  Displays an optional image beneath the product purchase controls.
+{% enddoc %}
+
+{% if block.settings.image != blank or request.design_mode %}
+  <div class="product-delivery-image" {{ block.shopify_attributes }}>
+    {% if block.settings.image != blank %}
+      {{ block.settings.image | image_url: width: 1200 | image_tag: class: 'product-delivery-image__image', widths: '320, 480, 640, 800, 1000, 1200', sizes: '(min-width: 1000px) 40vw, 100vw', loading: 'lazy', alt: block.settings.image.alt | default: shop.name }}
+    {% else %}
+      {{ 'image' | placeholder_svg_tag: 'product-delivery-image__placeholder' }}
+    {% endif %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .product-delivery-image {
+    margin-block-start: 16px;
+  }
+
+  .product-delivery-image__image,
+  .product-delivery-image__placeholder {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:blocks.product_delivery_image.name",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:blocks.product_delivery_image.settings.image.label"
+    }
+  ]
+}
+{% endschema %}

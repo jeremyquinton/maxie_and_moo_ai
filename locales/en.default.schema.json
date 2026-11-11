@@ -9,6 +9,23 @@
       }
     }
   },
+  "blocks": {
+    "product_color_picker": {
+      "name": "Product color picker",
+      "settings": {
+        "products": {
+          "label": "Color products",
+          "info": "Select products in the order you want their swatches to appear. Include the current product to position it in the list; otherwise it is added at the end."
+        }
+      }
+    },
+    "product_delivery_image": {
+      "name": "Image below add to cart",
+      "settings": {
+        "image": { "label": "Image" }
+      }
+    }
+  },
   "general": {
     "404": "Not found",
     "announcement": "Announcement bar",

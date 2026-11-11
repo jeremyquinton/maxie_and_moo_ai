@@ -1,0 +1,84 @@
+{% doc %}
+  Displays selectable related products as color swatches on product pages.
+
+  The current product is included automatically if it isn't in the selected list.
+{% enddoc %}
+
+{% liquid
+  assign color_products = block.settings.products
+  assign current_variant = product.selected_variant | default: product.selected_or_first_available_variant | default: product.variants.first
+  assign selected_size = blank
+  assign has_selected_variant = true
+  assign includes_current_product = false
+
+  unless product.has_only_default_variant or product.selected_variant != blank
+    assign has_selected_variant = false
+  endunless
+
+  for option in product.options_with_values
+    assign option_name = option.name | downcase
+    if option_name contains 'size'
+      if has_selected_variant
+        assign selected_size = current_variant.options[forloop.index0]
+      else
+        assign selected_size = option.values.first
+      endif
+      break
+    endif
+  endfor
+
+  for color_product in color_products
+    if color_product.id == product.id
+      assign includes_current_product = true
+      break
+    endif
+  endfor
+%}
+
+<div class="product-colors" {{ block.shopify_attributes }}>
+  <div class="product-colors__swatches" role="group" aria-label="{{ 'products.product.color' | t }}">
+    {% for color_product in color_products %}
+      {% render 'product-color-swatch', color_product: color_product, current_product: product, has_selected_variant: has_selected_variant, selected_size: selected_size, use_product_primary_image: true %}
+    {% endfor %}
+    {% unless includes_current_product %}
+      {% render 'product-color-swatch', color_product: product, current_product: product, has_selected_variant: has_selected_variant, selected_size: selected_size, use_product_primary_image: true %}
+    {% endunless %}
+  </div>
+  <p class="product-color-status" data-color-status role="status" aria-live="polite" hidden></p>
+</div>
+
+{% stylesheet %}
+  .product-colors {
+    margin-block-end: 20px;
+  }
+
+  .product-colors__swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+  }
+
+  .product-color-status {
+    margin-block-start: 8px;
+    color: var(--section-foreground, #777971);
+    font-size: var(--font-size-base, 14px);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:blocks.product_color_picker.name",
+  "settings": [
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "t:blocks.product_color_picker.settings.products.label",
+      "info": "t:blocks.product_color_picker.settings.products.info",
+      "limit": 50
+    }
+  ],
+  "presets": [
+    { "name": "t:blocks.product_color_picker.name" }
+  ]
+}
+{% endschema %}

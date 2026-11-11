@@ -4,8 +4,6 @@
   assign product_images = product.media | where: 'media_type', 'image'
   assign first_image_id = blank
   assign product_form_id = 'ProductForm-' | append: section.id
-  assign related_color_products = product.metafields.custom.colour_products.value
-  assign selected_size = blank
   assign has_selected_variant = true
   assign has_size_option = false
 
@@ -17,11 +15,6 @@
     assign option_name = option.name | downcase
     if option_name contains 'size'
       assign has_size_option = true
-      if has_selected_variant
-        assign selected_size = current_variant.options[forloop.index0]
-      else
-        assign selected_size = option.values.first
-      endif
     endif
   endfor
 
@@ -133,27 +126,7 @@
           <span class="product-price__badge" data-sale-badge{% unless has_selected_variant and current_variant.compare_at_price > current_variant.price %} hidden{% endunless %}>{{ 'products.product.sale' | t }}</span>
         </div>
 
-        {%- for block in section.blocks -%}
-          {% render block %}
-        {%- endfor -%}
-
-        {%- if related_color_products != blank -%}
-          <div class="product-colors">
-            <div class="product-colors__swatches" role="group" aria-label="{{ 'products.product.color' | t }}">
-              {%- assign family_includes_current_product = false -%}
-              {%- for color_product in related_color_products -%}
-                {%- if color_product.id == product.id -%}
-                  {%- assign family_includes_current_product = true -%}
-                {%- endif -%}
-                {% render 'product-color-swatch', color_product: color_product, current_product: product, has_selected_variant: has_selected_variant, selected_size: selected_size, use_product_primary_image: true %}
-              {%- endfor -%}
-              {%- unless family_includes_current_product -%}
-                {% render 'product-color-swatch', color_product: product, current_product: product, has_selected_variant: has_selected_variant, selected_size: selected_size, use_product_primary_image: true %}
-              {%- endunless -%}
-            </div>
-            <p class="product-color-status" data-color-status role="status" aria-live="polite" hidden></p>
-          </div>
-        {%- endif -%}
+        {% content_for 'blocks' %}
 
         {%- form 'product', product, id: product_form_id, class: 'product-form', data-product-form: '', data-money-format: shop.money_format, data-currency: cart.currency.iso_code, data-price-min: product.price_min -%}
           <input type="hidden" name="id" value="{% if has_selected_variant %}{{ current_variant.id }}{% endif %}" data-variant-id>
@@ -316,6 +289,7 @@
               <span data-add-label>{% if current_variant.available %}{{ 'products.product.add_to_cart' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
             </button>
           </div>
+          {% content_for 'block', type: 'product-delivery-image', id: 'product-delivery-image' %}
           <p class="product-form-error" data-form-error role="alert" hidden>{{ 'products.product.select_available_variant' | t }}</p>
           {% if form.errors %}<div class="product-form-error" role="alert">{{ form.errors | default_errors }}</div>{% endif %}
           <div class="product-payment-terms">{{ form | payment_terms }}</div>
@@ -658,87 +632,6 @@
     font-size: var(--font-size-base, 14px);
     font-weight: 700;
     text-transform: uppercase;
-  }
-
-  .product-colors {
-    margin-block-end: 20px;
-  }
-
-  .product-colors__swatches {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 9px;
-  }
-
-  .product-colors__swatch {
-    display: block;
-    flex: 0 0 43px;
-    min-width: 0;
-    width: 43px;
-    height: 43px;
-    aspect-ratio: 1;
-    overflow: hidden;
-    padding: 0;
-    border: 1px solid var(--product-line);
-    border-radius: 0;
-    background: #fff;
-    color: var(--product-ink);
-    text-decoration: none;
-  }
-
-  .product-colors__swatch.is-active {
-    border-color: var(--product-ink);
-  }
-
-  .product-colors__swatch-image,
-  .product-colors__swatch-color,
-  .product-colors__swatch-fallback {
-    flex: 0 0 22px;
-    width: 22px;
-    height: 22px;
-    border-radius: 0;
-  }
-
-  .product-colors__swatch-image {
-    display: block;
-    object-fit: cover;
-  }
-
-  .product-colors__swatch-color {
-    display: block;
-    background-color: var(--product-swatch-color);
-  }
-
-  .product-colors__swatch-fallback {
-    display: grid;
-    flex: 0 0 22px;
-    place-items: center;
-    background: var(--product-surface);
-    color: var(--product-muted);
-  }
-
-  .product-colors__swatch--image-only > .product-colors__swatch-image,
-  .product-colors__swatch--image-only > .product-colors__swatch-color,
-  .product-colors__swatch--image-only > .product-colors__swatch-fallback {
-    display: block;
-    flex-basis: 100%;
-    width: 100%;
-    height: 100%;
-  }
-
-  .product-colors__swatch--image-only > .product-colors__swatch-color {
-    flex-basis: 100%;
-  }
-
-  .product-colors__swatch--image-only > .product-colors__swatch-fallback {
-    display: grid;
-    flex-basis: 100%;
-  }
-
-  .product-color-status {
-    margin-block-start: 8px;
-    color: var(--section-foreground, var(--product-muted));
-    font-size: var(--font-size-base, 14px);
   }
 
   .product-options {
@@ -1719,6 +1612,7 @@
 {
   "name": "t:general.product",
   "blocks": [
+    { "type": "@theme" },
     { "type": "@app" }
   ],
   "settings": [
