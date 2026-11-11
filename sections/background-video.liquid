@@ -1,0 +1,224 @@
+<section
+  class="background-video full-width"
+  style="--background-video-height: {{ section.settings.desktop_height }}px; --background-video-mobile-height: {{ section.settings.mobile_height }}px; --background-video-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }}"
+>
+  <div class="background-video__media" aria-hidden="true">
+    {%- if section.settings.video != blank -%}
+      {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, controls: false, loading: 'lazy', class: 'background-video__asset' }}
+    {%- else -%}
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'background-video__asset background-video__placeholder' }}
+    {%- endif -%}
+  </div>
+  <span class="background-video__overlay" aria-hidden="true"></span>
+
+  <div class="background-video__content">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="background-video__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    {%- endif -%}
+    {%- if section.settings.heading != blank -%}
+      <h2 class="background-video__heading">{{ section.settings.heading | escape }}</h2>
+    {%- endif -%}
+    {%- if section.settings.button_label != blank -%}
+      <a class="background-video__button" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">
+        {{ section.settings.button_label | escape }}
+      </a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .background-video {
+    position: relative;
+    display: grid;
+    width: 100%;
+    height: var(--background-video-height);
+    place-items: center;
+    overflow: hidden;
+    background: #45443f;
+    color: #fff;
+  }
+
+  .background-video__media,
+  .background-video__overlay {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .background-video__asset {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .background-video__placeholder {
+    opacity: 0.3;
+  }
+
+  .background-video__overlay {
+    background: rgb(0 0 0 / var(--background-video-overlay-opacity));
+  }
+
+  .background-video__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    width: min(100% - 40px, 900px);
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .background-video__eyebrow {
+    margin: 0;
+    color: inherit;
+    font-size: var(--font-size-base, 14px);
+    font-weight: 600;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+
+  .background-video__heading {
+    max-width: 100%;
+    margin: 0;
+    color: inherit;
+    font-family: var(--font-primary--family);
+    font-size: 48px;
+    font-weight: 600;
+    line-height: 1.05;
+    overflow-wrap: anywhere;
+  }
+
+  .background-video__button {
+    display: inline-flex;
+    min-height: 40px;
+    max-width: 100%;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    padding: 10px 24px;
+    background: var(--section-button, #fff);
+    color: var(--section-button-text, #20211e);
+    font-size: var(--font-size-base, 14px);
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+    transition: background-color 160ms ease;
+  }
+
+  .background-video__button:hover {
+    background: var(--section-button, #ededeb);
+    filter: brightness(0.95);
+  }
+
+  .background-video__button:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 749px) {
+    .background-video {
+      height: var(--background-video-mobile-height);
+    }
+
+    .background-video__content {
+      gap: 13px;
+    }
+
+    .background-video__eyebrow {
+      font-size: var(--font-size-base, 14px);
+    }
+
+    .background-video__heading {
+      font-size: 34px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .background-video__button {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% render 'section-color-scheme', section: section %}
+
+{% schema %}
+{
+  "name": "t:general.background_video",
+  "settings": [
+    { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "t:sections.background_video.settings.video.label"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "t:sections.background_video.settings.eyebrow.label",
+      "default": "Fuzzy comfort"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:sections.background_video.settings.heading.label",
+      "default": "Cozy season"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:sections.background_video.settings.button_label.label",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:sections.background_video.settings.button_link.label"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "t:sections.background_video.settings.overlay_opacity.label",
+      "min": 0,
+      "max": 40,
+      "step": 5,
+      "unit": "%",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "label": "t:sections.background_video.settings.desktop_height.label",
+      "min": 400,
+      "max": 900,
+      "step": 50,
+      "unit": "px",
+      "default": 800
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "t:sections.background_video.settings.mobile_height.label",
+      "min": 350,
+      "max": 700,
+      "step": 25,
+      "unit": "px",
+      "default": 500
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.background_video"
+    }
+  ]
+}
+{% endschema %}

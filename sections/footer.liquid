@@ -1,50 +1,177 @@
-<footer>
-  <div class="footer__copyright">
-    &copy;
-    {{ 'now' | date: '%Y' }}
-    {{ shop.name | link_to: routes.root_url }}, {{ powered_by_link }}
-  </div>
-
-  <div class="footer__links">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
+<footer class="footer{% if section.settings.uppercase_links %} footer--uppercase-links{% endif %}">
+  <div class="footer__menus">
+    {% for block in section.blocks %}
+      {% assign menu_heading = block.settings.heading | default: block.settings.menu.title %}
+      <nav class="footer__menu" aria-label="{{ menu_heading | escape }}" {{ block.shopify_attributes }}>
+        {% if menu_heading != blank %}
+          <h2 class="footer__heading">{{ menu_heading | escape }}</h2>
+        {% endif %}
+        <ul class="footer__links" role="list">
+          {% for link in block.settings.menu.links %}
+            <li>
+              <a href="{{ link.url | escape }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+              {% if link.links != blank %}
+                <ul class="footer__sublinks" role="list">
+                  {% for child_link in link.links %}
+                    <li>
+                      <a href="{{ child_link.url | escape }}"{% if child_link.current %} aria-current="page"{% endif %}>{{ child_link.title | escape }}</a>
+                      {% if child_link.links != blank %}
+                        <ul class="footer__sublinks" role="list">
+                          {% for grandchild_link in child_link.links %}
+                            <li>
+                              <a href="{{ grandchild_link.url | escape }}"{% if grandchild_link.current %} aria-current="page"{% endif %}>{{ grandchild_link.title | escape }}</a>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                      {% endif %}
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </nav>
+    {% else %}
+      {% if section.settings.menu != blank %}
+        <nav class="footer__menu" aria-label="{{ section.settings.menu.title | escape }}">
+          <ul class="footer__links" role="list">
+            {% for link in section.settings.menu.links %}
+              <li><a href="{{ link.url | escape }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a></li>
+            {% endfor %}
+          </ul>
+        </nav>
+      {% endif %}
     {% endfor %}
   </div>
 
-  <div class="footer__payment">
+  <div class="footer__bottom">
+    <div class="footer__copyright">
+      &copy;
+      {{ 'now' | date: '%Y' }}
+      {{ shop.name | link_to: routes.root_url }}, {{ powered_by_link }}
+    </div>
+
     {% if section.settings.show_payment_icons %}
-      {% for type in shop.enabled_payment_types %}
-        {{ type | payment_type_svg_tag }}
-      {% endfor %}
+      <div class="footer__payment">
+        {% for type in shop.enabled_payment_types %}
+          {{ type | payment_type_svg_tag }}
+        {% endfor %}
+      </div>
     {% endif %}
   </div>
 </footer>
 
 {% stylesheet %}
-  footer {
-    display: flex;
-    justify-content: space-between;
+  .footer {
     margin-top: 2rem;
+    padding-block: 2rem;
   }
-  footer a {
+
+  .footer a {
     text-decoration: none;
-    color: var(--color-foreground);
+    color: var(--section-link, var(--color-foreground));
+    overflow-wrap: anywhere;
   }
-  footer .footer__links,
-  footer .footer__payment {
+
+  .footer a:hover,
+  .footer a:focus-visible {
+    text-decoration: underline;
+  }
+
+  .footer--uppercase-links .footer__menu a {
+    text-transform: uppercase;
+  }
+
+  .footer__menus {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: 2rem;
+  }
+
+  .footer__menu {
+    min-width: 0;
+  }
+
+  .footer__heading {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    overflow-wrap: anywhere;
+  }
+
+  .footer__links,
+  .footer__sublinks {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer__sublinks {
+    margin-top: 0.75rem;
+    padding-inline-start: 1rem;
+  }
+
+  .footer__bottom {
     display: flex;
-    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .footer__menus:has(> *) + .footer__bottom {
+    margin-top: 2.5rem;
+  }
+
+  .footer__payment {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .footer__payment svg {
+    width: 38px;
+    height: 24px;
   }
 {% endstylesheet %}
+
+{% render 'section-color-scheme', section: section %}
 
 {% schema %}
 {
   "name": "t:general.footer",
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "t:general.menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:labels.heading"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "t:labels.menu"
+        }
+      ]
+    }
+  ],
   "settings": [
+    { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
     {
       "type": "link_list",
       "id": "menu",
       "label": "t:labels.menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "uppercase_links",
+      "label": "t:labels.uppercase_links",
+      "default": false
     },
     {
       "type": "checkbox",

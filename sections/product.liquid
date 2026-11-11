@@ -54,7 +54,7 @@
   data-label-only-left="{{ 'products.product.only_left' | t: count: '__COUNT__' | escape }}"
   data-label-open-image="{{ 'products.product.open_image' | t | escape }}"
 >
-  <nav class="product-breadcrumbs" aria-label="Breadcrumb">
+  {% comment %} <nav class="product-breadcrumbs" aria-label="Breadcrumb">
     <a href="{{ routes.root_url }}">{{ 'products.product.home' | t }}</a>
     <span aria-hidden="true">/</span>
     {%- if product.collections.first -%}
@@ -62,7 +62,7 @@
       <span aria-hidden="true">/</span>
     {%- endif -%}
     <span aria-current="page">{{ product.title | escape }}</span>
-  </nav>
+  </nav> {% endcomment %}
 
   <div class="product-layout">
     <div class="product-gallery" data-product-gallery>
@@ -132,6 +132,10 @@
           <s data-product-compare-price{% unless has_selected_variant and current_variant.compare_at_price > current_variant.price %} hidden{% endunless %}>{{ current_variant.compare_at_price | money }}</s>
           <span class="product-price__badge" data-sale-badge{% unless has_selected_variant and current_variant.compare_at_price > current_variant.price %} hidden{% endunless %}>{{ 'products.product.sale' | t }}</span>
         </div>
+
+        {%- for block in section.blocks -%}
+          {% render block %}
+        {%- endfor -%}
 
         {%- if related_color_products != blank -%}
           <div class="product-colors">
@@ -372,7 +376,7 @@
     --product-accent: #efcc38;
     width: 100%;
     padding-block: 18px 0;
-    color: var(--product-ink);
+    color: var(--section-foreground, var(--product-ink));
   }
 
   .product-breadcrumbs {
@@ -381,14 +385,14 @@
     align-items: center;
     gap: 10px;
     margin-block-end: 22px;
-    color: var(--product-muted);
-    font-size: 11px;
+    color: var(--section-foreground, var(--product-muted));
+    font-size: var(--font-size-base, 14px);
   }
 
   .product-breadcrumbs a:hover,
   .product-size-chart:hover,
   .product-accordion-content a:hover {
-    color: var(--product-ink);
+    color: var(--section-link, var(--product-ink));
     text-decoration: underline;
     text-underline-offset: 3px;
   }
@@ -488,7 +492,7 @@
     bottom: 12px;
     padding: 5px 8px;
     background: rgb(255 255 255 / 88%);
-    font-size: 10px;
+    font-size: var(--font-size-base, 14px);
   }
 
   .product-gallery__swipe-hint {
@@ -600,7 +604,7 @@
     left: 50%;
     transform: translateX(-50%);
     color: var(--product-muted);
-    font-size: 11px;
+    font-size: var(--font-size-base, 14px);
   }
 
   .product-details {
@@ -617,10 +621,10 @@
 
   .product-vendor {
     margin-block-end: 9px;
-    color: var(--product-muted);
-    font-size: 10px;
+    color: var(--section-foreground, var(--product-muted));
+    font-size: var(--font-size-base, 14px);
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--letter-spacing-base, 1.3px);
     text-transform: uppercase;
   }
 
@@ -628,7 +632,7 @@
     margin: 0;
     font-family: var(--font-primary--family);
     font-size: 19px;
-    font-weight: 500;
+    font-weight: 700;
     line-height: 1.12;
   }
 
@@ -643,7 +647,7 @@
   }
 
   .product-price s {
-    color: var(--product-muted);
+    color: var(--section-foreground, var(--product-muted));
     /* font-size: 13px; */
     font-weight: 400;
   }
@@ -651,7 +655,7 @@
   .product-price__badge {
     padding: 4px 7px;
     background: var(--product-accent);
-    font-size: 9px;
+    font-size: var(--font-size-base, 14px);
     font-weight: 700;
     text-transform: uppercase;
   }
@@ -668,8 +672,10 @@
 
   .product-colors__swatch {
     display: block;
-    flex: 0 0 calc((100% - 18px) / 3);
+    flex: 0 0 43px;
     min-width: 0;
+    width: 43px;
+    height: 43px;
     aspect-ratio: 1;
     overflow: hidden;
     padding: 0;
@@ -715,6 +721,7 @@
   .product-colors__swatch--image-only > .product-colors__swatch-color,
   .product-colors__swatch--image-only > .product-colors__swatch-fallback {
     display: block;
+    flex-basis: 100%;
     width: 100%;
     height: 100%;
   }
@@ -730,8 +737,8 @@
 
   .product-color-status {
     margin-block-start: 8px;
-    color: var(--product-muted);
-    font-size: 11px;
+    color: var(--section-foreground, var(--product-muted));
+    font-size: var(--font-size-base, 14px);
   }
 
   .product-options {
@@ -752,12 +759,12 @@
     flex-wrap: wrap;
     gap: 6px;
     margin-block-end: 10px;
-    font-size: 15px;
+    font-size: var(--font-size-base, 14px);
     font-weight: 600;
   }
 
   .product-option__selected {
-    color: var(--product-muted);
+    color: var(--section-foreground, var(--product-muted));
     font-weight: 400;
   }
 
@@ -785,7 +792,7 @@
     background-color: #fff;
     color: var(--product-ink);
     font: inherit;
-    font-size: 11px;
+    font-size: var(--font-size-base, 14px);
     text-align: left;
     cursor: pointer;
     -webkit-appearance: none;
@@ -897,7 +904,7 @@
     place-items: center;
     border: 1px solid var(--product-line);
     background: #fff;
-    font-size: 11px;
+    font-size: var(--font-size-base, 14px);
     transition: border-color 150ms ease, background-color 150ms ease;
   }
 
@@ -922,7 +929,7 @@
     border: 1px solid var(--product-line);
     background: var(--product-surface);
     color: var(--product-muted);
-    font-size: 11px;
+    font-size: var(--font-size-base, 14px);
   }
 
   .product-option__swatch img {
@@ -938,12 +945,12 @@
   }
 
   .product-option__color-name {
-    color: var(--product-muted);
-    font-size: 10px;
+    color: var(--section-foreground, var(--product-muted));
+    font-size: var(--font-size-base, 14px);
   }
 
   .product-option__choice input:checked ~ .product-option__color-name {
-    color: var(--product-ink);
+    color: var(--section-foreground, var(--product-ink));
     font-weight: 600;
   }
 
@@ -951,14 +958,14 @@
     display: inline-block;
     margin-block: 0 15px;
     border-bottom: 1px solid currentcolor;
-    font-size: 11px;
+    font-size: var(--font-size-base, 14px);
   }
 
   .product-stock,
   .product-sku {
     margin-block-end: 6px;
-    color: var(--product-muted);
-    font-size: 11px;
+    color: var(--section-foreground, var(--product-muted));
+    font-size: var(--font-size-base, 14px);
   }
 
   .product-purchase {
@@ -974,7 +981,7 @@
   }
 
   .product-quantity__label {
-    font-size: 11px;
+    font-size: var(--font-size-base, 14px);
     font-weight: 600;
   }
 
@@ -1027,7 +1034,7 @@
     background: transparent;
     color: #000;
     font: inherit;
-    font-size: 13px;
+    font-size: var(--font-size-base, 14px);
     font-weight: 600;
     text-align: center;
     cursor: pointer;
@@ -1047,12 +1054,12 @@
   .product-form-error {
     margin-block-end: 12px;
     color: #a03826;
-    font-size: 11px;
+    font-size: var(--font-size-base, 14px);
   }
 
   .product-payment-terms {
     margin-block: 0 15px;
-    font-size: 11px;
+    font-size: var(--font-size-base, 14px);
   }
 
   .product-tabs {
@@ -1071,17 +1078,17 @@
     border: 0;
     border-bottom: 2px solid transparent;
     background: transparent;
-    color: var(--product-muted);
+    color: var(--section-foreground, var(--product-muted));
     font: inherit;
-    font-size: 11px;
+    font-size: var(--font-size-base, 14px);
     font-weight: 600;
     text-align: center;
     cursor: pointer;
   }
 
   .product-tabs__button.is-active {
-    border-bottom-color: var(--product-ink);
-    color: var(--product-ink);
+    border-bottom-color: var(--section-foreground, var(--product-ink));
+    color: var(--section-foreground, var(--product-ink));
   }
 
   .product-tabs__panels {
@@ -1090,7 +1097,7 @@
 
   .product-tabs__panel {
     color: #51534d;
-    font-size: 13px;
+    font-size: var(--font-size-base, 14px);
     line-height: 1.75;
   }
 
@@ -1118,7 +1125,7 @@
   .product-description {
     margin-block: 23px;
     color: #51534d;
-    font-size: 13px;
+    font-size: var(--font-size-base, 14px);
     line-height: 1.75;
   }
 
@@ -1162,7 +1169,7 @@
 
     .product-breadcrumbs {
       margin-block-end: 14px;
-      font-size: 10px;
+      font-size: var(--font-size-base, 14px);
     }
 
     .product-layout {
@@ -1223,7 +1230,7 @@
       transform: translateX(-50%);
       background: rgb(255 255 255 / 90%);
       color: var(--product-ink);
-      font-size: 11px;
+      font-size: var(--font-size-base, 14px);
       line-height: 1.2;
       white-space: nowrap;
       pointer-events: none;
@@ -1250,11 +1257,6 @@
 
     .product-purchase {
       grid-template-columns: minmax(0, 1fr);
-    }
-
-    .product-colors__swatch {
-      flex-basis: calc((100% - 9px) / 2);
-      width: auto;
     }
 
     .product-option__dropdown-toggle {
@@ -1711,10 +1713,17 @@
   }
 {% endjavascript %}
 
+{% render 'section-color-scheme', section: section %}
+
 {% schema %}
 {
   "name": "t:general.product",
+  "blocks": [
+    { "type": "@app" }
+  ],
   "settings": [
+    { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
     {
       "type": "page",
       "id": "size_chart_page",

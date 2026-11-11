@@ -1,0 +1,34 @@
+{% doc %}
+  Applies an optional color scheme to the full-width Shopify section wrapper.
+
+  @param {section} section - The section containing the color scheme settings
+
+  @example
+  {% render 'section-color-scheme', section: section %}
+{% enddoc %}
+
+{% if section.settings.use_color_scheme %}
+  {% assign section_scheme = section.settings.color_scheme %}
+  {% if section_scheme != blank %}
+    {% style %}
+      #shopify-section-{{ section.id }} {
+        --color-background: {{ section_scheme.settings.background }};
+        --color-foreground: {{ section_scheme.settings.text }};
+        --color-link: {{ section_scheme.settings.link }};
+        --color-button: {{ section_scheme.settings.button }};
+        --color-button-text: {{ section_scheme.settings.button_label }};
+        --section-background: {{ section_scheme.settings.background_gradient | default: section_scheme.settings.background }};
+        --section-foreground: {{ section_scheme.settings.text }};
+        --section-link: {{ section_scheme.settings.link }};
+        --section-button: {{ section_scheme.settings.button }};
+        --section-button-text: {{ section_scheme.settings.button_label }};
+        background: var(--section-background);
+        color: var(--color-foreground);
+      }
+
+      #shopify-section-{{ section.id }} a:not([class]) {
+        color: var(--color-link);
+      }
+    {% endstyle %}
+  {% endif %}
+{% endif %}

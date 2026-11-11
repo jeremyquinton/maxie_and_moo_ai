@@ -43,7 +43,7 @@
 
   .faq-item__question span:first-child {
     color: var(--faq-ink, #20211e);
-    font-size: 15px;
+    font-size: var(--font-size-base, 14px);
     font-weight: 600;
     line-height: 1.4;
   }
@@ -77,8 +77,8 @@
 
   .faq-item__answer {
     padding: 0 0 20px;
-    color: #51534d;
-    font-size: 13px;
+    color: var(--section-foreground, #51534d);
+    font-size: var(--font-size-base, 14px);
     line-height: 1.75;
   }
 
@@ -96,7 +96,7 @@
     }
 
     .faq-item__question span:first-child {
-      font-size: 14px;
+      font-size: var(--font-size-base, 14px);
     }
   }
 {% endstylesheet %}

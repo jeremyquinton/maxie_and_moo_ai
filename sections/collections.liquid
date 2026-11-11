@@ -7,66 +7,143 @@
 
 <h1>{{ 'collections.title' | t }}</h1>
 
-<div
-  class="collections {{ section.settings.grid_item_width }}"
-  style="--grid-gap: {{ section.settings.grid_gap }}px"
->
-  {% for collection in collections %}
-    <a class="collection-card" href="{{ collection.url }}">
-      {% if collection.featured_image %}
-        {% render 'image',
-          class: 'collection-card__image',
-          image: collection.featured_image,
-          width: 600,
-          height: 600,
-          crop: 'center'
-        %}
-      {% endif %}
+<div class="collections" style="--grid-gap: {{ section.settings.grid_gap }}px">
+  {% paginate collections by 24 %}
+    {% for collection in collections %}
+      {% liquid
+        assign preview_image = collection.products.first.images[1]
+        if preview_image.id == collection.featured_image.id
+          assign preview_image = collection.products[1].featured_image
+        endif
+      %}
+      <article class="collection-card">
+        <a class="collection-card__image{% if preview_image != blank %} has-preview{% endif %}" href="{{ collection.url | escape }}" aria-label="{{ collection.title | escape }}">
+          {% if collection.featured_image %}
+            {{ collection.featured_image | image_url: width: 900 | image_tag: class: 'collection-card__image-primary', widths: '300, 450, 600, 750, 900', sizes: '(min-width: 750px) 25vw, 50vw', loading: 'lazy', alt: collection.featured_image.alt | default: collection.title }}
+            {% if preview_image != blank %}
+              {{ preview_image | image_url: width: 900 | image_tag: class: 'collection-card__image-alternate', widths: '300, 450, 600, 750, 900', sizes: '(min-width: 750px) 25vw, 50vw', loading: 'lazy', alt: '' }}
+            {% endif %}
+          {% else %}
+            {{ 'collection-1' | placeholder_svg_tag: 'collection-card__placeholder' }}
+          {% endif %}
+        </a>
 
-      <div class="collection-card__content">
-        <p>{{ collection.title }}</p>
-
-        {% if collection.description %}
-          <p>{{ collection.description | strip_html | truncatewords: 15 }}</p>
-        {% endif %}
-      </div>
-    </a>
-  {% endfor %}
+        <div class="collection-card__content">
+          <h2><a href="{{ collection.url | escape }}">{{ collection.title | escape }}</a></h2>
+          {% if collection.description != blank %}
+            <p>{{ collection.description | strip_html | truncatewords: 15 | escape }}</p>
+          {% endif %}
+        </div>
+      </article>
+    {% endfor %}
+    {% if paginate.pages > 1 %}
+      <div class="collections__pagination">{{ paginate | default_pagination }}</div>
+    {% endif %}
+  {% endpaginate %}
 </div>
 
 {% stylesheet %}
   .collections {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(var(--collection-card-size), 100%), 1fr));
-    gap: var(--grid-gap);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 32px var(--grid-gap);
+    padding-block: 24px 48px;
   }
-  .collections--compact {
-    --collection-card-size: 160px;
-  }
-  .collections--full {
-    --collection-card-size: 280px;
-  }
+
   .collection-card {
-    display: flex;
-    flex-direction: column;
+    min-width: 0;
+  }
+
+  .collection-card__image {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    background: #f5f5f1;
+  }
+
+  .collection-card__image img,
+  .collection-card__placeholder {
+    position: absolute;
+    inset: 0;
+    display: block;
     width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .collection-card__image-alternate {
+    opacity: 0;
+    transition: opacity 220ms ease;
+  }
+
+  .collection-card__content {
+    display: grid;
+    gap: 3px;
+    padding-block-start: 11px;
+    font-size: var(--font-size-base, 14px);
+  }
+
+  .collection-card__content h2 {
+    margin: 0;
+    font-size: inherit;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .collection-card__content a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .collection-card__content a:hover,
+  .collection-card__content a:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .collection-card__content p {
+    color: var(--section-foreground, #777971);
+    line-height: 1.5;
+  }
+
+  .collections__pagination {
+    display: flex;
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .collection-card__image.has-preview:hover .collection-card__image-alternate,
+    .collection-card__image.has-preview:focus-visible .collection-card__image-alternate {
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 749px) {
+    .collections {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px var(--grid-gap);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .collection-card__image-alternate {
+      transition: none;
+    }
   }
 {% endstylesheet %}
+
+{% render 'section-color-scheme', section: section %}
 
 {% schema %}
 {
   "name": "t:general.collections_grid",
   "settings": [
-    {
-      "type": "select",
-      "id": "grid_item_width",
-      "label": "t:labels.grid_item_width",
-      "options": [
-        { "value": "collections--compact", "label": "t:options.size.small" },
-        { "value": "collections--full", "label": "t:options.size.large" }
-      ],
-      "default": "collections--full"
-    },
+    { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
     {
       "type": "range",
       "id": "grid_gap",

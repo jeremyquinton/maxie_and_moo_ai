@@ -1,3 +1,5 @@
+{% render 'section-color-scheme', section: section %}
+
 <div class="custom-section full-width">
   {% if section.settings.background_image %}
     <div class="custom-section__background">
@@ -43,8 +45,24 @@
 {% schema %}
 {
   "name": "t:general.custom_section",
-  "blocks": [{ "type": "@theme" }],
+  "blocks": [
+    { "type": "@theme" },
+    { "type": "@app" }
+  ],
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "use_color_scheme",
+      "label": "t:labels.use_color_scheme",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ section.settings.use_color_scheme }}"
+    },
     {
       "type": "image_picker",
       "id": "background_image",

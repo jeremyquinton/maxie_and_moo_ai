@@ -17,7 +17,7 @@
       {
         "type": "font_picker",
         "id": "type_primary_font",
-        "default": "work_sans_n4",
+        "default": "montserrat_n4",
         "label": "t:general.primary"
       }
     ]
@@ -56,6 +56,30 @@
   {
     "name": "t:general.colors",
     "settings": [
+      {
+        "type": "color_scheme_group",
+        "id": "color_schemes",
+        "definition": [
+          { "type": "color", "id": "background", "label": "t:labels.background", "default": "#FFFFFF" },
+          { "type": "color_background", "id": "background_gradient", "label": "t:labels.background_gradient" },
+          { "type": "color", "id": "text", "label": "t:labels.foreground", "default": "#333333" },
+          { "type": "color", "id": "link", "label": "t:labels.link_color", "default": "#333333" },
+          { "type": "color", "id": "button", "label": "t:labels.button_color", "default": "#333333" },
+          { "type": "color", "id": "button_label", "label": "t:labels.button_text_color", "default": "#FFFFFF" }
+        ],
+        "role": {
+          "background": { "solid": "background", "gradient": "background_gradient" },
+          "text": "text",
+          "links": "link",
+          "icons": "text",
+          "primary_button": "button",
+          "on_primary_button": "button_label",
+          "primary_button_border": "button",
+          "secondary_button": "background",
+          "on_secondary_button": "link",
+          "secondary_button_border": "link"
+        }
+      },
       {
         "type": "color",
         "id": "background_color",

@@ -1,0 +1,29 @@
+<section class="apps full-width">
+  {% for block in section.blocks %}
+    {% render block %}
+  {% endfor %}
+</section>
+
+{% stylesheet %}
+  .apps {
+    width: 100%;
+  }
+{% endstylesheet %}
+
+{% render 'section-color-scheme', section: section %}
+
+{% schema %}
+{
+  "name": "t:general.apps",
+  "settings": [
+    { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" }
+  ],
+  "blocks": [
+    { "type": "@app" }
+  ],
+  "presets": [
+    { "name": "t:general.apps" }
+  ]
+}
+{% endschema %}

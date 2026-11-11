@@ -42,6 +42,12 @@ Preview this theme using Shopify CLI:
 shopify theme dev
 ```
 
+### Section color schemes
+
+In the theme editor, open **Theme settings > Colors** to edit or add reusable color schemes. Three starting schemes are included: white, pale green, and charcoal. Each scheme defines background, optional gradient, text, link, and button colors.
+
+Select a section, enable **Use section color scheme**, and choose its **Color scheme**. The background spans the full section width while content keeps its existing layout. Disable the switch to retain the section's original colors. Image/video overlay text, product status colors, and app-provided styling retain their own controls.
+
 ## Theme architecture
 
 ```bash

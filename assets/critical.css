@@ -31,7 +31,13 @@ input,
 textarea,
 select {
   font: inherit;
+  letter-spacing: inherit;
   border-radius: var(--style-border-radius-inputs);
+}
+
+button {
+  font: inherit;
+  letter-spacing: inherit;
 }
 
 select {
@@ -72,8 +78,15 @@ p:empty {
 }
 
 /** Theme styles below */
+:root {
+  --font-size-base: 14px;
+  --letter-spacing-base: 1.3px;
+}
+
 body {
   font-family: var(--font-primary--family);
+  font-size: var(--font-size-base);
+  letter-spacing: var(--letter-spacing-base);
   background-color: var(--color-background);
   color: var(--color-foreground);
 }

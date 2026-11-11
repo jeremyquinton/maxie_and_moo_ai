@@ -12,6 +12,7 @@
   "general": {
     "404": "Not found",
     "announcement": "Announcement bar",
+    "apps": "Apps",
     "block": "Block",
     "blog": "Blog",
     "cart": "Cart",
@@ -22,6 +23,7 @@
     "faq": "FAQ",
     "faq_item": "FAQ item",
     "answer": "Answer",
+    "background_video": "Background video",
     "colors": "Colors",
     "column": "Column",
     "content": "Content",
@@ -33,9 +35,11 @@
     "group": "Group",
     "header": "Header",
     "home_hero": "Homepage hero",
+    "image_tiles": "Image tiles",
     "layout": "Layout",
     "logo": "Logo",
     "main": "Main",
+    "menu": "Menu",
     "page": "Page",
     "password": "Password",
     "primary": "Primary",
@@ -68,6 +72,11 @@
         }
       }
     },
+    "header": {
+      "settings": {
+        "sticky_threshold": { "label": "Stick header after scrolling" }
+      }
+    },
     "faq": {
       "settings": {
         "eyebrow": { "label": "Eyebrow" },
@@ -77,13 +86,18 @@
     },
     "logo": {
       "settings": {
-        "image": { "label": "Logo image" },
+        "image": { "label": "Standard logo (scrolled header)" },
+        "overlay_image": {
+          "label": "Overlay logo",
+          "info": "Shown over the homepage image before scrolling. The logo image is used after scrolling and on other pages."
+        },
         "width": { "label": "Logo width" }
       }
     },
     "announcement": {
       "settings": {
         "background_color": { "label": "Background color" },
+        "font_size": { "label": "Font size" },
         "message_1": { "label": "Message 1" },
         "message_2": { "label": "Message 2" },
         "message_3": { "label": "Message 3" },
@@ -96,7 +110,17 @@
       }
     },
     "home_hero": {
+      "blocks": {
+        "slide": {
+          "name": "Image slide",
+          "settings": {
+            "desktop_image": { "label": "Desktop image" },
+            "mobile_image": { "label": "Mobile image" }
+          }
+        }
+      },
       "settings": {
+        "auto_rotate": { "label": "Rotate images automatically" },
         "button_label": { "label": "Button label" },
         "button_link": { "label": "Button link" },
         "desktop_height": { "label": "Desktop height" },
@@ -107,10 +131,40 @@
         "mobile_image": { "label": "Mobile image" },
         "overlay_color": { "label": "Overlay color" },
         "overlay_opacity": { "label": "Overlay strength" },
+        "rotation_interval": { "label": "Change image every" },
         "subheading": { "label": "Supporting text" },
         "text_alignment": { "label": "Text alignment" },
         "text_color": { "label": "Text color" },
         "vertical_alignment": { "label": "Vertical position" }
+      }
+    },
+    "image_tiles": {
+      "blocks": {
+        "tile": {
+          "name": "Image tile",
+          "settings": {
+            "button_label": { "label": "Button label" },
+            "button_link": { "label": "Button link" },
+            "heading": { "label": "Heading" },
+            "image": { "label": "Image" },
+            "image_position": { "label": "Image position" }
+          }
+        }
+      },
+      "settings": {
+        "overlay_opacity": { "label": "Image overlay strength" }
+      }
+    },
+    "background_video": {
+      "settings": {
+        "button_label": { "label": "Button label" },
+        "button_link": { "label": "Button link" },
+        "desktop_height": { "label": "Desktop height" },
+        "eyebrow": { "label": "Eyebrow" },
+        "heading": { "label": "Heading" },
+        "mobile_height": { "label": "Mobile height" },
+        "overlay_opacity": { "label": "Overlay strength" },
+        "video": { "label": "Video" }
       }
     }
   },
@@ -124,12 +178,19 @@
     }
   },
   "labels": {
+    "color_scheme": "Color scheme",
+    "background_gradient": "Background gradient",
+    "use_color_scheme": "Use section color scheme",
+    "link_color": "Links",
+    "button_color": "Button background",
+    "button_text_color": "Button text",
     "alignment": "Alignment",
     "background": "Background",
     "answer": "Answer",
     "foreground": "Foreground",
     "grid_gap": "Grid spacing",
     "grid_item_width": "Grid item width",
+    "heading": "Heading",
     "input_corner_radius": "Input corner radius",
     "layout_direction": "Layout direction",
     "menu": "Menu",
@@ -140,6 +201,7 @@
     "page_width": "Page width",
     "question": "Question",
     "show_payment_icons": "Show payment icons",
+    "uppercase_links": "Uppercase links",
     "text_style": "Text style",
     "text": "Text"
   },
@@ -167,6 +229,11 @@
       "normal": "Normal text"
     },
     "vertical_alignment": {
+      "top": "Top",
+      "center": "Center",
+      "bottom": "Bottom"
+    },
+    "image_position": {
       "top": "Top",
       "center": "Center",
       "bottom": "Bottom"

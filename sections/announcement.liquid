@@ -11,7 +11,7 @@
     data-announcement-interval="{{ section.settings.rotation_interval | times: 1000 }}"
     aria-live="polite"
     aria-atomic="true"
-    style="--announcement-background: {{ section.settings.background_color }}; --announcement-foreground: {{ section.settings.text_color }}; --announcement-padding: {{ section.settings.vertical_padding }}px"
+    style="--announcement-background: {{ section.settings.background_color }}; --announcement-foreground: {{ section.settings.text_color }}; --announcement-padding: {{ section.settings.vertical_padding }}px; --announcement-font-size: {{ section.settings.font_size }}px"
   >
     {%- assign has_rendered_announcement = false -%}
     {%- if section.settings.message_1 != blank -%}
@@ -42,8 +42,8 @@
     min-height: 36px;
     padding: var(--announcement-padding) 16px;
     place-items: center;
-    background: var(--announcement-background);
-    color: var(--announcement-foreground);
+    background: var(--section-background, var(--announcement-background));
+    color: var(--section-foreground, var(--announcement-foreground));
     text-align: center;
   }
 
@@ -51,7 +51,7 @@
   .announcement-bar__link {
     margin: 0;
     color: inherit;
-    font-size: 12px;
+    font-size: var(--announcement-font-size, var(--font-size-base, 14px));
     line-height: 1.4;
   }
 
@@ -88,9 +88,8 @@
 
   .announcement-bar--uppercase .announcement-bar__message,
   .announcement-bar--uppercase .announcement-bar__link {
-    font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: var(--letter-spacing-base, 1.3px);
     text-transform: uppercase;
   }
 
@@ -99,10 +98,6 @@
       padding-inline: 12px;
     }
 
-    .announcement-bar__message,
-    .announcement-bar__link {
-      font-size: 12px;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -161,10 +156,14 @@
   })();
 {% endjavascript %}
 
+{% render 'section-color-scheme', section: section %}
+
 {% schema %}
 {
   "name": "t:general.announcement",
   "settings": [
+    { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
     {
       "type": "text",
       "id": "message_1",
@@ -213,6 +212,16 @@
       "id": "text_color",
       "label": "t:sections.announcement.settings.text_color.label",
       "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "t:sections.announcement.settings.font_size.label",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
     },
     {
       "type": "range",

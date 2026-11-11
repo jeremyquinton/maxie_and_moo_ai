@@ -57,6 +57,25 @@
     "password": "Password",
     "enter": "Enter"
   },
+  "sections": {
+    "header": {
+      "back": "Back",
+      "close_menu": "Close menu",
+      "menu": "Menu",
+      "navigation": "Main navigation",
+      "open_menu": "Open menu",
+      "show_links": "Show {{ title }} links",
+      "shop_all": "Shop all {{ title }}"
+    },
+    "home_hero": {
+      "next_slide": "Next image",
+      "pause_rotation": "Pause image rotation",
+      "previous_slide": "Previous image",
+      "resume_rotation": "Resume image rotation",
+      "slideshow": "Hero images",
+      "slideshow_controls": "Hero image controls"
+    }
+  },
   "products": {
     "featured_collection": {
       "empty": "Choose a collection in this section's settings to display products.",
@@ -64,6 +83,7 @@
       "view_all": "View all"
     },
     "product": {
+      "price_from": "From {{ price }}",
       "add_to_cart": "Add to cart",
       "choose_option": "Choose an option",
       "choose_size": "Choose a size",

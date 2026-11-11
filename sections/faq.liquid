@@ -24,8 +24,10 @@
   .faq-section {
     width: 100%;
     padding-block: clamp(32px, 6vw, 72px);
-    color: var(--faq-ink, #20211e);
-    background: var(--faq-bg, transparent);
+    --faq-ink: var(--section-foreground, #20211e);
+    --faq-muted: var(--section-foreground, #777971);
+    color: var(--faq-ink);
+    background: var(--section-background, var(--faq-bg, transparent));
   }
 
   .faq-section__inner {
@@ -36,9 +38,9 @@
   .faq-section__eyebrow {
     margin: 0 0 10px;
     color: var(--faq-muted, #777971);
-    font-size: 11px;
+    font-size: var(--font-size-base, 14px);
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: var(--letter-spacing-base, 1.3px);
     text-transform: uppercase;
   }
 
@@ -53,13 +55,13 @@
     font-size: clamp(28px, 4vw, 44px);
     font-weight: 500;
     line-height: 1.04;
-    letter-spacing: -0.02em;
+    letter-spacing: var(--letter-spacing-base, 1.3px);
   }
 
   .faq-section__subheading {
     max-width: 68ch;
-    color: #51534d;
-    font-size: 14px;
+    color: var(--section-foreground, #51534d);
+    font-size: var(--font-size-base, 14px);
     line-height: 1.7;
   }
 
@@ -83,14 +85,19 @@
 
 {% endstylesheet %}
 
+{% render 'section-color-scheme', section: section %}
+
 {% schema %}
 {
   "name": "FAQ",
   "blocks": [
-    { "type": "faq-item" }
+    { "type": "faq-item" },
+    { "type": "@app" }
   ],
   "max_blocks": 12,
   "settings": [
+    { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
     {
       "type": "text",
       "id": "eyebrow",

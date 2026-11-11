@@ -1,22 +1,70 @@
+{% liquid
+  assign hero_heading = section.settings.heading
+  assign hero_image = section.settings.desktop_image | default: section.settings.mobile_image
+  assign hero_slide_count = 0
+  assign has_legacy_image = false
+
+  if section.settings.desktop_image != blank or section.settings.mobile_image != blank
+    assign has_legacy_image = true
+  endif
+
+  for block in section.blocks
+    if block.settings.desktop_image != blank or block.settings.mobile_image != blank
+      assign hero_slide_count = hero_slide_count | plus: 1
+    endif
+  endfor
+%}
+
 <section
-  class="home-hero full-width home-hero--{{ section.settings.text_alignment }} home-hero--{{ section.settings.vertical_alignment }}{% if section.settings.desktop_image == blank and section.settings.mobile_image == blank %} home-hero--without-image{% endif %}"
+  class="home-hero full-width home-hero--{{ section.settings.text_alignment }} home-hero--{{ section.settings.vertical_alignment }}{% if hero_slide_count > 1 %} home-hero--slideshow{% endif %}{% if hero_slide_count == 0 and has_legacy_image == false %} home-hero--without-image{% endif %}"
   style="--home-hero-desktop-height: {{ section.settings.desktop_height }}px; --home-hero-mobile-height: {{ section.settings.mobile_height }}px; --home-hero-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }}; --home-hero-overlay-color: {{ section.settings.overlay_color }}; --home-hero-text-color: {{ section.settings.text_color }}"
 >
-  {%- assign hero_heading = section.settings.heading -%}
-  {%- assign hero_image = section.settings.desktop_image | default: section.settings.mobile_image -%}
-  <picture class="home-hero__media">
-    {%- if section.settings.mobile_image != blank -%}
-      <source
-        media="(max-width: 749px)"
-        srcset="{{ section.settings.mobile_image | image_url: width: 1200 }}"
-      >
-    {%- endif -%}
-    {%- if hero_image != blank -%}
-      {{ hero_image | image_url: width: 2400 | image_tag: class: 'home-hero__image', widths: '750, 1100, 1500, 1900, 2400', sizes: '100vw', loading: 'eager', alt: hero_heading }}
-    {%- else -%}
-      {{ 'lifestyle-1' | placeholder_svg_tag: 'home-hero__image home-hero__placeholder' }}
-    {%- endif -%}
-  </picture>
+  {%- if hero_slide_count > 0 -%}
+    <div
+      class="home-hero__slides"
+      aria-label="{{ 'sections.home_hero.slideshow' | t | escape }}"
+      data-home-hero-slideshow
+      data-rotation-interval="{{ section.settings.rotation_interval | times: 1000 }}"
+      data-auto-rotate="{{ section.settings.auto_rotate }}"
+    >
+      {%- assign rendered_slide_count = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- if block.settings.desktop_image != blank or block.settings.mobile_image != blank -%}
+          {%- assign rendered_slide_count = rendered_slide_count | plus: 1 -%}
+          {%- assign slide_image = block.settings.desktop_image | default: block.settings.mobile_image -%}
+          {%- assign slide_loading = 'lazy' -%}
+          {%- if rendered_slide_count == 1 -%}
+            {%- assign slide_loading = 'eager' -%}
+          {%- endif -%}
+          <div class="home-hero__slide{% if rendered_slide_count == 1 %} is-active{% endif %}" data-home-hero-slide aria-hidden="{% if rendered_slide_count == 1 %}false{% else %}true{% endif %}" {{ block.shopify_attributes }}>
+            <picture class="home-hero__media">
+              {%- if block.settings.mobile_image != blank -%}
+                <source
+                  media="(max-width: 749px)"
+                  srcset="{{ block.settings.mobile_image | image_url: width: 1200 }}"
+                >
+              {%- endif -%}
+              {{ slide_image | image_url: width: 2400 | image_tag: class: 'home-hero__image', widths: '750, 1100, 1500, 1900, 2400', sizes: '100vw', loading: slide_loading, alt: hero_heading }}
+            </picture>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {%- else -%}
+    <picture class="home-hero__media">
+      {%- if section.settings.mobile_image != blank -%}
+        <source
+          media="(max-width: 749px)"
+          srcset="{{ section.settings.mobile_image | image_url: width: 1200 }}"
+        >
+      {%- endif -%}
+      {%- if hero_image != blank -%}
+        {{ hero_image | image_url: width: 2400 | image_tag: class: 'home-hero__image', widths: '750, 1100, 1500, 1900, 2400', sizes: '100vw', loading: 'eager', alt: hero_heading }}
+      {%- else -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'home-hero__image home-hero__placeholder' }}
+      {%- endif -%}
+    </picture>
+  {%- endif -%}
   <span class="home-hero__overlay" aria-hidden="true"></span>
 
   <div class="home-hero__content">
@@ -36,6 +84,29 @@
       </a>
     {%- endif -%}
   </div>
+
+  {%- if hero_slide_count > 1 -%}
+    <div class="home-hero__controls" aria-label="{{ 'sections.home_hero.slideshow_controls' | t | escape }}">
+      <button class="home-hero__control" type="button" aria-label="{{ 'sections.home_hero.previous_slide' | t | escape }}" data-home-hero-previous>
+        <span aria-hidden="true">&#8592;</span>
+      </button>
+      {%- if section.settings.auto_rotate -%}
+        <button
+          class="home-hero__control"
+          type="button"
+          aria-label="{{ 'sections.home_hero.pause_rotation' | t | escape }}"
+          data-home-hero-toggle
+          data-pause-label="{{ 'sections.home_hero.pause_rotation' | t | escape }}"
+          data-resume-label="{{ 'sections.home_hero.resume_rotation' | t | escape }}"
+        >
+          <span aria-hidden="true" data-home-hero-toggle-icon>II</span>
+        </button>
+      {%- endif -%}
+      <button class="home-hero__control" type="button" aria-label="{{ 'sections.home_hero.next_slide' | t | escape }}" data-home-hero-next>
+        <span aria-hidden="true">&#8594;</span>
+      </button>
+    </div>
+  {%- endif -%}
 </section>
 
 {% stylesheet %}
@@ -56,6 +127,22 @@
     display: block;
     width: 100%;
     height: 100%;
+  }
+
+  .home-hero__slides,
+  .home-hero__slide {
+    position: absolute;
+    inset: 0;
+  }
+
+  .home-hero__slide {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 600ms ease;
+  }
+
+  .home-hero__slide.is-active {
+    opacity: 1;
   }
 
   .home-hero__image {
@@ -82,6 +169,43 @@
     padding-block: 56px;
   }
 
+  .home-hero--slideshow .home-hero__content {
+    padding-block-end: 104px;
+  }
+
+  .home-hero__controls {
+    position: absolute;
+    z-index: 2;
+    right: 24px;
+    bottom: 24px;
+    display: flex;
+    gap: 8px;
+  }
+
+  .home-hero__control {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    border: 1px solid currentColor;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .home-hero__control:hover {
+    background: rgb(255 255 255 / 18%);
+  }
+
+  .home-hero__control:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
   .home-hero--center .home-hero__content {
     text-align: center;
   }
@@ -100,7 +224,7 @@
 
   .home-hero__eyebrow {
     margin-block-end: 12px;
-    font-size: 11px;
+    font-size: var(--font-size-base, 14px);
     font-weight: 600;
     text-transform: uppercase;
   }
@@ -146,9 +270,9 @@
     margin-block-start: 24px;
     padding-inline: 16px;
     border: 1px solid currentColor;
-    background: var(--color-background, #fff);
-    color: var(--color-foreground, #20211e);
-    font-size: 12px;
+    background: var(--section-button, var(--color-background, #fff));
+    color: var(--section-button-text, var(--color-foreground, #20211e));
+    font-size: var(--font-size-base, 14px);
     font-weight: 600;
     text-decoration: none;
   }
@@ -167,21 +291,206 @@
       padding-block: 32px;
     }
 
+    .home-hero--slideshow .home-hero__content {
+      padding-block-end: 96px;
+    }
+
+    .home-hero__controls {
+      right: 20px;
+      bottom: 20px;
+    }
+
     .home-hero h1 {
       font-size: 36px;
     }
 
     .home-hero__subheading {
       margin-block-start: 12px;
-      font-size: 14px;
+      font-size: var(--font-size-base, 14px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-hero__slide {
+      transition: none;
     }
   }
 {% endstylesheet %}
 
+{% javascript %}
+  (() => {
+    const selector = '[data-home-hero-slideshow]';
+    const instances = new WeakMap();
+
+    const findSlideshows = (context) => {
+      const slideshows = [];
+      if (context.matches && context.matches(selector)) slideshows.push(context);
+      if (context.querySelectorAll) slideshows.push(...context.querySelectorAll(selector));
+      return slideshows;
+    };
+
+    const initialize = (slideshow) => {
+      if (instances.has(slideshow)) return;
+
+      const section = slideshow.closest('.home-hero');
+      const slides = Array.from(slideshow.querySelectorAll('[data-home-hero-slide]'));
+      if (!section || slides.length < 2) return;
+
+      const previousButton = section.querySelector('[data-home-hero-previous]');
+      const nextButton = section.querySelector('[data-home-hero-next]');
+      const toggleButton = section.querySelector('[data-home-hero-toggle]');
+      const toggleIcon = toggleButton && toggleButton.querySelector('[data-home-hero-toggle-icon]');
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const autoRotate = slideshow.dataset.autoRotate === 'true';
+      const interval = Number(slideshow.dataset.rotationInterval) || 5000;
+      const controller = new AbortController();
+      let currentIndex = Math.max(slides.findIndex((slide) => slide.classList.contains('is-active')), 0);
+      let timer = null;
+      let hovered = false;
+      let focused = false;
+      let userPaused = false;
+      let userStarted = false;
+
+      const shouldRotate = () => autoRotate
+        && !userPaused
+        && !hovered
+        && !focused
+        && (!prefersReducedMotion.matches || userStarted);
+
+      const updateToggle = () => {
+        if (!toggleButton) return;
+        const rotating = shouldRotate();
+        toggleButton.setAttribute('aria-label', rotating ? toggleButton.dataset.pauseLabel : toggleButton.dataset.resumeLabel);
+        if (toggleIcon) toggleIcon.textContent = rotating ? 'II' : '>';
+      };
+
+      const clearTimer = () => {
+        if (timer !== null) window.clearTimeout(timer);
+        timer = null;
+      };
+
+      const showSlide = (targetIndex) => {
+        slides[currentIndex].classList.remove('is-active');
+        slides[currentIndex].setAttribute('aria-hidden', 'true');
+        currentIndex = (targetIndex + slides.length) % slides.length;
+        slides[currentIndex].classList.add('is-active');
+        slides[currentIndex].setAttribute('aria-hidden', 'false');
+      };
+
+      const schedule = () => {
+        clearTimer();
+        updateToggle();
+        if (!shouldRotate()) return;
+        timer = window.setTimeout(() => {
+          showSlide(currentIndex + 1);
+          schedule();
+        }, interval);
+      };
+
+      if (previousButton) {
+        previousButton.addEventListener('click', () => {
+          showSlide(currentIndex - 1);
+          schedule();
+        }, { signal: controller.signal });
+      }
+
+      if (nextButton) {
+        nextButton.addEventListener('click', () => {
+          showSlide(currentIndex + 1);
+          schedule();
+        }, { signal: controller.signal });
+      }
+
+      if (toggleButton) {
+        toggleButton.addEventListener('click', () => {
+          if (userPaused) {
+            userPaused = false;
+            userStarted = true;
+          } else if (prefersReducedMotion.matches && !userStarted) {
+            userStarted = true;
+          } else {
+            userPaused = true;
+          }
+          schedule();
+        }, { signal: controller.signal });
+      }
+
+      section.addEventListener('mouseenter', () => {
+        hovered = true;
+        schedule();
+      }, { signal: controller.signal });
+      section.addEventListener('mouseleave', () => {
+        hovered = false;
+        schedule();
+      }, { signal: controller.signal });
+      section.addEventListener('focusin', () => {
+        focused = true;
+        schedule();
+      }, { signal: controller.signal });
+      section.addEventListener('focusout', (event) => {
+        if (!section.contains(event.relatedTarget)) {
+          focused = false;
+          schedule();
+        }
+      }, { signal: controller.signal });
+      prefersReducedMotion.addEventListener('change', schedule, { signal: controller.signal });
+
+      instances.set(slideshow, {
+        destroy: () => {
+          clearTimer();
+          controller.abort();
+        }
+      });
+      schedule();
+    };
+
+    const initializeWithin = (context) => findSlideshows(context).forEach(initialize);
+    const destroyWithin = (context) => {
+      findSlideshows(context).forEach((slideshow) => {
+        const instance = instances.get(slideshow);
+        if (instance) instance.destroy();
+        instances.delete(slideshow);
+      });
+    };
+
+    document.addEventListener('shopify:section:load', (event) => initializeWithin(event.target));
+    document.addEventListener('shopify:section:unload', (event) => destroyWithin(event.target));
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => initializeWithin(document), { once: true });
+    } else {
+      initializeWithin(document);
+    }
+  })();
+{% endjavascript %}
+
+{% render 'section-color-scheme', section: section %}
+
 {% schema %}
 {
   "name": "t:general.home_hero",
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "t:sections.home_hero.blocks.slide.name",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "desktop_image",
+          "label": "t:sections.home_hero.blocks.slide.settings.desktop_image.label"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_image",
+          "label": "t:sections.home_hero.blocks.slide.settings.mobile_image.label"
+        }
+      ]
+    }
+  ],
   "settings": [
+    { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
     {
       "type": "image_picker",
       "id": "desktop_image",
@@ -191,6 +500,22 @@
       "type": "image_picker",
       "id": "mobile_image",
       "label": "t:sections.home_hero.settings.mobile_image.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "t:sections.home_hero.settings.auto_rotate.label",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "rotation_interval",
+      "label": "t:sections.home_hero.settings.rotation_interval.label",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "unit": "s",
+      "default": 5
     },
     {
       "type": "text",

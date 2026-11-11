@@ -27,7 +27,9 @@
   </head>
 
   <body>
-    {% sections 'header-group' %}
+    <div class="site-header-shell{% if request.page_type == 'index' %} site-header-shell--overlay{% else %} site-header-shell--solid{% endif %}" data-site-header-shell>
+      {% sections 'header-group' %}
+    </div>
     {% render 'cart-drawer' %}
 
     {{ content_for_layout }}
