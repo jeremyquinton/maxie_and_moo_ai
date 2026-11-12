@@ -78,7 +78,7 @@
       <p class="home-hero__subheading">{{ section.settings.subheading | escape }}</p>
     {%- endif -%}
     {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
-      <a class="home-hero__button" href="{{ section.settings.button_link }}">
+      <a class="home-hero__button theme-button--{{ section.settings.button_style | default: 'primary' }}" href="{{ section.settings.button_link }}">
         {{ section.settings.button_label | escape }}
         <span aria-hidden="true">&#8599;</span>
       </a>
@@ -466,6 +466,8 @@
 
 {% render 'section-color-scheme', section: section %}
 
+{% render 'section-spacing', section: section %}
+
 {% schema %}
 {
   "name": "t:general.home_hero",
@@ -478,28 +480,52 @@
         {
           "type": "image_picker",
           "id": "desktop_image",
-          "label": "t:sections.home_hero.blocks.slide.settings.desktop_image.label"
+          "label": "t:sections.home_hero.blocks.slide.settings.desktop_image.label",
+          "info": "t:sections.home_hero.blocks.slide.settings.desktop_image.info"
         },
         {
           "type": "image_picker",
           "id": "mobile_image",
-          "label": "t:sections.home_hero.blocks.slide.settings.mobile_image.label"
+          "label": "t:sections.home_hero.blocks.slide.settings.mobile_image.label",
+          "info": "t:sections.home_hero.blocks.slide.settings.mobile_image.info"
         }
       ]
     }
   ],
   "settings": [
+    {
+      "type": "range",
+      "id": "section_space_above",
+      "label": "t:labels.section_space_above",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "section_space_below",
+      "label": "t:labels.section_space_below",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
     { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
     {
       "type": "image_picker",
       "id": "desktop_image",
-      "label": "t:sections.home_hero.settings.desktop_image.label"
+      "label": "t:sections.home_hero.settings.desktop_image.label",
+      "info": "t:sections.home_hero.settings.desktop_image.info"
     },
     {
       "type": "image_picker",
       "id": "mobile_image",
-      "label": "t:sections.home_hero.settings.mobile_image.label"
+      "label": "t:sections.home_hero.settings.mobile_image.label",
+      "info": "t:sections.home_hero.settings.mobile_image.info"
     },
     {
       "type": "checkbox",
@@ -543,6 +569,17 @@
       "type": "url",
       "id": "button_link",
       "label": "t:sections.home_hero.settings.button_link.label"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "t:labels.button_style",
+      "options": [
+        { "value": "primary", "label": "t:options.button_style.primary" },
+        { "value": "secondary", "label": "t:options.button_style.secondary" },
+        { "value": "tertiary", "label": "t:options.button_style.tertiary" }
+      ],
+      "default": "primary"
     },
     {
       "type": "range",

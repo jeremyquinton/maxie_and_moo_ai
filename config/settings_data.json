@@ -19,6 +19,10 @@
       "scheme-3": {
         "settings": { "background": "#292C29", "text": "#FFFFFF", "link": "#DCEBD9", "button": "#DCEBD9", "button_label": "#24372B" }
       }
+    },
+    "settings": {
+      "primary_button_color": "#333333",
+      "primary_button_text_color": "#FFFFFF"
     }
   }
 }

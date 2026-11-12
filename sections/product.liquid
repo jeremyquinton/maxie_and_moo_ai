@@ -285,7 +285,7 @@
                 <button type="button" data-quantity-change="1" aria-label="{{ 'products.product.increase_quantity' | t }}">+</button>
               </div>
             </div>
-            <button class="product-add" type="submit" name="add" data-add-button{% unless has_selected_variant and current_variant.available %} disabled{% endunless %}>
+            <button class="product-add theme-button--{{ section.settings.add_to_cart_button_style | default: 'primary' }}" type="submit" name="add" data-add-button{% unless has_selected_variant and current_variant.available %} disabled{% endunless %}>
               <span data-add-label>{% if current_variant.available %}{{ 'products.product.add_to_cart' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
             </button>
           </div>
@@ -923,7 +923,7 @@
     gap: 12px;
     padding-inline: 17px;
     border: 1px solid #000;
-    border-radius: 0;
+    border-radius: 8px;
     background: transparent;
     color: #000;
     font: inherit;
@@ -931,17 +931,38 @@
     font-weight: 600;
     text-align: center;
     cursor: pointer;
-    transition: background-color 150ms ease, color 150ms ease;
+    transition: transform 150ms ease, box-shadow 150ms ease, background-color 150ms ease, color 150ms ease;
   }
 
   .product-add:hover:not(:disabled) {
-    background: rgb(0 0 0 / 6%);
-    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgb(0 0 0 / 14%);
+  }
+
+  .product-add:active:not(:disabled) {
+    transform: translateY(0) scale(0.99);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+  }
+
+  .product-add:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
   }
 
   .product-add:disabled {
     cursor: not-allowed;
     opacity: 0.55;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .product-add {
+      transition: none;
+    }
+
+    .product-add:hover:not(:disabled),
+    .product-add:active:not(:disabled) {
+      transform: none;
+    }
   }
 
   .product-form-error {
@@ -1154,11 +1175,20 @@
 
     .product-option__dropdown-toggle {
       min-height: 50px;
+      padding-block: 8px;
       background-color: #fff;
       background-clip: padding-box;
       color: var(--product-ink);
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 500;
+      line-height: 1.35;
+    }
+
+    .product-option__dropdown-toggle-label {
+      overflow: visible;
+      overflow-wrap: anywhere;
+      text-overflow: clip;
+      white-space: normal;
     }
 
     .product-option__dropdown-toggle-icon {
@@ -1169,6 +1199,12 @@
 
     .product-option__dropdown-item {
       min-height: 50px;
+    }
+
+    .product-option__dropdown-item-label {
+      font-size: 14px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
     }
 
     .product-tabs__nav {
@@ -1608,6 +1644,8 @@
 
 {% render 'section-color-scheme', section: section %}
 
+{% render 'section-spacing', section: section %}
+
 {% schema %}
 {
   "name": "t:general.product",
@@ -1616,6 +1654,26 @@
     { "type": "@app" }
   ],
   "settings": [
+    {
+      "type": "range",
+      "id": "section_space_above",
+      "label": "t:labels.section_space_above",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "section_space_below",
+      "label": "t:labels.section_space_below",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
     { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
     {
@@ -1637,6 +1695,17 @@
       "type": "textarea",
       "id": "returns_note",
       "label": "t:products.product.settings.returns_note"
+    },
+    {
+      "type": "select",
+      "id": "add_to_cart_button_style",
+      "label": "t:products.product.settings.add_to_cart_button_style",
+      "options": [
+        { "value": "primary", "label": "t:options.button_style.primary" },
+        { "value": "secondary", "label": "t:options.button_style.secondary" },
+        { "value": "tertiary", "label": "t:options.button_style.tertiary" }
+      ],
+      "default": "primary"
     }
   ],
   "disabled_on": {

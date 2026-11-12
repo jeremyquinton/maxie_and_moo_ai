@@ -13,6 +13,48 @@
       "type": "home-hero",
       "settings": {}
     },
+    "benefits": {
+      "type": "benefits-strip",
+      "blocks": {
+        "benefit_clean": {
+          "type": "benefit",
+          "settings": {
+            "heading": "Easy to clean",
+            "description": "100% waterproof, wipeable"
+          }
+        },
+        "benefit_safe": {
+          "type": "benefit",
+          "settings": {
+            "heading": "Non toxic",
+            "description": "BPA-free and phthalate-free"
+          }
+        },
+        "benefit_expand": {
+          "type": "benefit",
+          "settings": {
+            "heading": "Interlocking",
+            "description": "Seamless and expandable"
+          }
+        },
+        "benefit_thick": {
+          "type": "benefit",
+          "settings": {
+            "heading": "Extra thick",
+            "description": "Soft padded EVA foam"
+          }
+        }
+      },
+      "block_order": [
+        "benefit_clean",
+        "benefit_safe",
+        "benefit_expand",
+        "benefit_thick"
+      ],
+      "settings": {
+        "background_color": "#577397"
+      }
+    },
     "featured_collection": {
       "type": "featured-collection",
       "settings": {}
@@ -20,6 +62,7 @@
   },
   "order": [
     "main",
+    "benefits",
     "featured_collection"
   ]
 }

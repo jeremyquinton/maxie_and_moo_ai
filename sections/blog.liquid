@@ -29,10 +29,32 @@
 
 {% render 'section-color-scheme', section: section %}
 
+{% render 'section-spacing', section: section %}
+
 {% schema %}
 {
   "name": "t:general.blog",
   "settings": [
+    {
+      "type": "range",
+      "id": "section_space_above",
+      "label": "t:labels.section_space_above",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "section_space_below",
+      "label": "t:labels.section_space_below",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
     { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" }
   ]

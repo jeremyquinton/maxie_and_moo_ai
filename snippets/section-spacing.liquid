@@ -1,0 +1,12 @@
+{% doc %}
+  Applies configurable spacing above and below a Shopify section.
+
+  @param {section} section - The section containing the spacing settings
+{% enddoc %}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    margin-block-start: {{ section.settings.section_space_above | default: 0 }}px;
+    margin-block-end: {{ section.settings.section_space_below | default: 0 }}px;
+  }
+{% endstyle %}

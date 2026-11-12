@@ -36,6 +36,7 @@
     z-index: 42;
     height: 88px;
     min-height: 0;
+    padding-block: 0;
     color: #fff;
     pointer-events: none;
   }
@@ -56,7 +57,7 @@
   .site-logo__link {
     display: grid;
     width: min(var(--site-logo-width), calc(100vw - 32px));
-    height: 52px;
+    height: 68px;
     max-width: 100%;
     max-height: 100%;
     align-items: center;
@@ -92,7 +93,7 @@
   }
 
   .site-logo__text {
-    font-size: 24px;
+    font-size: 32px;
     font-weight: 700;
     line-height: 1.1;
   }
@@ -103,12 +104,8 @@
       padding-block: 8px;
     }
 
-    .site-logo__link {
-      height: 44px;
-    }
-
     .site-logo__text {
-      font-size: 20px;
+      font-size: 26px;
     }
   }
 
@@ -117,30 +114,57 @@
     .site-header-shell--solid .site-logo {
       height: 58px;
       min-height: 0;
-      padding-block: 4px;
+      padding-block: 0;
     }
 
     .site-header-shell--overlay .site-logo__link,
     .site-header-shell--solid .site-logo__link {
-      height: 48px;
+      height: 56px;
     }
 
     .site-header-shell--overlay.is-sticky .site-logo {
-      height: 54px;
+      height: 58px;
     }
 
     .site-header-shell--solid.is-sticky .site-logo {
       height: 58px;
+    }
+
+    .site-header-shell--overlay.is-sticky .site-logo,
+    .site-header-shell--solid.is-sticky .site-logo {
+      background: #fff;
     }
   }
 {% endstylesheet %}
 
 {% render 'section-color-scheme', section: section %}
 
+{% render 'section-spacing', section: section %}
+
 {% schema %}
 {
   "name": "t:general.logo",
   "settings": [
+    {
+      "type": "range",
+      "id": "section_space_above",
+      "label": "t:labels.section_space_above",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "section_space_below",
+      "label": "t:labels.section_space_below",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
     { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
     {
@@ -162,7 +186,7 @@
       "max": 500,
       "step": 20,
       "unit": "px",
-      "default": 240
+      "default": 360
     }
   ]
 }

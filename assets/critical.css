@@ -91,6 +91,50 @@ body {
   color: var(--color-foreground);
 }
 
+a.theme-button--primary,
+button.theme-button--primary {
+  border-color: var(--section-button, var(--button-primary-background, #333));
+  background: var(--section-button, var(--button-primary-background, #333));
+  color: var(--section-button-text, var(--button-primary-text, #fff));
+}
+
+a.theme-button--secondary,
+a.theme-button--secondary:hover,
+button.theme-button--secondary,
+button.theme-button--secondary:hover {
+  border: 1px solid currentColor;
+  background: transparent;
+  color: var(--section-button, var(--button-primary-background, #333));
+}
+
+a.theme-button--tertiary,
+button.theme-button--tertiary {
+  border-color: transparent;
+  background: transparent;
+  color: inherit;
+  padding-inline: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+button.theme-button--primary:hover:not(:disabled) {
+  border-color: var(--section-button, var(--button-primary-background, #333));
+  background: var(--section-button, var(--button-primary-background, #333));
+  color: var(--section-button-text, var(--button-primary-text, #fff));
+}
+
+button.product-add.theme-button--secondary:hover:not(:disabled) {
+  border-color: var(--section-button, var(--button-primary-background, #333));
+  background: transparent;
+  color: var(--section-button, var(--button-primary-background, #333));
+}
+
+button.product-add.theme-button--tertiary:hover:not(:disabled) {
+  border-color: transparent;
+  background: transparent;
+  color: inherit;
+}
+
 /** Section layout utilities */
 
 /**

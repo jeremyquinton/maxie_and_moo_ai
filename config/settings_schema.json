@@ -1,7 +1,7 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Skeleton",
+    "theme_name": "Maxie and Moo",
     "theme_version": "0.1.0",
     "theme_author": "Shopify",
     "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
@@ -79,6 +79,18 @@
           "on_secondary_button": "link",
           "secondary_button_border": "link"
         }
+      },
+      {
+        "type": "color",
+        "id": "primary_button_color",
+        "default": "#333333",
+        "label": "t:labels.primary_button_color"
+      },
+      {
+        "type": "color",
+        "id": "primary_button_text_color",
+        "default": "#FFFFFF",
+        "label": "t:labels.primary_button_text_color"
       },
       {
         "type": "color",

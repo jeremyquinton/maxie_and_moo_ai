@@ -1,0 +1,317 @@
+<section
+  class="image-with-text full-width image-with-text--image-{{ section.settings.image_position }}"
+  style="--image-with-text-background: {{ section.settings.background_color }}; --image-with-text-foreground: {{ section.settings.text_color }}"
+  aria-labelledby="ImageWithTextHeading-{{ section.id }}"
+>
+  <div class="image-with-text__media">
+    {% if section.settings.image != blank %}
+      {{ section.settings.image | image_url: width: 1800 | image_tag: class: 'image-with-text__image', widths: '480, 640, 800, 1000, 1200, 1500, 1800', sizes: '(min-width: 1000px) 55vw, 100vw', loading: 'lazy', alt: section.settings.image.alt | default: section.settings.heading }}
+    {% else %}
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'image-with-text__image image-with-text__placeholder' }}
+    {% endif %}
+  </div>
+
+  <div class="image-with-text__content">
+    <div class="image-with-text__content-inner">
+      {% if section.settings.eyebrow != blank %}
+        <p class="image-with-text__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h2 class="image-with-text__heading" id="ImageWithTextHeading-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+      {% endif %}
+
+      {% if section.settings.description != blank %}
+        <div class="image-with-text__description rte">{{ section.settings.description }}</div>
+      {% endif %}
+
+      {% if section.settings.details != blank %}
+        <div class="image-with-text__details rte">{{ section.settings.details }}</div>
+      {% endif %}
+
+      {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+        <a class="image-with-text__button theme-button--{{ section.settings.button_style | default: 'primary' }}" href="{{ section.settings.button_link }}">
+          {{ section.settings.button_label | escape }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .image-with-text {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    grid-template-areas: 'media content';
+    align-items: stretch;
+    gap: clamp(24px, 3vw, 48px);
+    padding: 24px clamp(16px, 2.5vw, 36px);
+    background: var(--section-background, var(--image-with-text-background, #f3efe9));
+    color: var(--section-foreground, var(--image-with-text-foreground, #754f3d));
+  }
+
+  .image-with-text--image-right {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    grid-template-areas: 'content media';
+  }
+
+  .image-with-text__media {
+    position: relative;
+    grid-area: media;
+    min-width: 0;
+    height: clamp(420px, 42vw, 640px);
+    overflow: hidden;
+    border-radius: 6px;
+    background: #e8e8e1;
+  }
+
+  .image-with-text__image {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .image-with-text__content {
+    display: flex;
+    grid-area: content;
+    min-width: 0;
+    align-items: flex-start;
+    justify-content: center;
+    padding: clamp(20px, 3vw, 48px);
+  }
+
+  .image-with-text__content-inner {
+    width: min(100%, 560px);
+    margin-block: auto;
+  }
+
+  .image-with-text__eyebrow {
+    margin: 0 0 28px;
+    color: var(--section-foreground, #754f3d);
+    font-size: var(--font-size-base, 14px);
+    font-weight: 500;
+    letter-spacing: var(--letter-spacing-base, 1.3px);
+    text-transform: uppercase;
+  }
+
+  .image-with-text__heading {
+    max-width: 15ch;
+    margin: 0 0 24px;
+    color: inherit;
+    font-family: var(--font-primary--family);
+    font-size: clamp(30px, 3vw, 42px);
+    font-weight: 500;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .image-with-text__description,
+  .image-with-text__details {
+    max-width: 48ch;
+    color: var(--section-foreground, #754f3d);
+    font-size: var(--font-size-base, 14px);
+    line-height: 1.7;
+  }
+
+  .image-with-text__details {
+    margin-block-start: 34px;
+  }
+
+  .image-with-text__description > :first-child,
+  .image-with-text__details > :first-child {
+    margin-block-start: 0;
+  }
+
+  .image-with-text__description > :last-child,
+  .image-with-text__details > :last-child {
+    margin-block-end: 0;
+  }
+
+  .image-with-text__button {
+    display: inline-flex;
+    min-height: 48px;
+    max-width: 100%;
+    align-items: center;
+    justify-content: center;
+    margin-block-start: 38px;
+    padding: 12px 30px;
+    border-radius: 8px;
+    background: var(--section-button, #a9692f);
+    color: var(--section-button-text, #fff);
+    font-size: var(--font-size-base, 14px);
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+    transition: filter 160ms ease;
+  }
+
+  .image-with-text__button:hover {
+    filter: brightness(0.94);
+  }
+
+  .image-with-text__button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 749px) {
+    .image-with-text,
+    .image-with-text--image-right {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        'media'
+        'content';
+      gap: 0;
+      padding: 16px;
+    }
+
+    .image-with-text__media {
+      height: auto;
+      aspect-ratio: 4 / 3;
+    }
+
+    .image-with-text__content {
+      padding: 28px 8px 20px;
+    }
+
+    .image-with-text__eyebrow {
+      margin-block-end: 18px;
+    }
+
+    .image-with-text__heading {
+      margin-block-end: 18px;
+      font-size: 32px;
+    }
+
+    .image-with-text__details {
+      margin-block-start: 24px;
+    }
+
+    .image-with-text__button {
+      margin-block-start: 26px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .image-with-text__button {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% render 'section-color-scheme', section: section %}
+
+{% render 'section-spacing', section: section %}
+
+{% schema %}
+{
+  "name": "t:general.image_with_text",
+  "settings": [
+    {
+      "type": "range",
+      "id": "section_space_above",
+      "label": "t:labels.section_space_above",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "section_space_below",
+      "label": "t:labels.section_space_below",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "t:labels.background",
+      "default": "#D4A04E"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:labels.foreground",
+      "default": "#754F3D"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.image_with_text.settings.image.label"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "t:sections.image_with_text.settings.image_position.label",
+      "options": [
+        { "value": "left", "label": "t:options.image_position.left" },
+        { "value": "right", "label": "t:options.image_position.right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "t:sections.image_with_text.settings.eyebrow.label",
+      "default": "Made for little moments"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:sections.image_with_text.settings.heading.label",
+      "default": "A softer place to play."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "t:sections.image_with_text.settings.description.label",
+      "default": "<p>Comfortable, thoughtful essentials designed for little ones and the homes they grow up in.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "details",
+      "label": "t:sections.image_with_text.settings.details.label",
+      "default": "<p>Easy to clean. Made for everyday play.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:sections.image_with_text.settings.button_label.label",
+      "default": "Shop playmats"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:sections.image_with_text.settings.button_link.label"
+    }
+    ,
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "t:labels.button_style",
+      "options": [
+        { "value": "primary", "label": "t:options.button_style.primary" },
+        { "value": "secondary", "label": "t:options.button_style.secondary" },
+        { "value": "tertiary", "label": "t:options.button_style.tertiary" }
+      ],
+      "default": "primary"
+    }
+  ],
+  "presets": [
+    { "name": "t:general.image_with_text" }
+  ]
+}
+{% endschema %}

@@ -164,3 +164,4 @@ Visit our [CONTRIBUTING.md](./CONTRIBUTING.md) for a detailed overview of our pr
 ## License
 
 Skeleton Theme is open-sourced under the [MIT](./LICENSE.md) License.
+

@@ -25,7 +25,7 @@
 
     <div class="featured-collection__grid featured-collection__grid--columns-{{ section.settings.columns_desktop }} featured-collection__grid--mobile-columns-{{ section.settings.columns_mobile | default: '1' }}" tabindex="0" aria-label="{{ featured_heading | escape }}">
       {%- for product in featured_collection.products limit: section.settings.products_to_show -%}
-        {% render 'product-card', product: product %}
+        {% render 'product-card', product: product, heading_tag: 'h2', show_from_price: true, card_title: product.metafields.custom.featured_collection_title.value %}
       {%- else -%}
         {%- if request.design_mode -%}<p>{{ 'products.featured_collection.empty' | t }}</p>{%- endif -%}
       {%- endfor -%}
@@ -187,10 +187,32 @@
 
 {% render 'section-color-scheme', section: section %}
 
+{% render 'section-spacing', section: section %}
+
 {% schema %}
 {
   "name": "t:general.featured_collection",
   "settings": [
+    {
+      "type": "range",
+      "id": "section_space_above",
+      "label": "t:labels.section_space_above",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "section_space_below",
+      "label": "t:labels.section_space_below",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
     { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
     {

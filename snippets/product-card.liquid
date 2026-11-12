@@ -4,6 +4,7 @@
   @param {product} product - The product to display
   @param {string} [heading_tag] - Heading element, defaults to h3
   @param {boolean} [show_from_price] - Show only a compact minimum price without compare-at pricing
+  @param {string} [card_title] - Optional alternate title to display on the card
 
   @example
   {% render 'product-card', product: product %}
@@ -12,6 +13,7 @@
 {% liquid
   assign preview_image = product.images[1]
   assign card_heading_tag = heading_tag | default: 'h3'
+  assign card_title = card_title | default: product.title
 %}
 {%- capture card_price -%}
   {%- if show_from_price -%}
@@ -53,13 +55,12 @@
     <script type="application/json" data-card-gallery-data>{{ card_gallery_json }}</script>
     <div class="featured-collection__gallery-controls" data-card-gallery-controls{% if product.images.size < 2 %} hidden{% endif %}>
       <button type="button" data-card-gallery-step="-1" aria-label="{{ 'products.product.previous_image' | t }}">&#8592;</button>
-      <span data-card-gallery-count data-format="{{ 'products.product.gallery_position' | t: current: '__CURRENT__', total: '__TOTAL__' | escape }}" aria-live="polite">{{ 'products.product.gallery_position' | t: current: 1, total: product.images.size }}</span>
       <button type="button" data-card-gallery-step="1" aria-label="{{ 'products.product.next_image' | t }}">&#8594;</button>
     </div>
   </div>
   <div class="featured-collection__meta">
     <div class="featured-collection__details">
-      <{{ card_heading_tag }}><a href="{{ product.url }}" data-card-title-link>{{ product.title | escape }}</a></{{ card_heading_tag }}>
+      <{{ card_heading_tag }}><a href="{{ product.url }}" data-card-title-link>{{ card_title | escape }}</a></{{ card_heading_tag }}>
       <p class="featured-collection__price">
         <span data-card-displayed-price>{{ card_price | strip }}</span>
         {% unless show_from_price %}
@@ -113,7 +114,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-inline: 10px;
+    padding-inline: 0;
     opacity: 0;
     pointer-events: none;
     visibility: hidden;
@@ -133,31 +134,22 @@
   .featured-collection__gallery-controls button {
     display: grid;
     width: 36px;
-    aspect-ratio: 1;
+    height: 40px;
     place-items: center;
-    border: 1px solid rgb(32 33 30 / 14%);
-    border-radius: 50%;
-    background: rgb(255 255 255 / 92%);
-    color: #20211e;
+    border: 1px solid rgb(32 33 30 / 16%);
+    border-radius: 0;
+    background: rgb(255 255 255 / 84%);
+    color: #5c5c5c;
     font: inherit;
     font-size: 17px;
     cursor: pointer;
     pointer-events: auto;
+    box-shadow: 0 1px 5px rgb(0 0 0 / 12%);
   }
 
   .featured-collection__gallery-controls button:hover {
     background: #fff;
-  }
-
-  .featured-collection__gallery-controls span {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 4px 7px;
-    background: rgb(255 255 255 / 90%);
     color: #20211e;
-    font-size: var(--font-size-base, 14px);
   }
 
   .featured-collection__placeholder-fallback {

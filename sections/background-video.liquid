@@ -19,7 +19,7 @@
       <h2 class="background-video__heading">{{ section.settings.heading | escape }}</h2>
     {%- endif -%}
     {%- if section.settings.button_label != blank -%}
-      <a class="background-video__button" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">
+      <a class="background-video__button theme-button--{{ section.settings.button_style | default: 'primary' }}" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">
         {{ section.settings.button_label | escape }}
       </a>
     {%- endif -%}
@@ -150,16 +150,39 @@
 
 {% render 'section-color-scheme', section: section %}
 
+{% render 'section-spacing', section: section %}
+
 {% schema %}
 {
   "name": "t:general.background_video",
   "settings": [
+    {
+      "type": "range",
+      "id": "section_space_above",
+      "label": "t:labels.section_space_above",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "section_space_below",
+      "label": "t:labels.section_space_below",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
     { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
     {
       "type": "video",
       "id": "video",
-      "label": "t:sections.background_video.settings.video.label"
+      "label": "t:sections.background_video.settings.video.label",
+      "info": "t:sections.background_video.settings.video.info"
     },
     {
       "type": "text",
@@ -183,6 +206,17 @@
       "type": "url",
       "id": "button_link",
       "label": "t:sections.background_video.settings.button_link.label"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "t:labels.button_style",
+      "options": [
+        { "value": "primary", "label": "t:options.button_style.primary" },
+        { "value": "secondary", "label": "t:options.button_style.secondary" },
+        { "value": "tertiary", "label": "t:options.button_style.tertiary" }
+      ],
+      "default": "primary"
     },
     {
       "type": "range",
