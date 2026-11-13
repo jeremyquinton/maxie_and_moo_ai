@@ -1,8 +1,21 @@
 {
+  "cart": {
+    "button_colors": "Button colors",
+    "customize_button_colors": "Customize button colors",
+    "checkout_button_color": "Checkout button background",
+    "checkout_button_text_color": "Checkout button text",
+    "update_button_color": "Update cart button background",
+    "update_button_text_color": "Update cart button text and border",
+    "continue_button_color": "Continue shopping button background (empty cart)",
+    "continue_button_text_color": "Continue shopping button text (empty cart)"
+  },
   "products": {
     "product": {
       "settings": {
         "add_to_cart_button_style": "Add to cart button style",
+        "add_to_cart_button_color": "Add to cart button color",
+        "add_to_cart_button_text_color": "Add to cart button text color",
+        "customize_add_to_cart_colors": "Customize Add to cart colors",
         "key_details": "Key details",
         "returns_note": "Returns details",
         "shipping_note": "Shipping details",
@@ -53,6 +66,7 @@
     "featured_collection": "Featured collection",
     "group": "Group",
     "header": "Header",
+    "heading_with_text": "Heading with text",
     "home_hero": "Homepage hero",
     "image_tiles": "Image tiles",
     "image_with_text": "Image with text",
@@ -75,6 +89,11 @@
     "typography": "Typography"
   },
   "sections": {
+    "heading_with_text": {
+      "body": "Body",
+      "default_heading": "Expandable EVA foam baby playmat - stylish, soft & practical",
+      "default_body": "<p>At Maxie & Moo, we believe you shouldn't have to choose between style and practicality. That's why we've created playmats that are as chic as your home and as soft as your baby deserves.</p><p>Thoughtfully designed, easy to clean, and loved by moms across South Africa. We're here to make your little one's play space just as beautiful as the rest of your world.</p>"
+    },
     "benefits_strip": {
       "blocks": {
         "benefit": {
@@ -109,22 +128,11 @@
       }
     },
     "header": {
-      "blocks": {
-        "menu_column": {
-          "name": "Menu column",
-          "settings": {
-            "parent_menu": {
-              "label": "Parent menu item",
-              "info": "Enter the exact top-level item this column should appear under. Leave blank to use the default menu-column trigger."
-            }
-          }
-        }
-      },
       "settings": {
-        "menu_columns_trigger": {
-          "label": "Top-level dropdown for columns",
-          "info": "Enter the title of a top-level menu item, such as PLAYMATS. Its dropdown will show the menu columns below."
-        },
+        "menu_label": { "label": "Header label" },
+        "menu_column_1": { "label": "First menu column" },
+        "menu_column_2": { "label": "Second menu column" },
+        "menu_column_3": { "label": "Third menu column" },
         "sticky_threshold": { "label": "Stick header after scrolling" }
       }
     },
@@ -143,6 +151,16 @@
           "info": "Shown over the homepage image before scrolling. The logo image is used after scrolling and on other pages."
         },
         "width": { "label": "Logo width" }
+      }
+    },
+    "footer": {
+      "settings": {
+        "background_color": { "label": "Background color" },
+        "customize_colors": {
+          "label": "Customize footer colors",
+          "info": "When enabled, these colors override the selected footer color scheme."
+        },
+        "foreground_color": { "label": "Foreground color" }
       }
     },
     "announcement": {
@@ -180,6 +198,9 @@
         "auto_rotate": { "label": "Rotate images automatically" },
         "button_label": { "label": "Button label" },
         "button_link": { "label": "Button link" },
+        "button_color": { "label": "Button color" },
+        "button_text_color": { "label": "Button text color" },
+        "customize_button_colors": { "label": "Customize button colors" },
         "desktop_height": { "label": "Desktop height" },
         "desktop_image": {
           "label": "Desktop image",

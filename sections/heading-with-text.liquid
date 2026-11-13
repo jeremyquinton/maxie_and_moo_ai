@@ -1,0 +1,146 @@
+{% if section.settings.heading != blank or section.settings.body != blank %}
+  <section
+    class="heading-with-text full-width"
+    style="--heading-with-text-background: {{ section.settings.background_color }}; --heading-with-text-foreground: {{ section.settings.text_color }}"
+    {% if section.settings.heading != blank %}
+      aria-labelledby="HeadingWithText-{{ section.id }}"
+    {% endif %}
+  >
+    <div class="heading-with-text__inner">
+      {% if section.settings.heading != blank %}
+        <h2 class="heading-with-text__heading" id="HeadingWithText-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+      {% endif %}
+      {% if section.settings.body != blank %}
+        <div class="heading-with-text__body rte">{{ section.settings.body }}</div>
+      {% endif %}
+    </div>
+  </section>
+{% endif %}
+
+{% stylesheet %}
+  .heading-with-text {
+    padding: clamp(32px, 5vw, 64px) var(--page-margin, 20px);
+    background: var(--section-background, var(--heading-with-text-background, #f5f5f5));
+    color: var(--section-foreground, var(--heading-with-text-foreground, #20211e));
+    text-align: center;
+  }
+
+  .heading-with-text__inner {
+    display: grid;
+    width: min(100%, 1200px);
+    gap: clamp(24px, 3vw, 40px);
+    margin-inline: auto;
+  }
+
+  .heading-with-text__heading {
+    width: min(100%, 1100px);
+    margin: 0 auto;
+    font-family: var(--font-primary--family);
+    font-size: clamp(30px, 4vw, 56px);
+    font-weight: 400;
+    line-height: 1.3;
+    text-wrap: balance;
+  }
+
+  .heading-with-text__body {
+    width: min(100%, 1100px);
+    margin-inline: auto;
+    font-size: clamp(16px, 1.3vw, 22px);
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+  }
+
+  .heading-with-text__body > * + * {
+    margin-block-start: 1.5em;
+  }
+
+  .heading-with-text__body a {
+    color: var(--section-link, inherit);
+    text-underline-offset: 4px;
+  }
+
+  .heading-with-text__body a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+
+  .heading-with-text__body ul,
+  .heading-with-text__body ol {
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
+    padding-inline-start: 1.5em;
+    text-align: start;
+  }
+{% endstylesheet %}
+
+{% render 'section-color-scheme', section: section %}
+{% render 'section-spacing', section: section %}
+
+{% schema %}
+{
+  "name": "t:general.heading_with_text",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:labels.heading",
+      "default": "t:sections.heading_with_text.default_heading"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "t:sections.heading_with_text.body",
+      "default": "t:sections.heading_with_text.default_body"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "t:labels.background",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:labels.foreground",
+      "default": "#20211E"
+    },
+    {
+      "type": "range",
+      "id": "section_space_above",
+      "label": "t:labels.section_space_above",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "section_space_below",
+      "label": "t:labels.section_space_below",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "use_color_scheme",
+      "label": "t:labels.use_color_scheme",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ section.settings.use_color_scheme }}"
+    }
+  ],
+  "presets": [
+    { "name": "t:general.heading_with_text" }
+  ]
+}
+{% endschema %}

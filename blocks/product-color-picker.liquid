@@ -36,7 +36,8 @@
 %}
 
 <div class="product-colors" {{ block.shopify_attributes }}>
-  <div class="product-colors__swatches" role="group" aria-label="{{ 'products.product.color' | t }}">
+  <h2 class="product-colors__heading" id="ProductColorHeading-{{ block.id }}">{{ 'products.product.select_color' | t }}</h2>
+  <div class="product-colors__swatches" role="group" aria-labelledby="ProductColorHeading-{{ block.id }}">
     {% for color_product in color_products %}
       {% render 'product-color-swatch', color_product: color_product, current_product: product, has_selected_variant: has_selected_variant, selected_size: selected_size, use_product_primary_image: true %}
     {% endfor %}
@@ -50,6 +51,12 @@
 {% stylesheet %}
   .product-colors {
     margin-block-end: 20px;
+  }
+
+  .product-colors__heading {
+    margin: 0 0 10px;
+    font-size: var(--font-size-base, 14px);
+    font-weight: 600;
   }
 
   .product-colors__swatches {

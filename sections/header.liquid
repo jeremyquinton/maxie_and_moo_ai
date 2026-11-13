@@ -1,3 +1,10 @@
+{% liquid
+  assign has_header_menu = false
+  if section.settings.menu_column_1 != blank or section.settings.menu_column_2 != blank or section.settings.menu_column_3 != blank
+    assign has_header_menu = true
+  endif
+%}
+
 <header class="site-header-nav full-width" data-site-header-nav data-sticky-threshold="{{ section.settings.sticky_threshold }}">
   <button
     class="header__menu-toggle"
@@ -13,101 +20,11 @@
     <span class="header__menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
   </button>
 
-  <nav class="header__menu" id="PrimaryMenu-{{ section.id }}" aria-label="{{ 'sections.header.navigation' | t | escape }}" data-primary-menu>
-    {% for link in section.settings.menu.links %}
-      {% liquid
-        assign show_menu_columns = false
-        assign current_menu_title = link.title | downcase | strip
-        assign menu_columns_title = section.settings.menu_columns_trigger | downcase | strip
-        for block in section.blocks
-          if block.settings.menu != blank
-            assign menu_column_trigger = block.settings.trigger | downcase | strip
-            if menu_column_trigger == current_menu_title
-              assign show_menu_columns = true
-            elsif menu_column_trigger == blank
-              if current_menu_title == menu_columns_title
-                assign show_menu_columns = true
-              endif
-            endif
-          endif
-        endfor
-      %}
-      {% if link.links != blank or show_menu_columns %}
-        <details class="header__menu-item" data-menu-dropdown>
-          <summary class="header__menu-trigger">
-            {{ link.title | escape }}
-            <span class="header__menu-chevron" aria-hidden="true"></span>
-          </summary>
-          <div class="header__submenu">
-            {% if show_menu_columns %}
-              <a class="header__submenu-all" href="{{ link.url }}">{{ 'sections.header.shop_all' | t: title: link.title | escape }}</a>
-              <div class="header__submenu-columns">
-                {% for block in section.blocks %}
-                  {% if block.settings.menu != blank %}
-                    {% assign menu_column_trigger = block.settings.trigger | downcase | strip %}
-                    {% assign show_menu_column = false %}
-                    {% if menu_column_trigger == current_menu_title %}
-                      {% assign show_menu_column = true %}
-                    {% elsif menu_column_trigger == blank %}
-                      {% if current_menu_title == menu_columns_title %}
-                        {% assign show_menu_column = true %}
-                      {% endif %}
-                    {% endif %}
-                    {% if show_menu_column %}
-                      {% assign menu_column_heading = block.settings.heading | default: block.settings.menu.title %}
-                      <div class="header__submenu-column" {{ block.shopify_attributes }}>
-                        {% if menu_column_heading != blank %}
-                          <h2 class="header__submenu-column-heading">{{ menu_column_heading | escape }}</h2>
-                        {% endif %}
-                        <ul class="header__submenu-list">
-                          {% for column_link in block.settings.menu.links %}
-                            <li>
-                              <a href="{{ column_link.url | escape }}">{{ column_link.title | escape }}</a>
-                              {% if column_link.links != blank %}
-                                <ul class="header__submenu-list header__submenu-list--nested">
-                                  {% for nested_link in column_link.links %}
-                                    <li><a href="{{ nested_link.url | escape }}">{{ nested_link.title | escape }}</a></li>
-                                  {% endfor %}
-                                </ul>
-                              {% endif %}
-                            </li>
-                          {% endfor %}
-                        </ul>
-                      </div>
-                    {% endif %}
-                  {% endif %}
-                {% endfor %}
-              </div>
-            {% else %}
-              <a class="header__submenu-all" href="{{ link.url }}">{{ 'sections.header.shop_all' | t: title: link.title | escape }}</a>
-              <ul class="header__submenu-list">
-                {% for childlink in link.links %}
-                  <li>
-                    {% if childlink.links != blank %}
-                      <div class="header__submenu-group">
-                        <a class="header__submenu-trigger" href="{{ childlink.url }}">
-                          {{ childlink.title | escape }}
-                        </a>
-                        <ul class="header__submenu-list header__submenu-list--nested">
-                          {% for grandchildlink in childlink.links %}
-                            <li><a href="{{ grandchildlink.url }}">{{ grandchildlink.title | escape }}</a></li>
-                          {% endfor %}
-                        </ul>
-                      </div>
-                    {% else %}
-                      <a href="{{ childlink.url }}">{{ childlink.title | escape }}</a>
-                    {% endif %}
-                  </li>
-                {% endfor %}
-              </ul>
-            {% endif %}
-          </div>
-        </details>
-      {% else %}
-        <a href="{{ link.url }}">{{ link.title | escape }}</a>
-      {% endif %}
-    {% endfor %}
-  </nav>
+  {% if has_header_menu and section.settings.menu_label != blank %}
+    <nav class="header__menu header__menu-groups" id="PrimaryMenu-{{ section.id }}" aria-label="{{ 'sections.header.navigation' | t | escape }}" data-primary-menu>
+      {% render 'header-menu-group', label: section.settings.menu_label, menu_1: section.settings.menu_column_1, menu_2: section.settings.menu_column_2, menu_3: section.settings.menu_column_3 %}
+    </nav>
+  {% endif %}
 
   <div class="header__icons">
     {% if shop.customer_accounts_enabled %}
@@ -137,127 +54,9 @@
       </div>
 
       <nav class="header__mobile-navigation" aria-label="{{ 'sections.header.navigation' | t | escape }}">
-        <ul class="header__mobile-list" data-menu-root aria-hidden="false">
-          {% for link in section.settings.menu.links %}
-            {% liquid
-              assign show_menu_columns = false
-              assign current_menu_title = link.title | downcase | strip
-              assign menu_columns_title = section.settings.menu_columns_trigger | downcase | strip
-              for block in section.blocks
-                if block.settings.menu != blank
-                  assign menu_column_trigger = block.settings.trigger | downcase | strip
-                  if menu_column_trigger == current_menu_title
-                    assign show_menu_columns = true
-                  elsif menu_column_trigger == blank
-                    if current_menu_title == menu_columns_title
-                      assign show_menu_columns = true
-                    endif
-                  endif
-                endif
-              endfor
-            %}
-            <li class="header__mobile-item">
-              {% if link.links != blank or show_menu_columns %}
-                <button
-                  class="header__mobile-open"
-                  type="button"
-                  aria-label="{{ 'sections.header.show_links' | t: title: link.title | escape }}"
-                  aria-expanded="false"
-                  aria-controls="MobileMenuPanel-{{ section.id }}-{{ forloop.index }}"
-                  data-menu-open
-                  data-panel-id="MobileMenuPanel-{{ section.id }}-{{ forloop.index }}"
-                  data-panel-title="{{ link.title | escape }}"
-                >
-                  <span>{{ link.title | escape }}</span>
-                  <span class="header__mobile-chevron" aria-hidden="true"></span>
-                </button>
-              {% else %}
-                <a href="{{ link.url }}">{{ link.title | escape }}</a>
-              {% endif %}
-            </li>
-          {% endfor %}
-        </ul>
-
-        {% for link in section.settings.menu.links %}
-          {% liquid
-            assign show_menu_columns = false
-            assign current_menu_title = link.title | downcase | strip
-            assign menu_columns_title = section.settings.menu_columns_trigger | downcase | strip
-            for block in section.blocks
-              if block.settings.menu != blank
-                assign menu_column_trigger = block.settings.trigger | downcase | strip
-                if menu_column_trigger == current_menu_title
-                  assign show_menu_columns = true
-                elsif menu_column_trigger == blank
-                  if current_menu_title == menu_columns_title
-                    assign show_menu_columns = true
-                  endif
-                endif
-              endif
-            endfor
-          %}
-          {% if link.links != blank or show_menu_columns %}
-            <div class="header__mobile-list" id="MobileMenuPanel-{{ section.id }}-{{ forloop.index }}" data-menu-panel data-panel-title="{{ link.title | escape }}" aria-hidden="true" inert>
-              <a class="header__mobile-shop-all" href="{{ link.url }}">{{ 'sections.header.shop_all' | t: title: link.title | escape }}</a>
-              {% if show_menu_columns %}
-                {% for block in section.blocks %}
-                  {% if block.settings.menu != blank %}
-                    {% assign menu_column_trigger = block.settings.trigger | downcase | strip %}
-                    {% assign show_menu_column = false %}
-                    {% if menu_column_trigger == current_menu_title %}
-                      {% assign show_menu_column = true %}
-                    {% elsif menu_column_trigger == blank %}
-                      {% if current_menu_title == menu_columns_title %}
-                        {% assign show_menu_column = true %}
-                      {% endif %}
-                    {% endif %}
-                    {% if show_menu_column %}
-                      {% assign menu_column_heading = block.settings.heading | default: block.settings.menu.title %}
-                      <div class="header__mobile-menu-column">
-                        {% if menu_column_heading != blank %}
-                          <h2 class="header__mobile-column-heading">{{ menu_column_heading | escape }}</h2>
-                        {% endif %}
-                        <ul class="header__mobile-column-list">
-                          {% for column_link in block.settings.menu.links %}
-                            <li>
-                              <a class="header__mobile-link" href="{{ column_link.url | escape }}">{{ column_link.title | escape }}</a>
-                              {% if column_link.links != blank %}
-                                <ul class="header__mobile-column-list header__mobile-column-list--nested">
-                                  {% for nested_link in column_link.links %}
-                                    <li><a class="header__mobile-link" href="{{ nested_link.url | escape }}">{{ nested_link.title | escape }}</a></li>
-                                  {% endfor %}
-                                </ul>
-                              {% endif %}
-                            </li>
-                          {% endfor %}
-                        </ul>
-                      </div>
-                    {% endif %}
-                  {% endif %}
-                {% endfor %}
-              {% else %}
-                {% for childlink in link.links %}
-                  {% if childlink.links != blank %}
-                    <details class="header__mobile-submenu">
-                      <summary>
-                        {{ childlink.title | escape }}
-                        <span class="header__mobile-chevron" aria-hidden="true"></span>
-                      </summary>
-                      <ul>
-                        <li><a href="{{ childlink.url }}">{{ 'sections.header.shop_all' | t: title: childlink.title | escape }}</a></li>
-                        {% for grandchild_link in childlink.links %}
-                          <li><a href="{{ grandchild_link.url }}">{{ grandchild_link.title | escape }}</a></li>
-                        {% endfor %}
-                      </ul>
-                    </details>
-                  {% else %}
-                    <a class="header__mobile-link" href="{{ childlink.url }}">{{ childlink.title | escape }}</a>
-                  {% endif %}
-                {% endfor %}
-              {% endif %}
-            </div>
-          {% endif %}
-        {% endfor %}
+        {% if has_header_menu and section.settings.menu_label != blank %}
+          {% render 'header-mobile-menu-group', menu_1: section.settings.menu_column_1, menu_2: section.settings.menu_column_2, menu_3: section.settings.menu_column_3, section_id: section.id %}
+        {% endif %}
       </nav>
     </div>
   </div>
@@ -299,6 +98,10 @@
   .site-header-nav .header__icons {
     display: flex;
     gap: 1rem;
+  }
+
+  .site-header-nav .header__icons svg {
+    width: 1.5rem;
   }
 
   .site-header-nav .header__menu-toggle {
@@ -560,7 +363,6 @@
 
     .site-header-nav.has-mobile-menu {
       background: transparent;
-      pointer-events: none;
     }
 
     .site-header-shell--overlay.is-sticky .site-header-nav.has-mobile-menu,
@@ -836,11 +638,6 @@
       gap: 12px;
     }
 
-    .site-header-shell--overlay .site-header-nav .header__icons svg,
-    .site-header-shell--solid .site-header-nav .header__icons svg {
-      width: 1.5rem;
-    }
-
     .site-header-shell--overlay.is-sticky .site-header-nav,
     .site-header-shell--solid.is-sticky .site-header-nav {
       top: 0;
@@ -886,13 +683,16 @@
       const panels = Array.from(drawer.querySelectorAll('[data-menu-panel]'));
       const defaultTitle = menuTitle.textContent;
       let previousDocumentOverflow = '';
-      let activeTrigger = null;
+      const viewStack = [];
+      let currentView = rootView;
 
-      const showRootView = (returnFocus = false) => {
+      const showRootView = () => {
         drawer.removeAttribute('data-menu-submenu-open');
+        viewStack.length = 0;
+        currentView = rootView;
         rootView.inert = false;
         rootView.setAttribute('aria-hidden', 'false');
-        rootView.querySelectorAll('[data-menu-open]').forEach((button) => {
+        drawer.querySelectorAll('[data-menu-open]').forEach((button) => {
           button.setAttribute('aria-expanded', 'false');
         });
         panels.forEach((panel) => {
@@ -902,8 +702,28 @@
         });
         backButton.hidden = true;
         menuTitle.textContent = defaultTitle;
-        if (returnFocus && activeTrigger) activeTrigger.focus({ preventScroll: true });
-        activeTrigger = null;
+      };
+
+      const showPreviousView = (returnFocus = false) => {
+        const previousView = viewStack.pop();
+        if (!previousView) {
+          showRootView();
+          return;
+        }
+
+        currentView.classList.remove('is-active');
+        currentView.inert = true;
+        currentView.setAttribute('aria-hidden', 'true');
+        previousView.trigger.setAttribute('aria-expanded', 'false');
+        currentView = previousView.view;
+        currentView.classList.toggle('is-active', currentView !== rootView);
+        currentView.inert = false;
+        currentView.setAttribute('aria-hidden', 'false');
+        if (currentView === rootView) drawer.removeAttribute('data-menu-submenu-open');
+        else drawer.setAttribute('data-menu-submenu-open', '');
+        backButton.hidden = viewStack.length === 0;
+        menuTitle.textContent = previousView.title;
+        if (returnFocus) previousView.trigger.focus({ preventScroll: true });
       };
 
       const closeMenu = (returnFocus = false) => {
@@ -977,33 +797,36 @@
       }, { signal: controller.signal });
       drawer.addEventListener('click', (event) => {
         if (event.target.closest('[data-drawer-close]')) {
-          closeMenu();
+          closeMenu(true);
           return;
         }
 
         if (event.target.closest('[data-menu-back]')) {
-          showRootView(true);
+          showPreviousView(true);
           return;
         }
 
         const openButton = event.target.closest('[data-menu-open]');
         if (openButton) {
           const targetPanel = drawer.querySelector(`#${CSS.escape(openButton.dataset.panelId)}`);
-          if (!targetPanel) return;
-          activeTrigger = openButton;
+          if (!targetPanel || targetPanel === currentView) return;
+          viewStack.push({
+            view: currentView,
+            title: menuTitle.textContent,
+            trigger: openButton,
+          });
           openButton.setAttribute('aria-expanded', 'true');
           drawer.setAttribute('data-menu-submenu-open', '');
-          rootView.inert = true;
-          rootView.setAttribute('aria-hidden', 'true');
-          panels.forEach((panel) => {
-            const isActive = panel === targetPanel;
-            panel.classList.toggle('is-active', isActive);
-            panel.inert = !isActive;
-            panel.setAttribute('aria-hidden', String(!isActive));
-          });
+          currentView.inert = true;
+          currentView.setAttribute('aria-hidden', 'true');
+          currentView.classList.remove('is-active');
+          currentView = targetPanel;
+          currentView.classList.add('is-active');
+          currentView.inert = false;
+          currentView.setAttribute('aria-hidden', 'false');
           backButton.hidden = false;
           menuTitle.textContent = openButton.dataset.panelTitle;
-          targetPanel.querySelector('a')?.focus({ preventScroll: true });
+          targetPanel.querySelector('a, [data-menu-open]')?.focus({ preventScroll: true });
           return;
         }
 
@@ -1023,7 +846,7 @@
         }
         closeDropdowns();
         if (!drawer.hidden) {
-          if (!backButton.hidden) showRootView(true);
+          if (!backButton.hidden) showPreviousView(true);
           else closeMenu(true);
         }
       }, { signal: controller.signal });
@@ -1077,31 +900,6 @@
 {% schema %}
 {
   "name": "t:general.header",
-  "blocks": [
-    {
-      "type": "menu_column",
-      "name": "t:sections.header.blocks.menu_column.name",
-      "settings": [
-        {
-          "type": "text",
-          "id": "trigger",
-          "label": "t:sections.header.blocks.menu_column.settings.parent_menu.label",
-          "info": "t:sections.header.blocks.menu_column.settings.parent_menu.info"
-        },
-        {
-          "type": "text",
-          "id": "heading",
-          "label": "t:labels.heading"
-        },
-        {
-          "type": "link_list",
-          "id": "menu",
-          "label": "t:labels.menu"
-        }
-      ]
-    }
-  ],
-  "max_blocks": 6,
   "settings": [
     {
       "type": "range",
@@ -1126,16 +924,25 @@
     { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
     {
-      "type": "link_list",
-      "id": "menu",
-      "label": "t:labels.menu"
+      "type": "text",
+      "id": "menu_label",
+      "label": "t:sections.header.settings.menu_label.label",
+      "default": "Shop"
     },
     {
-      "type": "text",
-      "id": "menu_columns_trigger",
-      "label": "t:sections.header.settings.menu_columns_trigger.label",
-      "info": "t:sections.header.settings.menu_columns_trigger.info",
-      "default": "PLAYMATS"
+      "type": "link_list",
+      "id": "menu_column_1",
+      "label": "t:sections.header.settings.menu_column_1.label"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_column_2",
+      "label": "t:sections.header.settings.menu_column_2.label"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_column_3",
+      "label": "t:sections.header.settings.menu_column_3.label"
     },
     {
       "type": "link_list",

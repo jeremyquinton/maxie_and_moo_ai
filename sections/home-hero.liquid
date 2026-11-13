@@ -17,7 +17,7 @@
 
 <section
   class="home-hero full-width home-hero--{{ section.settings.text_alignment }} home-hero--{{ section.settings.vertical_alignment }}{% if hero_slide_count > 1 %} home-hero--slideshow{% endif %}{% if hero_slide_count == 0 and has_legacy_image == false %} home-hero--without-image{% endif %}"
-  style="--home-hero-desktop-height: {{ section.settings.desktop_height }}px; --home-hero-mobile-height: {{ section.settings.mobile_height }}px; --home-hero-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }}; --home-hero-overlay-color: {{ section.settings.overlay_color }}; --home-hero-text-color: {{ section.settings.text_color }}"
+  style="--home-hero-desktop-height: {{ section.settings.desktop_height }}px; --home-hero-mobile-height: {{ section.settings.mobile_height }}px; --home-hero-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }}; --home-hero-overlay-color: {{ section.settings.overlay_color }}; --home-hero-text-color: {{ section.settings.text_color }}{% if section.settings.customize_button_colors %}; --button-custom-color: {{ section.settings.button_color }}; --button-custom-text-color: {{ section.settings.button_text_color }}{% endif %}"
 >
   {%- if hero_slide_count > 0 -%}
     <div
@@ -580,6 +580,26 @@
         { "value": "tertiary", "label": "t:options.button_style.tertiary" }
       ],
       "default": "primary"
+    },
+    {
+      "type": "checkbox",
+      "id": "customize_button_colors",
+      "label": "t:sections.home_hero.settings.customize_button_colors.label",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "t:sections.home_hero.settings.button_color.label",
+      "default": "#D4A04E",
+      "visible_if": "{{ section.settings.customize_button_colors }}"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "t:sections.home_hero.settings.button_text_color.label",
+      "default": "#FFFFFF",
+      "visible_if": "{{ section.settings.customize_button_colors }}"
     },
     {
       "type": "range",

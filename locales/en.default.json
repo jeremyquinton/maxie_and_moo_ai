@@ -20,14 +20,25 @@
     "checkout": "Checkout",
     "continue_shopping": "Continue shopping",
     "empty": "Your cart is empty",
+    "empty_description": "Find a softer place for your little one to play. Explore our collection and choose something you'll love.",
     "error": "We couldn't update your cart. Please try again.",
     "loading": "Loading your cart...",
     "title": "Cart",
+    "item_count": {
+      "one": "{{ count }} item",
+      "other": "{{ count }} items"
+    },
+    "order_summary": "Order summary",
+    "product": "Product",
+    "quantity_for": "Quantity for {{ title }}",
+    "remove_item": "Remove {{ title }}",
+    "total": "Total",
     "subtotal": "Subtotal",
     "updating": "Updating cart...",
     "update": "Update",
+    "update_cart": "Update cart",
     "remove": "Remove",
-    "shipping_note": "Taxes and shipping calculated at checkout.",
+    "shipping_note": "Shipping calculated at checkout.",
     "view_cart": "View cart"
   },
   "customers": {
@@ -61,6 +72,7 @@
     "header": {
       "back": "Back",
       "close_menu": "Close menu",
+      "menu_column_fallback": "Menu {{ number }}",
       "menu": "Menu",
       "navigation": "Main navigation",
       "open_menu": "Open menu",
@@ -113,6 +125,7 @@
       "returns": "Returns",
       "sale": "Sale",
       "select_available_variant": "This option is unavailable. Please choose another.",
+      "select_color": "Select colour",
       "shipping": "Shipping",
       "size_chart": "Size chart guide",
       "sku": "SKU:",

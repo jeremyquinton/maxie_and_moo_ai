@@ -140,6 +140,18 @@
 
 {% render 'section-spacing', section: section %}
 
+{% if section.settings.customize_footer_colors %}
+  {% style %}
+    #shopify-section-{{ section.id }} {
+      --section-background: {{ section.settings.footer_background_color }};
+      --section-foreground: {{ section.settings.footer_foreground_color }};
+      --section-link: {{ section.settings.footer_foreground_color }};
+      background: var(--section-background);
+      color: var(--section-foreground);
+    }
+  {% endstyle %}
+{% endif %}
+
 {% schema %}
 {
   "name": "t:general.footer",
@@ -184,6 +196,27 @@
     },
     { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
+    {
+      "type": "checkbox",
+      "id": "customize_footer_colors",
+      "label": "t:sections.footer.settings.customize_colors.label",
+      "info": "t:sections.footer.settings.customize_colors.info",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "footer_background_color",
+      "label": "t:sections.footer.settings.background_color.label",
+      "default": "#FFFFFF",
+      "visible_if": "{{ section.settings.customize_footer_colors }}"
+    },
+    {
+      "type": "color",
+      "id": "footer_foreground_color",
+      "label": "t:sections.footer.settings.foreground_color.label",
+      "default": "#333333",
+      "visible_if": "{{ section.settings.customize_footer_colors }}"
+    },
     {
       "type": "link_list",
       "id": "menu",

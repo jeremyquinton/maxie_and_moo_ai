@@ -42,6 +42,28 @@ Preview this theme using Shopify CLI:
 shopify theme dev
 ```
 
+### Deploy
+
+From the theme directory, upload a new unpublished theme to Shopify:
+
+```bash
+shopify theme push --unpublished
+```
+
+Follow the prompts to connect to your store and name the theme. Use the returned preview link to review it before publishing.
+
+To update an existing theme instead, run `shopify theme push` and select it. This overwrites its remote files; selecting the live theme affects your storefront.
+
+To update an existing theme without uploading JSON files, run:
+
+```bash
+shopify theme push --ignore "**/*.json" --nodelete
+```
+
+Select the theme to update. This skips JSON templates, settings, and locale files, and preserves remote files that are absent locally. Changes to translations or other JSON files must be applied separately.
+
+When you're ready to make an unpublished theme live, run `shopify theme publish` and select the theme. See the [Shopify CLI theme push documentation](https://shopify.dev/docs/api/shopify-cli/theme/theme-push) for more options.
+
 ### Section color schemes
 
 In the theme editor, open **Theme settings > Colors** to edit or add reusable color schemes. Three starting schemes are included: white, pale green, and charcoal. Each scheme defines background, optional gradient, text, link, and button colors.

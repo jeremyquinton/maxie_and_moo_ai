@@ -144,8 +144,7 @@
 
                 <fieldset class="product-option product-option--{{ option_style }}" data-option-group data-option-index="{{ option_index }}" data-option-name="{{ option.name | escape }}" data-option-style="{{ option_style }}" data-option-required="{% if option.values.size > 1 %}true{% else %}false{% endif %}">
                   <legend class="product-option__legend">
-                    <span>{{ option.name | escape }}</span>
-                    <span class="product-option__selected" data-option-selected>{% if has_selected_variant %}{{ current_variant.options[option_index] | escape }}{% elsif option_name contains 'size' %}{{ option.values.first | escape }}{% elsif option.values.size == 1 %}{{ option.values.first | escape }}{% else %}{{ 'products.product.choose_option' | t }}{% endif %}</span>
+                    <span>Select Mat Size</span>
                   </legend>
                   <div class="product-option__choices">
                     {%- if option_style == 'size' -%}
@@ -285,7 +284,22 @@
                 <button type="button" data-quantity-change="1" aria-label="{{ 'products.product.increase_quantity' | t }}">+</button>
               </div>
             </div>
-            <button class="product-add theme-button--{{ section.settings.add_to_cart_button_style | default: 'primary' }}" type="submit" name="add" data-add-button{% unless has_selected_variant and current_variant.available %} disabled{% endunless %}>
+            <button
+              class="product-add theme-button--{{ section.settings.add_to_cart_button_style | default: 'primary' }}"
+              type="submit"
+              name="add"
+              data-add-button
+              {% if section.settings.customize_add_to_cart_colors %}
+                style="
+                  --button-custom-color: {{ section.settings.add_to_cart_button_color }};
+                  --button-custom-text-color: {{ section.settings.add_to_cart_button_text_color }};
+                  background-color: {% if section.settings.add_to_cart_button_style == 'secondary' or section.settings.add_to_cart_button_style == 'tertiary' %}transparent{% else %}{{ section.settings.add_to_cart_button_color }}{% endif %};
+                  color: {% if section.settings.add_to_cart_button_style == 'secondary' or section.settings.add_to_cart_button_style == 'tertiary' %}{{ section.settings.add_to_cart_button_color }}{% else %}{{ section.settings.add_to_cart_button_text_color }}{% endif %};
+                  border-color: {% if section.settings.add_to_cart_button_style == 'tertiary' %}transparent{% else %}{{ section.settings.add_to_cart_button_color }}{% endif %};
+                "
+              {% endif %}
+              {% unless has_selected_variant and current_variant.available %}disabled{% endunless %}
+            >
               <span data-add-label>{% if current_variant.available %}{{ 'products.product.add_to_cart' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
             </button>
           </div>
@@ -482,7 +496,7 @@
     place-items: center;
     transform: translateY(-50%);
     border: 1px solid rgb(32 33 30 / 12%);
-    border-radius: 50%;
+    border-radius: 0;
     background: rgb(255 255 255 / 92%);
     color: var(--product-ink);
     font: inherit;
@@ -561,6 +575,7 @@
 
   .product-lightbox__step {
     top: 50%;
+    border-radius: 0;
     transform: translateY(-50%);
   }
 
@@ -863,12 +878,15 @@
 
   .product-purchase {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 9px;
+    grid-template-columns: minmax(96px, 0.85fr) minmax(0, 2fr);
+    grid-template-rows: auto 52px;
+    align-items: stretch;
+    gap: 10px;
     margin-block: 16px 11px;
   }
 
   .product-quantity {
+    grid-row: 1 / span 2;
     display: grid;
     gap: 8px;
   }
@@ -885,7 +903,7 @@
     align-items: center;
     border: 1px solid var(--product-line);
     background: #fff;
-    width: 25%;
+    width: 100%;
   }
 
   .product-quantity__controls button {
@@ -916,6 +934,8 @@
 
   .product-add {
     display: flex;
+    grid-column: 2;
+    grid-row: 2;
     width: 100%;
     min-height: 52px;
     align-items: center;
@@ -952,6 +972,34 @@
   .product-add:disabled {
     cursor: not-allowed;
     opacity: 0.55;
+  }
+
+  .product-add.theme-button--primary {
+    border-color: var(--button-custom-color, var(--section-button, var(--button-primary-background, #333)));
+    background: var(--button-custom-color, var(--section-button, var(--button-primary-background, #333)));
+    color: var(--button-custom-text-color, var(--section-button-text, var(--button-primary-text, #fff)));
+  }
+
+  .product-add.theme-button--secondary,
+  .product-add.theme-button--secondary:hover:not(:disabled) {
+    border-color: var(--button-custom-color, var(--section-button, var(--button-primary-background, #333)));
+    background: transparent;
+    color: var(--button-custom-color, var(--section-button, var(--button-primary-background, #333)));
+  }
+
+  .product-add.theme-button--tertiary {
+    border-color: transparent;
+    background: transparent;
+    color: var(--button-custom-color, var(--section-button-foreground, inherit));
+    padding-inline: 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .product-add.theme-button--primary:hover:not(:disabled) {
+    border-color: var(--button-custom-color, var(--section-button, var(--button-primary-background, #333)));
+    background: var(--button-custom-color, var(--section-button, var(--button-primary-background, #333)));
+    color: var(--button-custom-text-color, var(--section-button-text, var(--button-primary-text, #fff)));
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1170,7 +1218,9 @@
     }
 
     .product-purchase {
-      grid-template-columns: minmax(0, 1fr);
+      grid-template-columns: minmax(96px, 0.85fr) minmax(0, 2fr);
+      grid-template-rows: auto 52px;
+      gap: 8px;
     }
 
     .product-option__dropdown-toggle {
@@ -1446,6 +1496,8 @@
             const itemLabel = item.querySelector('[data-size-dropdown-item-label]');
             if (!optionElement || !itemLabel) return;
 
+            item.classList.toggle('is-selected', optionElement.checked);
+
             const matchingVariant = this.variants.find((variant) => variant.options.every((value, index) => {
               if (index === optionIndex) return value === optionElement.value;
               const selectedValue = currentSelections[index];
@@ -1494,7 +1546,8 @@
         optionGroups.forEach((group, index) => {
           const optionName = group.dataset.optionName.toLowerCase();
           const fallbackLabel = optionName.includes('size') ? this.dataset.labelChooseSize : this.dataset.labelChooseOption;
-          group.querySelector('[data-option-selected]').textContent = selectedOptions[index] || fallbackLabel;
+          const selectedLabel = group.querySelector('[data-option-selected]');
+          if (selectedLabel) selectedLabel.textContent = selectedOptions[index] || fallbackLabel;
         });
         this.updateSizeOptionPrices(selectedOptions);
 
@@ -1706,6 +1759,26 @@
         { "value": "tertiary", "label": "t:options.button_style.tertiary" }
       ],
       "default": "primary"
+    },
+    {
+      "type": "checkbox",
+      "id": "customize_add_to_cart_colors",
+      "label": "t:products.product.settings.customize_add_to_cart_colors",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "add_to_cart_button_color",
+      "label": "t:products.product.settings.add_to_cart_button_color",
+      "default": "#D4A04E",
+      "visible_if": "{{ section.settings.customize_add_to_cart_colors }}"
+    },
+    {
+      "type": "color",
+      "id": "add_to_cart_button_text_color",
+      "label": "t:products.product.settings.add_to_cart_button_text_color",
+      "default": "#FFFFFF",
+      "visible_if": "{{ section.settings.customize_add_to_cart_colors }}"
     }
   ],
   "disabled_on": {

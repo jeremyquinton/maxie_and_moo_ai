@@ -1,0 +1,85 @@
+{% doc %}
+  Renders the header menu names and their mobile navigation panels.
+
+  @param {object} menu_1 - The first menu
+  @param {object} menu_2 - The second menu
+  @param {object} menu_3 - The third menu
+  @param {string} section_id - The header section ID
+{% enddoc %}
+
+<ul class="header__mobile-list" data-menu-root aria-hidden="false">
+  {%- for menu_slot in (1..3) -%}
+    {% liquid
+      assign column_menu = blank
+      case menu_slot
+        when 1
+          assign column_menu = menu_1
+        when 2
+          assign column_menu = menu_2
+        when 3
+          assign column_menu = menu_3
+      endcase
+    %}
+    {% if column_menu != blank %}
+      {% assign column_menu_title = column_menu.title | replace: '&nbsp;', '' | strip %}
+      {% if column_menu_title == blank %}
+        {% assign column_menu_title = 'sections.header.menu_column_fallback' | t: number: menu_slot %}
+      {% endif %}
+      <li class="header__mobile-item">
+        <button
+          class="header__mobile-open"
+          type="button"
+          aria-label="{{ 'sections.header.show_links' | t: title: column_menu_title | escape }}"
+          aria-expanded="false"
+          aria-controls="MobileMenuPanel-{{ section_id }}-column-{{ menu_slot }}"
+          data-menu-open
+          data-panel-id="MobileMenuPanel-{{ section_id }}-column-{{ menu_slot }}"
+          data-panel-title="{{ column_menu_title | escape }}"
+        >
+          <span>{{ column_menu_title | escape }}</span>
+          <span class="header__mobile-chevron" aria-hidden="true"></span>
+        </button>
+      </li>
+    {% endif %}
+  {%- endfor -%}
+</ul>
+
+{%- for menu_slot in (1..3) -%}
+  {% liquid
+    assign column_menu = blank
+    case menu_slot
+      when 1
+        assign column_menu = menu_1
+      when 2
+        assign column_menu = menu_2
+      when 3
+        assign column_menu = menu_3
+    endcase
+  %}
+  {% if column_menu != blank %}
+    <div class="header__mobile-list" id="MobileMenuPanel-{{ section_id }}-column-{{ menu_slot }}" data-menu-panel aria-hidden="true" inert>
+      <ul class="header__mobile-column-list">
+        {%- for menu_link in column_menu.links -%}
+          <li>
+            {% if menu_link.links != blank %}
+              <details class="header__mobile-submenu">
+                <summary>
+                  {{ menu_link.title | escape }}
+                  <span class="header__mobile-chevron" aria-hidden="true"></span>
+                </summary>
+                <ul>
+                  <li><a href="{{ menu_link.url | escape }}">{{ 'sections.header.shop_all' | t: title: menu_link.title | escape }}</a></li>
+                  {% for child_link in menu_link.links %}
+                    <li><a href="{{ child_link.url | escape }}">{{ child_link.title | escape }}</a></li>
+                  {% endfor %}
+                </ul>
+              </details>
+            {% else %}
+              <a class="header__mobile-link" href="{{ menu_link.url | escape }}">{{ menu_link.title | escape }}</a>
+            {% endif %}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {% endif %}
+{%- endfor -%}
