@@ -32,7 +32,14 @@
     </div>
     {% render 'cart-drawer' %}
 
-    {{ content_for_layout }}
+    {% if request.page_type == 'policy' %}
+      <div class="page-content page-content--policy">
+        {{ content_for_layout }}
+      </div>
+      {% render 'informational-page-styles' %}
+    {% else %}
+      {{ content_for_layout }}
+    {% endif %}
 
     {% sections 'footer-group' %}
     <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>

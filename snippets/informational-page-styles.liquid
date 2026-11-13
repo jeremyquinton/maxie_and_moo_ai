@@ -1,0 +1,99 @@
+{% doc %}
+  Provides the shared layout and rich text styles for informational pages.
+{% enddoc %}
+
+{% stylesheet %}
+  .page-content {
+    padding: clamp(32px, 5vw, 64px) var(--page-margin, 20px) clamp(56px, 7vw, 88px);
+    background: var(--section-background, #f5f6f2);
+    color: var(--section-foreground, var(--color-foreground, #20211e));
+  }
+
+  :is(.page-content__header, .shopify-policy__title) {
+    margin: 0 auto clamp(28px, 4vw, 48px);
+    text-align: center;
+  }
+
+  :is(.page-content__title, .shopify-policy__title h1) {
+    font-family: var(--font-primary--family);
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 500;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  :is(.page-content__accent, .shopify-policy__title::after) {
+    display: block;
+    width: 48px;
+    height: 3px;
+    margin: 20px auto 0;
+    background: currentColor;
+    opacity: 0.35;
+  }
+
+  .shopify-policy__title::after {
+    content: '';
+  }
+
+  :is(.page-content__body, .shopify-policy__body) {
+    width: min(100%, 860px);
+    margin-inline: auto;
+    padding: clamp(24px, 5vw, 56px);
+    overflow-x: auto;
+    background: var(--color-background, #fff);
+    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    border-radius: 4px;
+    font-size: max(16px, var(--font-size-base, 14px));
+    line-height: 1.75;
+    overflow-wrap: break-word;
+  }
+
+  .page-content--policy .shopify-policy__container {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+  }
+
+  :is(.page-content__richtext, .shopify-policy__body .rte) > * + * {
+    margin-block-start: 1em;
+  }
+
+  :is(.page-content__richtext, .shopify-policy__body .rte) :is(h1, h2, h3, h4, h5, h6) {
+    line-height: 1.3;
+    font-weight: 600;
+  }
+
+  :is(.page-content__richtext, .shopify-policy__body .rte) :is(h1, h2) {
+    font-size: clamp(22px, 2.5vw, 28px);
+  }
+
+  :is(.page-content__richtext, .shopify-policy__body .rte) :is(h3, h4, h5, h6) {
+    font-size: 1.1em;
+  }
+
+  :is(.page-content__richtext, .shopify-policy__body .rte) :is(h1, h2, h3, h4, h5, h6):not(:first-child) {
+    margin-block-start: 1.8em;
+  }
+
+  :is(.page-content__richtext, .shopify-policy__body .rte) :is(ul, ol) {
+    padding-inline-start: 1.5em;
+  }
+
+  :is(.page-content__richtext, .shopify-policy__body .rte) li + li {
+    margin-block-start: 0.4em;
+  }
+
+  :is(.page-content__richtext, .shopify-policy__body .rte) a {
+    color: var(--section-link, inherit);
+    text-underline-offset: 3px;
+  }
+
+  :is(.page-content__richtext, .shopify-policy__body .rte) a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  :is(.page-content__richtext, .shopify-policy__body .rte) :is(img, video, iframe, table) {
+    max-width: 100%;
+  }
+{% endstylesheet %}
