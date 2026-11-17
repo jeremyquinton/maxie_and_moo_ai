@@ -8,7 +8,7 @@
   >
     <div class="heading-with-text__inner">
       {% if section.settings.heading != blank %}
-        <h2 class="heading-with-text__heading" id="HeadingWithText-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+        <h2 class="heading-with-text__heading section-heading--primary" id="HeadingWithText-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
       {% endif %}
       {% if section.settings.body != blank %}
         <div class="heading-with-text__body rte">{{ section.settings.body }}</div>
@@ -75,12 +75,17 @@
 {% endstylesheet %}
 
 {% render 'section-color-scheme', section: section %}
+{% render 'section-heading-typography', section: section %}
+
 {% render 'section-spacing', section: section %}
 
 {% schema %}
 {
   "name": "t:general.heading_with_text",
   "settings": [
+    { "type": "checkbox", "id": "customize_heading_typography", "label": "t:labels.customize_heading_typography", "default": false },
+    { "type": "font_picker", "id": "heading_font", "label": "t:labels.heading_font", "default": "montserrat_n4", "visible_if": "{{ section.settings.customize_heading_typography }}" },
+    { "type": "range", "id": "heading_size", "label": "t:labels.heading_size", "min": 12, "max": 96, "step": 2, "unit": "px", "default": 40, "visible_if": "{{ section.settings.customize_heading_typography }}" },
     {
       "type": "text",
       "id": "heading",

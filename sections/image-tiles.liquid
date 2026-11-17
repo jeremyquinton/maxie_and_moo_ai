@@ -17,9 +17,9 @@
 
         <span class="image-tiles__overlay" aria-hidden="true"></span>
 
-        <div class="image-tiles__content">
+        <div class="image-tiles__content image-tiles__content--x-{{ block.settings.content_alignment | default: 'center' }} image-tiles__content--y-{{ block.settings.content_vertical_alignment | default: 'center' }}">
           {%- if block.settings.heading != blank -%}
-            <h2 class="image-tiles__heading">{{ block.settings.heading | escape }}</h2>
+            <h2 class="image-tiles__heading section-heading--secondary">{{ block.settings.heading | escape }}</h2>
           {%- endif -%}
           {%- if block.settings.button_label != blank and block.settings.button_link != blank -%}
             <a class="image-tiles__button theme-button--{{ block.settings.button_style | default: 'primary' }}" href="{{ block.settings.button_link }}">
@@ -80,6 +80,24 @@
     gap: 16px;
     padding: 24px;
     text-align: center;
+  }
+
+  .image-tiles__content--x-left {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .image-tiles__content--x-right {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .image-tiles__content--y-top {
+    justify-content: flex-start;
+  }
+
+  .image-tiles__content--y-bottom {
+    justify-content: flex-end;
   }
 
   .image-tiles__heading {
@@ -145,6 +163,8 @@
 {% endstylesheet %}
 
 {% render 'section-color-scheme', section: section %}
+{% render 'section-heading-typography', section: section %}
+
 {% render 'section-spacing', section: section %}
 
 {% schema %}
@@ -190,6 +210,28 @@
         },
         {
           "type": "select",
+          "id": "content_alignment",
+          "label": "t:sections.image_tiles.blocks.tile.settings.content_alignment.label",
+          "options": [
+            { "value": "left", "label": "t:options.alignment.left" },
+            { "value": "center", "label": "t:options.alignment.center" },
+            { "value": "right", "label": "t:options.alignment.right" }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "select",
+          "id": "content_vertical_alignment",
+          "label": "t:sections.image_tiles.blocks.tile.settings.content_vertical_alignment.label",
+          "options": [
+            { "value": "top", "label": "t:options.vertical_alignment.top" },
+            { "value": "center", "label": "t:options.vertical_alignment.center" },
+            { "value": "bottom", "label": "t:options.vertical_alignment.bottom" }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "select",
           "id": "button_style",
           "label": "t:labels.button_style",
           "options": [
@@ -203,6 +245,9 @@
     }
   ],
   "settings": [
+    { "type": "checkbox", "id": "customize_heading_typography", "label": "t:labels.customize_heading_typography", "default": false },
+    { "type": "font_picker", "id": "heading_font", "label": "t:labels.heading_font", "default": "montserrat_n4", "visible_if": "{{ section.settings.customize_heading_typography }}" },
+    { "type": "range", "id": "secondary_heading_size", "label": "t:labels.secondary_heading_size", "min": 12, "max": 96, "step": 2, "unit": "px", "default": 20, "visible_if": "{{ section.settings.customize_heading_typography }}" },
     { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
     { "type": "range", "id": "section_space_above", "label": "t:labels.section_space_above", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 0 },

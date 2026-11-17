@@ -1,7 +1,7 @@
 <div class="cart-page">
   <header class="cart-page__header">
     <div>
-      <h1>{{ 'cart.title' | t }}</h1>
+      <h1 class="section-heading--primary">{{ 'cart.title' | t }}</h1>
       {% if cart.item_count > 0 %}
         <p class="cart-page__count">{{ 'cart.item_count' | t: count: cart.item_count }}</p>
       {% endif %}
@@ -12,7 +12,7 @@
   {% if cart.item_count == 0 %}
     <div class="cart-page__empty">
       <span class="cart-page__empty-icon" aria-hidden="true">{{ 'icon-cart.svg' | inline_asset_content }}</span>
-      <h2>{{ 'cart.empty' | t }}</h2>
+      <h2 class="section-heading--secondary">{{ 'cart.empty' | t }}</h2>
       <p>{{ 'cart.empty_description' | t }}</p>
       <a class="cart-page__button theme-button--primary" href="{{ routes.all_products_collection_url }}">{{ 'cart.continue_shopping' | t }}</a>
     </div>
@@ -38,7 +38,7 @@
                 {% endif %}
               </a>
               <div class="cart-page__details">
-                <h2><a href="{{ item.url }}">{{ item.product.title | escape }}</a></h2>
+                <h2 class="section-heading--secondary"><a href="{{ item.url }}">{{ item.product.title | escape }}</a></h2>
                 {% unless item.product.has_only_default_variant %}
                   <dl class="cart-page__options">
                     {% for option in item.options_with_values %}
@@ -106,7 +106,7 @@
       </div>
 
       <aside class="cart-page__summary" aria-labelledby="CartSummary-{{ section.id }}">
-        <h2 id="CartSummary-{{ section.id }}">{{ 'cart.order_summary' | t }}</h2>
+        <h2 class="section-heading--secondary" id="CartSummary-{{ section.id }}">{{ 'cart.order_summary' | t }}</h2>
         <dl class="cart-page__totals">
           <div><dt>{{ 'cart.subtotal' | t }}</dt><dd>{{ cart.items_subtotal_price | money }}</dd></div>
           {% for discount in cart.cart_level_discount_applications %}
@@ -436,12 +436,18 @@
 
 {% render 'section-color-scheme', section: section %}
 
+{% render 'section-heading-typography', section: section %}
+
 {% render 'section-spacing', section: section %}
 
 {% schema %}
 {
   "name": "t:general.cart",
   "settings": [
+    { "type": "checkbox", "id": "customize_heading_typography", "label": "t:labels.customize_heading_typography", "default": false },
+    { "type": "font_picker", "id": "heading_font", "label": "t:labels.heading_font", "default": "montserrat_n4", "visible_if": "{{ section.settings.customize_heading_typography }}" },
+    { "type": "range", "id": "heading_size", "label": "t:labels.heading_size", "min": 12, "max": 96, "step": 2, "unit": "px", "default": 40, "visible_if": "{{ section.settings.customize_heading_typography }}" },
+    { "type": "range", "id": "secondary_heading_size", "label": "t:labels.secondary_heading_size", "min": 12, "max": 96, "step": 2, "unit": "px", "default": 20, "visible_if": "{{ section.settings.customize_heading_typography }}" },
     {
       "type": "header",
       "content": "t:cart.button_colors"

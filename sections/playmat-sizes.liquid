@@ -1,0 +1,361 @@
+<section
+  class="playmat-sizes full-width"
+  style="
+    --playmat-sizes-background: {{ section.settings.background }};
+    --playmat-sizes-text: {{ section.settings.text_color }};
+    --playmat-sizes-accent: {{ section.settings.accent_color }};
+    --playmat-sizes-benefits: {{ section.settings.benefits_background }};
+  "
+>
+  <div class="playmat-sizes__inner">
+    <header class="playmat-sizes__header">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="playmat-sizes__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="playmat-sizes__heading section-heading--primary">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      {%- if section.settings.description != blank -%}
+        <p class="playmat-sizes__intro">{{ section.settings.description | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.link_label != blank and section.settings.link_url != blank -%}
+        <a class="playmat-sizes__link" href="{{ section.settings.link_url | escape }}">{{ section.settings.link_label | escape }}</a>
+      {%- endif -%}
+    </header>
+
+    <div class="playmat-sizes__grid">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'size' -%}
+          <div class="playmat-sizes__card" {{ block.shopify_attributes }}>
+            <div class="playmat-sizes__visual">
+              {%- if block.settings.image != blank -%}
+                {{ block.settings.image | image_url: width: 1200 | image_tag: class: 'playmat-sizes__image', widths: '320, 480, 640, 800, 1000, 1200', sizes: '(min-width: 990px) 30vw, (min-width: 750px) 45vw, 90vw' }}
+              {%- else -%}
+                <div class="playmat-sizes__mat{% if block.settings.rows == 4 %} playmat-sizes__mat--four-rows{% endif %}" style="--mat-columns: {{ block.settings.columns }};" aria-hidden="true">
+                  {%- for row in (1..block.settings.rows) -%}
+                    {%- for column in (1..block.settings.columns) -%}
+                      {%- assign tile_color = row | plus: column | modulo: 2 -%}
+                      <span class="playmat-sizes__tile{% if tile_color == 0 %} playmat-sizes__tile--grey{% endif %}"></span>
+                    {%- endfor -%}
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+            </div>
+            {%- if block.settings.label != blank -%}
+              <h3 class="playmat-sizes__label section-heading--secondary">{{ block.settings.label | escape }}</h3>
+            {%- endif -%}
+            {%- if block.settings.dimensions != blank -%}
+              <p class="playmat-sizes__dimensions">{{ block.settings.dimensions | escape }}</p>
+            {%- endif -%}
+            {%- if block.settings.description != blank -%}
+              <p class="playmat-sizes__description">{{ block.settings.description | escape }}</p>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    {%- assign benefits = section.blocks | where: 'type', 'benefit' -%}
+    {%- if benefits.size > 0 -%}
+      <ul class="playmat-sizes__benefits">
+        {%- for block in benefits -%}
+          <li class="playmat-sizes__benefit" {{ block.shopify_attributes }}>
+            <span class="playmat-sizes__icon playmat-sizes__icon--{{ block.settings.icon }}" aria-hidden="true">
+              {%- case block.settings.icon -%}
+                {%- when 'puzzle' -%}
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18V8a3 3 0 0 1 3-3h10c0 3 1 5 4 5s4-2 4-5h10a3 3 0 0 1 3 3v10c-3 0-5 1-5 4s2 4 5 4v10a3 3 0 0 1-3 3H26c0-3-1-5-4-5s-4 2-4 5H8a3 3 0 0 1-3-3V26c3 0 5-1 5-4s-2-4-5-4Z"/></svg>
+                {%- when 'layers' -%}
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m24 4 19 9-19 9L5 13 24 4ZM5 22l19 9 19-9M5 31l19 9 19-9"/></svg>
+                {%- when 'home' -%}
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20 24 4l20 16M7 18v24h34V18"/><path d="M24 35s-8-5-8-10a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 5-8 10-8 10Z"/></svg>
+              {%- endcase -%}
+            </span>
+            <div>
+              {%- if block.settings.heading != blank -%}
+                <h3 class="playmat-sizes__benefit-heading section-heading--secondary">{{ block.settings.heading | escape }}</h3>
+              {%- endif -%}
+              {%- if block.settings.description != blank -%}
+                <p class="playmat-sizes__benefit-description">{{ block.settings.description | escape }}</p>
+              {%- endif -%}
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .playmat-sizes {
+    padding: clamp(24px, 4vw, 48px) var(--page-margin, 20px);
+    background: var(--playmat-sizes-background);
+    color: var(--playmat-sizes-text);
+  }
+
+  .playmat-sizes__inner {
+    width: min(100%, 1380px);
+    margin-inline: auto;
+  }
+
+  .playmat-sizes__header {
+    max-width: 960px;
+    margin: 0 auto clamp(20px, 3vw, 36px);
+    text-align: center;
+  }
+
+  .playmat-sizes__eyebrow {
+    margin: 0 0 8px;
+    color: var(--playmat-sizes-accent);
+    font-size: clamp(13px, 1.4vw, 18px);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .playmat-sizes__heading {
+    margin: 0;
+    color: inherit;
+    font-family: var(--font-primary--family);
+    font-size: clamp(28px, 3.2vw, 46px);
+    font-weight: 500;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  .playmat-sizes__intro {
+    margin: 12px auto 0;
+    max-width: 72ch;
+    font-size: clamp(16px, 1.5vw, 21px);
+    line-height: 1.55;
+  }
+
+  .playmat-sizes__link {
+    display: inline-block;
+    margin-block-start: 12px;
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    overflow-wrap: anywhere;
+  }
+
+  .playmat-sizes__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .playmat-sizes__card {
+    min-width: 0;
+    text-align: center;
+  }
+
+  .playmat-sizes__visual {
+    display: flex;
+    height: clamp(190px, 21vw, 290px);
+    align-items: flex-end;
+    justify-content: center;
+    margin-block-end: 16px;
+  }
+
+  .playmat-sizes__image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center bottom;
+  }
+
+  .playmat-sizes__mat {
+    display: grid;
+    width: min(100%, calc(var(--mat-columns) * var(--mat-tile-size, 70px)));
+    grid-template-columns: repeat(var(--mat-columns), minmax(0, 1fr));
+    gap: 2px;
+    overflow: hidden;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgb(34 43 52 / 0.18);
+  }
+
+  .playmat-sizes__mat--four-rows {
+    --mat-tile-size: 55px;
+  }
+
+  .playmat-sizes__tile {
+    aspect-ratio: 1;
+    background: #f7f3ea;
+    box-shadow: inset 0 0 0 1px rgb(34 43 52 / 0.07);
+  }
+
+  .playmat-sizes__tile--grey {
+    background: #c8c7c3;
+  }
+
+  .playmat-sizes__label {
+    display: inline-block;
+    margin: 0 0 8px;
+    padding: 8px 25px;
+    border-radius: 999px;
+    background: var(--playmat-sizes-accent);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .playmat-sizes__dimensions,
+  .playmat-sizes__description {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .playmat-sizes__benefits {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    margin: 28px 0 0;
+    padding: 16px 24px;
+    border-radius: 28px;
+    background: var(--playmat-sizes-benefits);
+    list-style: none;
+  }
+
+  .playmat-sizes__benefit {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 4px 20px;
+  }
+
+  .playmat-sizes__benefit + .playmat-sizes__benefit {
+    border-inline-start: 1px solid rgb(34 43 52 / 0.18);
+  }
+
+  .playmat-sizes__icon {
+    flex: 0 0 48px;
+    color: #648e91;
+  }
+
+  .playmat-sizes__icon--layers {
+    color: #a97500;
+  }
+
+  .playmat-sizes__icon--home {
+    color: #b65b49;
+  }
+
+  .playmat-sizes__benefit-heading {
+    margin: 0 0 4px;
+    color: inherit;
+    font-size: 18px;
+    line-height: 1.25;
+  }
+
+  .playmat-sizes__benefit-description {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 749px) {
+    .playmat-sizes__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+    }
+
+    .playmat-sizes__visual {
+      height: 230px;
+    }
+
+    .playmat-sizes__benefits {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
+      padding: 20px;
+    }
+
+    .playmat-sizes__benefit {
+      justify-content: flex-start;
+      padding: 0;
+    }
+
+    .playmat-sizes__benefit + .playmat-sizes__benefit {
+      padding-block-start: 12px;
+      border-block-start: 1px solid rgb(34 43 52 / 0.18);
+      border-inline-start: 0;
+    }
+  }
+{% endstylesheet %}
+
+{% render 'section-heading-typography', section: section %}
+
+{% render 'section-spacing', section: section %}
+
+{% schema %}
+{
+  "name": "t:sections.playmat_sizes.name",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "checkbox", "id": "customize_heading_typography", "label": "t:labels.customize_heading_typography", "default": false },
+    { "type": "font_picker", "id": "heading_font", "label": "t:labels.heading_font", "default": "montserrat_n4", "visible_if": "{{ section.settings.customize_heading_typography }}" },
+    { "type": "range", "id": "heading_size", "label": "t:labels.heading_size", "min": 12, "max": 96, "step": 2, "unit": "px", "default": 40, "visible_if": "{{ section.settings.customize_heading_typography }}" },
+    { "type": "range", "id": "secondary_heading_size", "label": "t:labels.secondary_heading_size", "min": 12, "max": 96, "step": 2, "unit": "px", "default": 20, "visible_if": "{{ section.settings.customize_heading_typography }}" },
+    { "type": "text", "id": "eyebrow", "label": "t:sections.playmat_sizes.eyebrow", "default": "A little room to grow" },
+    { "type": "text", "id": "heading", "label": "t:labels.heading", "default": "Choose the size that suits your space." },
+    { "type": "textarea", "id": "description", "label": "t:sections.playmat_sizes.description", "default": "Our interlocking playmats are flexible, so you can start with a size that works for you and add more tiles later as your little one grows." },
+    { "type": "text", "id": "link_label", "label": "t:sections.playmat_sizes.link_label" },
+    { "type": "url", "id": "link_url", "label": "t:sections.playmat_sizes.link_url" },
+    { "type": "color", "id": "background", "label": "t:labels.background", "default": "#F8F2ED" },
+    { "type": "color", "id": "text_color", "label": "t:sections.playmat_sizes.text_color", "default": "#293747" },
+    { "type": "color", "id": "accent_color", "label": "t:sections.playmat_sizes.accent_color", "default": "#A84D38" },
+    { "type": "color", "id": "benefits_background", "label": "t:sections.playmat_sizes.benefits_background", "default": "#EAEAE5" },
+    { "type": "range", "id": "section_space_above", "label": "t:labels.section_space_above", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 0 },
+    { "type": "range", "id": "section_space_below", "label": "t:labels.section_space_below", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 0 }
+  ],
+  "blocks": [
+    {
+      "type": "size",
+      "name": "t:sections.playmat_sizes.size",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "t:sections.playmat_sizes.image", "info": "t:sections.playmat_sizes.image_info" },
+        { "type": "range", "id": "columns", "label": "t:sections.playmat_sizes.columns", "min": 1, "max": 6, "step": 1, "default": 3 },
+        { "type": "range", "id": "rows", "label": "t:sections.playmat_sizes.rows", "min": 1, "max": 4, "step": 1, "default": 2 },
+        { "type": "text", "id": "label", "label": "t:sections.playmat_sizes.size_label", "default": "6 tiles" },
+        { "type": "text", "id": "dimensions", "label": "t:sections.playmat_sizes.dimensions", "default": "Approx. 120 × 180 cm" },
+        { "type": "textarea", "id": "description", "label": "t:sections.playmat_sizes.description", "default": "Perfect for smaller spaces." }
+      ]
+    },
+    {
+      "type": "benefit",
+      "name": "t:sections.playmat_sizes.benefit",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "t:sections.playmat_sizes.icon",
+          "options": [
+            { "value": "puzzle", "label": "t:sections.playmat_sizes.icon_puzzle" },
+            { "value": "layers", "label": "t:sections.playmat_sizes.icon_layers" },
+            { "value": "home", "label": "t:sections.playmat_sizes.icon_home" }
+          ],
+          "default": "puzzle"
+        },
+        { "type": "text", "id": "heading", "label": "t:labels.heading", "default": "Flexible sizing" },
+        { "type": "textarea", "id": "description", "label": "t:sections.playmat_sizes.description", "default": "Create a layout that works for you." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.playmat_sizes.name",
+      "blocks": [
+        { "type": "size", "settings": { "label": "6 tiles", "columns": 3, "rows": 2, "dimensions": "Approx. 120 × 180 cm", "description": "Perfect for smaller spaces." } },
+        { "type": "size", "settings": { "label": "9 tiles", "columns": 3, "rows": 3, "dimensions": "Approx. 180 × 180 cm", "description": "A great all-round size for play." } },
+        { "type": "size", "settings": { "label": "12 tiles", "columns": 4, "rows": 3, "dimensions": "Approx. 180 × 240 cm", "description": "Extra room to play, explore and grow." } },
+        { "type": "benefit", "settings": { "icon": "puzzle", "heading": "Flexible sizing", "description": "Create a layout that works for you." } },
+        { "type": "benefit", "settings": { "icon": "layers", "heading": "Add on anytime", "description": "Expand your space as needed." } },
+        { "type": "benefit", "settings": { "icon": "home", "heading": "Fits your home", "description": "A practical, stylish solution for play." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,236 @@
+{%- assign featured_collection = section.settings.collection -%}
+{%- if featured_collection != blank -%}
+  <section class="wide-flow-featured full-width" data-wide-flow>
+    <div
+      class="wide-flow-featured__track"
+      id="WideFlow-{{ section.id }}"
+      data-wide-flow-track
+      tabindex="0"
+      aria-label="{{ featured_collection.title | escape }}"
+    >
+      {%- for product in featured_collection.products limit: section.settings.products_to_show -%}
+        {% render 'product-card', product: product, heading_tag: 'h2', image_preview_only: true, card_index: forloop.index %}
+      {%- else -%}
+        {%- if request.design_mode -%}
+          <p>{{ 'products.featured_collection.no_products' | t }}</p>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <button
+      class="wide-flow-featured__arrow wide-flow-featured__arrow--previous"
+      type="button"
+      data-wide-flow-scroll="-1"
+      aria-controls="WideFlow-{{ section.id }}"
+      aria-label="{{ 'products.featured_collection.previous_products' | t | escape }}"
+      hidden
+      disabled
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m15 4-8 8 8 8"/></svg>
+    </button>
+    <button
+      class="wide-flow-featured__arrow wide-flow-featured__arrow--next"
+      type="button"
+      data-wide-flow-scroll="1"
+      aria-controls="WideFlow-{{ section.id }}"
+      aria-label="{{ 'products.featured_collection.next_products' | t | escape }}"
+      hidden
+      disabled
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m9 4 8 8-8 8"/></svg>
+    </button>
+  </section>
+{%- elsif request.design_mode -%}
+  <div class="wide-flow-featured full-width">
+    <p>{{ 'products.featured_collection.select_collection' | t }}</p>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .wide-flow-featured {
+    position: relative;
+    width: 100%;
+    padding-block: 16px;
+  }
+
+  .wide-flow-featured__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - 24px) / 4);
+    gap: 8px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .wide-flow-featured__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .wide-flow-featured__track:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+  }
+
+  .wide-flow-featured .featured-collection__image {
+    background: #f5f2eb;
+  }
+
+  .wide-flow-featured .featured-collection__badge--sale {
+    background: #7f250c;
+    color: #fff;
+    font-size: 11px;
+  }
+
+  .wide-flow-featured .featured-collection__meta {
+    padding: 14px 12px 0;
+  }
+
+  .wide-flow-featured .featured-collection__price {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .wide-flow-featured .featured-collection__price s {
+    order: -1;
+  }
+
+  .wide-flow-featured__arrow {
+    position: absolute;
+    z-index: 1;
+    top: calc(16px + (100vw - 24px) / 8);
+    display: grid;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    padding: 12px;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 90%);
+    color: #20211e;
+    cursor: pointer;
+    transform: translateY(-50%);
+  }
+
+  .wide-flow-featured__arrow[hidden] {
+    display: none;
+  }
+
+  .wide-flow-featured__arrow:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .wide-flow-featured__arrow:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+  }
+
+  .wide-flow-featured__arrow--previous {
+    inset-inline-start: 10px;
+  }
+
+  .wide-flow-featured__arrow--next {
+    inset-inline-end: 10px;
+  }
+
+  .wide-flow-featured__arrow svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  @media (max-width: 749px) {
+    .wide-flow-featured__track {
+      grid-auto-flow: row;
+      grid-auto-columns: auto;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px 8px;
+      overflow: visible;
+    }
+
+    .wide-flow-featured .featured-collection__meta {
+      padding-inline: 8px;
+    }
+
+    .wide-flow-featured__arrow {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  function updateWideFlow(section) {
+    if (!section) return;
+    const track = section.querySelector('[data-wide-flow-track]');
+    const previous = section.querySelector('[data-wide-flow-scroll="-1"]');
+    const next = section.querySelector('[data-wide-flow-scroll="1"]');
+    if (!track || !previous || !next) return;
+
+    const maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+    const rtl = getComputedStyle(track).direction === 'rtl';
+    const position = rtl ? -track.scrollLeft : track.scrollLeft;
+    previous.hidden = next.hidden = maxScroll <= 1;
+    previous.disabled = position <= 1;
+    next.disabled = position >= maxScroll - 1;
+  }
+
+  function updateAllWideFlows() {
+    document.querySelectorAll('[data-wide-flow]').forEach(updateWideFlow);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateAllWideFlows, { once: true });
+  } else {
+    updateAllWideFlows();
+  }
+  window.addEventListener('resize', updateAllWideFlows);
+  document.addEventListener('shopify:section:load', updateAllWideFlows);
+  document.addEventListener('scroll', (event) => {
+    if (event.target.matches?.('[data-wide-flow-track]')) {
+      updateWideFlow(event.target.closest('[data-wide-flow]'));
+    }
+  }, true);
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest?.('[data-wide-flow-scroll]');
+    if (!button || button.disabled) return;
+    const section = button.closest('[data-wide-flow]');
+    const track = section.querySelector('[data-wide-flow-track]');
+    const card = track.querySelector('.featured-collection__card');
+    if (!card) return;
+
+    const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+    const direction = Number(button.dataset.wideFlowScroll);
+    const rtl = getComputedStyle(track).direction === 'rtl' ? -1 : 1;
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    track.scrollBy({
+      left: direction * rtl * (card.getBoundingClientRect().width + gap),
+      behavior: reducedMotion ? 'instant' : 'smooth'
+    });
+  });
+{% endjavascript %}
+
+{% render 'section-color-scheme', section: section %}
+{% render 'section-heading-typography', section: section %}
+{% render 'section-spacing', section: section %}
+
+{% schema %}
+{
+  "name": "t:general.wide_flow_featured",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "t:sections.featured_collection.settings.collection.label" },
+    { "type": "range", "id": "products_to_show", "label": "t:sections.featured_collection.settings.products_to_show.label", "min": 4, "max": 24, "step": 4, "default": 8 },
+    { "type": "checkbox", "id": "customize_heading_typography", "label": "t:labels.customize_heading_typography", "default": false },
+    { "type": "font_picker", "id": "heading_font", "label": "t:labels.heading_font", "default": "montserrat_n4", "visible_if": "{{ section.settings.customize_heading_typography }}" },
+    { "type": "range", "id": "secondary_heading_size", "label": "t:labels.secondary_heading_size", "min": 12, "max": 96, "step": 2, "unit": "px", "default": 20, "visible_if": "{{ section.settings.customize_heading_typography }}" },
+    { "type": "checkbox", "id": "use_color_scheme", "label": "t:labels.use_color_scheme", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:labels.color_scheme", "default": "scheme-1", "visible_if": "{{ section.settings.use_color_scheme }}" },
+    { "type": "range", "id": "section_space_above", "label": "t:labels.section_space_above", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 0 },
+    { "type": "range", "id": "section_space_below", "label": "t:labels.section_space_below", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 0 }
+  ],
+  "presets": [
+    { "name": "t:general.wide_flow_featured" }
+  ]
+}
+{% endschema %}

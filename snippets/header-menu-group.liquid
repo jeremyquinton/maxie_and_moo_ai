@@ -32,7 +32,7 @@
               {% assign column_menu_title = 'sections.header.menu_column_fallback' | t: number: menu_slot %}
             {% endif %}
           <div class="header__submenu-column">
-              <h2 class="header__submenu-column-heading">{{ column_menu_title | escape }}</h2>
+              <h2 class="header__submenu-column-heading section-heading--secondary">{{ column_menu_title | escape }}</h2>
             <ul class="header__submenu-list">
               {% for menu_link in column_menu.links %}
                 <li>

@@ -72,7 +72,7 @@
       <p class="home-hero__eyebrow">{{ section.settings.eyebrow | escape }}</p>
     {%- endif -%}
     {%- if hero_heading != blank -%}
-      <h1>{{ hero_heading | escape }}</h1>
+      <h1 class="section-heading--primary">{{ hero_heading | escape }}</h1>
     {%- endif -%}
     {%- if section.settings.subheading != blank -%}
       <p class="home-hero__subheading">{{ section.settings.subheading | escape }}</p>
@@ -80,7 +80,6 @@
     {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
       <a class="home-hero__button theme-button--{{ section.settings.button_style | default: 'primary' }}" href="{{ section.settings.button_link }}">
         {{ section.settings.button_label | escape }}
-        <span aria-hidden="true">&#8599;</span>
       </a>
     {%- endif -%}
   </div>
@@ -265,11 +264,11 @@
     display: inline-flex;
     min-height: 48px;
     align-items: center;
-    justify-content: space-between;
-    gap: 24px;
+    justify-content: center;
     margin-block-start: 24px;
     padding-inline: 16px;
     border: 1px solid currentColor;
+    border-radius: 8px;
     background: var(--section-button, var(--color-background, #fff));
     color: var(--section-button-text, var(--color-foreground, #20211e));
     font-size: var(--font-size-base, 14px);
@@ -466,6 +465,8 @@
 
 {% render 'section-color-scheme', section: section %}
 
+{% render 'section-heading-typography', section: section %}
+
 {% render 'section-spacing', section: section %}
 
 {% schema %}
@@ -493,6 +494,9 @@
     }
   ],
   "settings": [
+    { "type": "checkbox", "id": "customize_heading_typography", "label": "t:labels.customize_heading_typography", "default": false },
+    { "type": "font_picker", "id": "heading_font", "label": "t:labels.heading_font", "default": "montserrat_n4", "visible_if": "{{ section.settings.customize_heading_typography }}" },
+    { "type": "range", "id": "heading_size", "label": "t:labels.heading_size", "min": 12, "max": 96, "step": 2, "unit": "px", "default": 40, "visible_if": "{{ section.settings.customize_heading_typography }}" },
     {
       "type": "range",
       "id": "section_space_above",

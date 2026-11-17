@@ -4,7 +4,9 @@
   @param {product} product - The product to display
   @param {string} [heading_tag] - Heading element, defaults to h3
   @param {boolean} [show_from_price] - Show only a compact minimum price without compare-at pricing
-  @param {string} [card_title] - Optional alternate title to display on the card
+  @param {string} [card_title] - Optional fallback when the product has no display name
+  @param {boolean} [image_preview_only] - Show only the second image on hover, without gallery controls
+  @param {number} [card_index] - Card position for prioritizing early images
 
   @example
   {% render 'product-card', product: product %}
@@ -13,10 +15,25 @@
 {% liquid
   assign preview_image = product.images[1]
   assign card_heading_tag = heading_tag | default: 'h3'
-  assign card_title = card_title | default: product.title
+  assign display_name = product.metafields.custom.display_name.value | strip
+  assign card_title = display_name | default: card_title | default: product.title
+  assign primary_loading = 'lazy'
+  assign preview_alt = preview_image.alt | default: product.title
+  assign show_minimum_price = show_from_price
+  if image_preview_only
+    assign preview_alt = ''
+    if product.price_varies
+      assign show_minimum_price = true
+    endif
+    if section.index and section.index <= 2
+      if card_index and card_index <= 4
+        assign primary_loading = 'eager'
+      endif
+    endif
+  endif
 %}
 {%- capture card_price -%}
-  {%- if show_from_price -%}
+  {%- if show_minimum_price -%}
     {%- assign minimum_price = product.price_min | money_without_trailing_zeros | remove: ' ' -%}
     {{ 'products.product.price_from' | t: price: minimum_price }}
   {%- elsif product.price_varies -%}
@@ -25,20 +42,22 @@
     {{ product.price | money }}
   {%- endif -%}
 {%- endcapture -%}
-{%- capture card_gallery_json -%}
-  [
-    {%- for image in product.images -%}
-      {"src":{{ image | image_url: width: 900 | json }},"alt":{{ image.alt | default: product.title | json }}}{% unless forloop.last %},{% endunless %}
-    {%- endfor -%}
-  ]
-{%- endcapture -%}
-<article class="featured-collection__card" data-product-card>
+{%- unless image_preview_only -%}
+  {%- capture card_gallery_json -%}
+    [
+      {%- for image in product.images -%}
+        {"src":{{ image | image_url: width: 900 | json }},"alt":{{ image.alt | default: product.title | json }}}{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  {%- endcapture -%}
+{%- endunless -%}
+<article class="featured-collection__card"{% unless image_preview_only %} data-product-card{% endunless %}>
   <div class="featured-collection__media" data-card-gallery-container>
     <a class="featured-collection__image{% if preview_image != blank %} has-preview{% endif %}" href="{{ product.url }}" data-card-main-link>
       {%- if product.featured_image != blank -%}
-        {{ product.featured_image | image_url: width: 900 | image_tag: class: 'featured-collection__image-primary', widths: '300, 450, 600, 750, 900', sizes: '(min-width: 750px) 25vw, 50vw', loading: 'lazy', alt: product.featured_image.alt | default: product.title }}
+        {{ product.featured_image | image_url: width: 900 | image_tag: class: 'featured-collection__image-primary', widths: '300, 450, 600, 750, 900', sizes: '(min-width: 750px) 25vw, 50vw', loading: primary_loading, alt: product.featured_image.alt | default: product.title }}
         {%- if preview_image != blank -%}
-          {{ preview_image | image_url: width: 900 | image_tag: class: 'featured-collection__image-alternate', widths: '300, 450, 600, 750, 900', sizes: '(min-width: 750px) 25vw, 50vw', loading: 'lazy', alt: preview_image.alt | default: product.title }}
+          {{ preview_image | image_url: width: 900 | image_tag: class: 'featured-collection__image-alternate', widths: '300, 450, 600, 750, 900', sizes: '(min-width: 750px) 25vw, 50vw', loading: 'lazy', alt: preview_alt }}
         {%- endif -%}
       {%- else -%}
         {{ 'product-1' | placeholder_svg_tag: 'featured-collection__placeholder' }}
@@ -48,24 +67,41 @@
         {%- if product.available == false -%}
           <span class="featured-collection__badge">{{ 'products.product.sold_out' | t }}</span>
         {%- elsif product.compare_at_price_min > product.price_min -%}
-          <span class="featured-collection__badge featured-collection__badge--sale">{{ 'products.product.sale' | t }}</span>
+          <span class="featured-collection__badge featured-collection__badge--sale">
+            {%- if image_preview_only and product.has_only_default_variant -%}
+              {%- assign variant = product.selected_or_first_available_variant -%}
+              {%- assign discount = variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round -%}
+              {{- 'products.product.percent_off' | t: percent: discount -}}
+            {%- else -%}
+              {{- 'products.product.sale' | t -}}
+            {%- endif -%}
+          </span>
         {%- endif -%}
       </span>
     </a>
-    <script type="application/json" data-card-gallery-data>{{ card_gallery_json }}</script>
-    <div class="featured-collection__gallery-controls" data-card-gallery-controls{% if product.images.size < 2 %} hidden{% endif %}>
-      <button type="button" data-card-gallery-step="-1" aria-label="{{ 'products.product.previous_image' | t }}">&#8592;</button>
-      <button type="button" data-card-gallery-step="1" aria-label="{{ 'products.product.next_image' | t }}">&#8594;</button>
-    </div>
+    {%- unless image_preview_only -%}
+      <script type="application/json" data-card-gallery-data>{{ card_gallery_json }}</script>
+      <div class="featured-collection__gallery-controls" data-card-gallery-controls{% if product.images.size < 2 %} hidden{% endif %}>
+        <button type="button" data-card-gallery-step="-1" aria-label="{{ 'products.product.previous_image' | t }}">&#8592;</button>
+        <button type="button" data-card-gallery-step="1" aria-label="{{ 'products.product.next_image' | t }}">&#8594;</button>
+      </div>
+    {%- endunless -%}
   </div>
   <div class="featured-collection__meta">
     <div class="featured-collection__details">
-      <{{ card_heading_tag }}><a href="{{ product.url }}" data-card-title-link>{{ card_title | escape }}</a></{{ card_heading_tag }}>
+      <{{ card_heading_tag }} class="section-heading--secondary"><a href="{{ product.url }}" data-card-title-link>{{ card_title | escape }}</a></{{ card_heading_tag }}>
       <p class="featured-collection__price">
         <span data-card-displayed-price>{{ card_price | strip }}</span>
-        {% unless show_from_price %}
-          <s data-card-displayed-compare-price{% unless product.compare_at_price_min > product.price_min %} hidden{% endunless %}>{{ product.compare_at_price_min | money }}</s>
-        {% endunless %}
+        {% if image_preview_only %}
+          {% assign variant = product.selected_or_first_available_variant %}
+          {% if product.has_only_default_variant and variant.compare_at_price > variant.price %}
+            <s>{{ variant.compare_at_price | money }}</s>
+          {% endif %}
+        {% else %}
+          {% unless show_from_price %}
+            <s data-card-displayed-compare-price{% unless product.compare_at_price_min > product.price_min %} hidden{% endunless %}>{{ product.compare_at_price_min | money }}</s>
+          {% endunless %}
+        {% endif %}
       </p>
     </div>
   </div>
@@ -133,11 +169,11 @@
 
   .featured-collection__gallery-controls button {
     display: grid;
-    width: 36px;
+    width: 40px;
     height: 40px;
     place-items: center;
     border: 1px solid rgb(32 33 30 / 16%);
-    border-radius: 0;
+    border-radius: 50%;
     background: rgb(255 255 255 / 84%);
     color: #5c5c5c;
     font: inherit;

@@ -1,15 +1,13 @@
 {% doc %}
-  Displays selectable related products as color swatches on product pages.
-
-  The current product is included automatically if it isn't in the selected list.
+  Displays available products from a selected collection as color swatches.
 {% enddoc %}
 
 {% liquid
-  assign color_products = block.settings.products
+  assign color_collection = block.settings.collection
+  assign product_collection_handles = product.collections | map: 'handle'
   assign current_variant = product.selected_variant | default: product.selected_or_first_available_variant | default: product.variants.first
   assign selected_size = blank
   assign has_selected_variant = true
-  assign includes_current_product = false
 
   unless product.has_only_default_variant or product.selected_variant != blank
     assign has_selected_variant = false
@@ -26,27 +24,34 @@
       break
     endif
   endfor
-
-  for color_product in color_products
-    if color_product.id == product.id
-      assign includes_current_product = true
-      break
-    endif
-  endfor
 %}
 
-<div class="product-colors" {{ block.shopify_attributes }}>
-  <h2 class="product-colors__heading" id="ProductColorHeading-{{ block.id }}">{{ 'products.product.select_color' | t }}</h2>
-  <div class="product-colors__swatches" role="group" aria-labelledby="ProductColorHeading-{{ block.id }}">
-    {% for color_product in color_products %}
-      {% render 'product-color-swatch', color_product: color_product, current_product: product, has_selected_variant: has_selected_variant, selected_size: selected_size, use_product_primary_image: true %}
-    {% endfor %}
-    {% unless includes_current_product %}
-      {% render 'product-color-swatch', color_product: product, current_product: product, has_selected_variant: has_selected_variant, selected_size: selected_size, use_product_primary_image: true %}
-    {% endunless %}
-  </div>
-  <p class="product-color-status" data-color-status role="status" aria-live="polite" hidden></p>
-</div>
+{% if color_collection != blank %}
+  {% if product_collection_handles contains color_collection.handle %}
+    <div class="product-colors" {{ block.shopify_attributes }}>
+      {% paginate color_collection.products by 50 %}
+        {% capture color_swatches %}
+          {% for color_product in color_collection.products %}
+            {% if color_product.available %}
+              {% render 'product-color-swatch', color_product: color_product, current_product: product, has_selected_variant: has_selected_variant, selected_size: selected_size, use_product_primary_image: true %}
+            {% endif %}
+          {% endfor %}
+        {% endcapture %}
+        {% assign color_swatches = color_swatches | strip %}
+        {% if color_swatches != blank or paginate.pages > 1 %}
+          <h2 class="product-colors__heading section-heading--secondary" id="ProductColorHeading-{{ block.id }}">{{ 'products.product.select_color' | t }}</h2>
+          <div class="product-colors__swatches" role="group" aria-labelledby="ProductColorHeading-{{ block.id }}">
+            {{ color_swatches }}
+          </div>
+          {% if paginate.pages > 1 %}
+            <nav aria-label="{{ 'products.product.color_pages' | t | escape }}">{{ paginate | default_pagination }}</nav>
+          {% endif %}
+          <p class="product-color-status" data-color-status role="status" aria-live="polite" hidden></p>
+        {% endif %}
+      {% endpaginate %}
+    </div>
+  {% endif %}
+{% endif %}
 
 {% stylesheet %}
   .product-colors {
@@ -77,11 +82,10 @@
   "name": "t:blocks.product_color_picker.name",
   "settings": [
     {
-      "type": "product_list",
-      "id": "products",
-      "label": "t:blocks.product_color_picker.settings.products.label",
-      "info": "t:blocks.product_color_picker.settings.products.info",
-      "limit": 50
+      "type": "collection",
+      "id": "collection",
+      "label": "t:blocks.product_color_picker.settings.collection.label",
+      "info": "t:blocks.product_color_picker.settings.collection.info"
     }
   ],
   "presets": [

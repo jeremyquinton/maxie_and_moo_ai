@@ -70,6 +70,38 @@ In the theme editor, open **Theme settings > Colors** to edit or add reusable co
 
 Select a section, enable **Use section color scheme**, and choose its **Color scheme**. The background spans the full section width while content keeps its existing layout. Disable the switch to retain the section's original colors. Image/video overlay text, product status colors, and app-provided styling retain their own controls.
 
+### Section heading typography
+
+Select a section and enable **Customize heading typography** to choose a font and set sizes for its main and secondary headings. Settings apply to the section's own headings and supported theme blocks, not headings in rich text or apps. Leave the switch off to keep the original styling.
+
+### Wide flow selection
+
+Add **Wide flow selection** in the theme editor and select a collection. It displays a full-width carousel on desktop and a two-column grid on mobile. Product cards link to their product pages; on hover, desktop cards show the second image when available.
+
+Product galleries, collection product cards, and featured collection carousels use circular previous/next buttons.
+
+### Product display names
+
+Set the product metafield `custom.display_name` to replace the displayed product title on product pages and collection grids. If it is blank, the product title is used.
+
+### Product color picker
+
+In the product template, select a collection in the **Product color picker** block. The picker appears only when the current product belongs to that collection. Available products appear in the collection's order; set its sort order to **Manually** in Shopify to rearrange them. Each swatch uses the product's `custom.colour_swatch_image` metafield, falling back to its product image when unset. Sold-out products are omitted.
+
+The selection applies to every product using that template. Add a picker block for each color collection or use separate product templates. Existing picker blocks need a collection selected after updating the theme.
+
+### Product size chart
+
+Size options appear as selectable boxes without prices, all visible on page load and arranged two per row on desktop. Selecting a box updates the product variant, main price, and availability.
+
+Select a **Size chart page** in the product section settings. Its link appears right-aligned beside the size label, with a single underline and no arrow. Products without a size option keep a standalone link.
+
+### FAQ page
+
+The page at `/pages/frequently-asked-questions` has no content border, heading accent line, or horizontal rules. Other informational pages keep their existing styling.
+
+FAQ accordion blocks have a subtle bottom divider on each item, without a top border.
+
 ## Theme architecture
 
 ```bash

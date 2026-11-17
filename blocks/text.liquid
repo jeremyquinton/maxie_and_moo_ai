@@ -6,7 +6,7 @@
 {% enddoc %}
 
 <div
-  class="text {{ block.settings.text_style }}"
+  class="text {{ block.settings.text_style }}{% if block.settings.text_style == 'text--title' %} section-heading--primary{% elsif block.settings.text_style == 'text--subtitle' %} section-heading--secondary{% endif %}"
   style="--text-align: {{ block.settings.alignment }}"
   {{ block.shopify_attributes }}
 >

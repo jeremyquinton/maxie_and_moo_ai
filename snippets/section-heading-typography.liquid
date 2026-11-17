@@ -1,0 +1,30 @@
+{% doc %}
+  Applies optional heading typography settings to a section.
+
+  @param {section} section - The section containing the typography settings
+{% enddoc %}
+
+{% if section.settings.customize_heading_typography %}
+  {% assign heading_font = section.settings.heading_font %}
+  {% style %}
+    {{ heading_font | font_face: font_display: 'swap' }}
+
+    #shopify-section-{{ section.id }} :is(.section-heading--primary, .section-heading--secondary) {
+      font-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+      font-style: {{ heading_font.style }};
+      font-weight: {{ heading_font.weight }};
+    }
+
+    {% if section.settings.heading_size != blank %}
+      #shopify-section-{{ section.id }} .section-heading--primary {
+        font-size: {{ section.settings.heading_size }}px;
+      }
+    {% endif %}
+
+    {% if section.settings.secondary_heading_size != blank %}
+      #shopify-section-{{ section.id }} .section-heading--secondary {
+        font-size: {{ section.settings.secondary_heading_size }}px;
+      }
+    {% endif %}
+  {% endstyle %}
+{% endif %}

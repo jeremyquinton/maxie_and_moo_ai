@@ -18,7 +18,7 @@
       {% endif %}
 
       {% if section.settings.heading != blank %}
-        <h2 class="image-with-text__heading" id="ImageWithTextHeading-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+        <h2 class="image-with-text__heading section-heading--primary" id="ImageWithTextHeading-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
       {% endif %}
 
       {% if section.settings.description != blank %}
@@ -89,7 +89,7 @@
   }
 
   .image-with-text__eyebrow {
-    margin: 0 0 28px;
+    margin: 0 0 16px;
     color: var(--section-foreground, #754f3d);
     font-size: var(--font-size-base, 14px);
     font-weight: 500;
@@ -99,7 +99,7 @@
 
   .image-with-text__heading {
     max-width: 15ch;
-    margin: 0 0 24px;
+    margin: 0 0 16px;
     color: inherit;
     font-family: var(--font-primary--family);
     font-size: clamp(30px, 3vw, 42px);
@@ -113,11 +113,16 @@
     max-width: 48ch;
     color: var(--section-foreground, #754f3d);
     font-size: var(--font-size-base, 14px);
-    line-height: 1.7;
+    line-height: 1.5;
   }
 
-  .image-with-text__details {
-    margin-block-start: 34px;
+  .image-with-text__description + .image-with-text__details {
+    margin-block-start: 16px;
+  }
+
+  .image-with-text__description p,
+  .image-with-text__details p {
+    margin-block: 0 0.75em;
   }
 
   .image-with-text__description > :first-child,
@@ -136,7 +141,7 @@
     max-width: 100%;
     align-items: center;
     justify-content: center;
-    margin-block-start: 38px;
+    margin-block-start: 24px;
     padding: 12px 30px;
     border-radius: 8px;
     background: var(--section-button, #a9692f);
@@ -186,20 +191,12 @@
     }
 
     .image-with-text__eyebrow {
-      margin-block-end: 18px;
+      margin-block-end: 12px;
     }
 
     .image-with-text__heading {
-      margin-block-end: 18px;
+      margin-block-end: 12px;
       font-size: 32px;
-    }
-
-    .image-with-text__details {
-      margin-block-start: 24px;
-    }
-
-    .image-with-text__button {
-      margin-block-start: 26px;
     }
   }
 
@@ -212,12 +209,17 @@
 
 {% render 'section-color-scheme', section: section %}
 
+{% render 'section-heading-typography', section: section %}
+
 {% render 'section-spacing', section: section %}
 
 {% schema %}
 {
   "name": "t:general.image_with_text",
   "settings": [
+    { "type": "checkbox", "id": "customize_heading_typography", "label": "t:labels.customize_heading_typography", "default": false },
+    { "type": "font_picker", "id": "heading_font", "label": "t:labels.heading_font", "default": "montserrat_n4", "visible_if": "{{ section.settings.customize_heading_typography }}" },
+    { "type": "range", "id": "heading_size", "label": "t:labels.heading_size", "min": 12, "max": 96, "step": 2, "unit": "px", "default": 40, "visible_if": "{{ section.settings.customize_heading_typography }}" },
     {
       "type": "range",
       "id": "section_space_above",

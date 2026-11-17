@@ -91,6 +91,9 @@
   "products": {
     "featured_collection": {
       "empty": "Choose a collection in this section's settings to display products.",
+      "next_products": "Next products",
+      "no_products": "This collection has no products to display.",
+      "previous_products": "Previous products",
       "select_collection": "Select a collection to feature.",
       "view_all": "View all"
     },
@@ -102,6 +105,7 @@
       "combination_unavailable": "This combination is unavailable",
       "color_load_error": "We couldn't load that color. Opening its product page instead.",
       "color": "Color",
+      "color_pages": "Color options pages",
       "decrease_quantity": "Decrease quantity",
       "gallery_thumbnails": "Product images",
       "gallery_position": "Image {{ current }} of {{ total }}",
@@ -112,6 +116,7 @@
       "loading_color": "Loading selected color",
       "increase_quantity": "Increase quantity",
       "only_left": "Only {{ count }} left",
+      "percent_off": "{{ percent }}% off",
       "open_image": "Open product image",
       "close_image": "Close image viewer",
       "tab_delivery": "Delivery",

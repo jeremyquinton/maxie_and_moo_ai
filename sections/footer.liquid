@@ -4,7 +4,7 @@
       {% assign menu_heading = block.settings.heading | default: block.settings.menu.title %}
       <nav class="footer__menu" aria-label="{{ menu_heading | escape }}" {{ block.shopify_attributes }}>
         {% if menu_heading != blank %}
-          <h2 class="footer__heading">{{ menu_heading | escape }}</h2>
+          <h2 class="footer__heading section-heading--secondary">{{ menu_heading | escape }}</h2>
         {% endif %}
         <ul class="footer__links" role="list">
           {% for link in block.settings.menu.links %}
@@ -64,7 +64,6 @@
 
 {% stylesheet %}
   .footer {
-    margin-top: 2rem;
     padding-block: 2rem;
   }
 
@@ -138,6 +137,8 @@
 
 {% render 'section-color-scheme', section: section %}
 
+{% render 'section-heading-typography', section: section %}
+
 {% render 'section-spacing', section: section %}
 
 {% if section.settings.customize_footer_colors %}
@@ -174,6 +175,9 @@
     }
   ],
   "settings": [
+    { "type": "checkbox", "id": "customize_heading_typography", "label": "t:labels.customize_heading_typography", "default": false },
+    { "type": "font_picker", "id": "heading_font", "label": "t:labels.heading_font", "default": "montserrat_n4", "visible_if": "{{ section.settings.customize_heading_typography }}" },
+    { "type": "range", "id": "secondary_heading_size", "label": "t:labels.secondary_heading_size", "min": 12, "max": 96, "step": 2, "unit": "px", "default": 20, "visible_if": "{{ section.settings.customize_heading_typography }}" },
     {
       "type": "range",
       "id": "section_space_above",

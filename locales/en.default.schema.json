@@ -27,9 +27,9 @@
     "product_color_picker": {
       "name": "Product color picker",
       "settings": {
-        "products": {
-          "label": "Color products",
-          "info": "Select products in the order you want their swatches to appear. Include the current product to position it in the list; otherwise it is added at the end."
+        "collection": {
+          "label": "Color collection",
+          "info": "Available products follow the collection order. Use manual sorting in Shopify to change it."
         }
       }
     },
@@ -44,6 +44,7 @@
     "404": "Not found",
     "announcement": "Announcement bar",
     "apps": "Apps",
+    "article": "Article",
     "block": "Block",
     "blog": "Blog",
     "cart": "Cart",
@@ -64,6 +65,7 @@
     "fonts": "Fonts",
     "footer": "Footer",
     "featured_collection": "Featured collection",
+    "wide_flow_featured": "Wide flow selection",
     "group": "Group",
     "header": "Header",
     "heading_with_text": "Heading with text",
@@ -89,6 +91,28 @@
     "typography": "Typography"
   },
   "sections": {
+    "playmat_sizes": {
+      "name": "Playmat sizes",
+      "eyebrow": "Eyebrow",
+      "description": "Description",
+      "link_label": "Link text",
+      "link_url": "Link destination",
+      "text_color": "Text color",
+      "accent_color": "Accent color",
+      "benefits_background": "Benefits background",
+      "size": "Size",
+      "image": "Image",
+      "image_info": "Optional. Without an image, a tile layout is shown.",
+      "columns": "Tile columns",
+      "rows": "Tile rows",
+      "size_label": "Size label",
+      "dimensions": "Dimensions",
+      "benefit": "Benefit",
+      "icon": "Icon",
+      "icon_puzzle": "Puzzle",
+      "icon_layers": "Layers",
+      "icon_home": "Home"
+    },
     "heading_with_text": {
       "body": "Body",
       "default_heading": "Expandable EVA foam baby playmat - stylish, soft & practical",
@@ -229,6 +253,8 @@
           "settings": {
             "button_label": { "label": "Button label" },
             "button_link": { "label": "Button link" },
+            "content_alignment": { "label": "Content alignment" },
+            "content_vertical_alignment": { "label": "Content vertical position" },
             "heading": { "label": "Heading" },
             "image": { "label": "Image" },
             "image_position": { "label": "Image position" }
@@ -277,6 +303,10 @@
     }
   },
   "labels": {
+    "customize_heading_typography": "Customize heading typography",
+    "heading_font": "Heading font",
+    "heading_size": "Main heading size",
+    "secondary_heading_size": "Secondary heading size",
     "primary_button_color": "Primary button color",
     "primary_button_text_color": "Primary button text color",
     "button_style": "Button style",

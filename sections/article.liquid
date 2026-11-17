@@ -8,7 +8,7 @@
 
 <article class="page-content full-width">
   <header class="page-content__header">
-    <h1 class="page-content__title">{{ article.title | escape }}</h1>
+    <h1 class="page-content__title section-heading--primary">{{ article.title | escape }}</h1>
     {% assign date = article.published_at | time_tag: format: 'date' %}
     <p class="article-page__metadata">{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
     <span class="page-content__accent" aria-hidden="true"></span>
@@ -25,7 +25,7 @@
 
     {% if blog.comments_enabled? %}
       <div class="article-page__comments">
-        <h2>{{ 'blog.article_comments' | t }}</h2>
+        <h2 class="section-heading--secondary">{{ 'blog.article_comments' | t }}</h2>
 
         <div id="comments">
           {% paginate article.comments by 10 %}
@@ -42,7 +42,7 @@
         </div>
 
         {% form 'new_comment', article %}
-          <h2>{{ 'blog.comment_form_title' | t }}</h2>
+          <h2 class="section-heading--secondary">{{ 'blog.comment_form_title' | t }}</h2>
 
           {{ form.errors | default_errors }}
 
@@ -129,12 +129,18 @@
 
 {% render 'section-color-scheme', section: section %}
 
+{% render 'section-heading-typography', section: section %}
+
 {% render 'section-spacing', section: section %}
 
 {% schema %}
 {
   "name": "t:general.article",
   "settings": [
+    { "type": "checkbox", "id": "customize_heading_typography", "label": "t:labels.customize_heading_typography", "default": false },
+    { "type": "font_picker", "id": "heading_font", "label": "t:labels.heading_font", "default": "montserrat_n4", "visible_if": "{{ section.settings.customize_heading_typography }}" },
+    { "type": "range", "id": "heading_size", "label": "t:labels.heading_size", "min": 12, "max": 96, "step": 2, "unit": "px", "default": 40, "visible_if": "{{ section.settings.customize_heading_typography }}" },
+    { "type": "range", "id": "secondary_heading_size", "label": "t:labels.secondary_heading_size", "min": 12, "max": 96, "step": 2, "unit": "px", "default": 20, "visible_if": "{{ section.settings.customize_heading_typography }}" },
     {
       "type": "range",
       "id": "section_space_above",
