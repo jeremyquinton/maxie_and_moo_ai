@@ -26,7 +26,7 @@
       hidden
       disabled
     >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m15 4-8 8 8 8"/></svg>
+      {% render 'carousel-chevron', previous: true %}
     </button>
     <button
       class="wide-flow-featured__arrow wide-flow-featured__arrow--next"
@@ -37,7 +37,7 @@
       hidden
       disabled
     >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m9 4 8 8-8 8"/></svg>
+      {% render 'carousel-chevron' %}
     </button>
   </section>
 {%- elsif request.design_mode -%}
@@ -75,6 +75,10 @@
 
   .wide-flow-featured .featured-collection__image {
     background: #f5f2eb;
+  }
+
+  .wide-flow-featured .featured-collection__image-alternate {
+    background-color: var(--color-background, #fff);
   }
 
   .wide-flow-featured .featured-collection__badge--sale {
@@ -134,11 +138,6 @@
 
   .wide-flow-featured__arrow--next {
     inset-inline-end: 10px;
-  }
-
-  .wide-flow-featured__arrow svg {
-    width: 24px;
-    height: 24px;
   }
 
   @media (max-width: 749px) {

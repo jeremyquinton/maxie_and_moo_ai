@@ -40,12 +40,15 @@
     margin-inline: auto;
     padding: clamp(24px, 5vw, 56px);
     overflow-x: auto;
-    background: var(--color-background, #fff);
-    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
-    border-radius: 4px;
     font-size: max(16px, var(--font-size-base, 14px));
     line-height: 1.75;
     overflow-wrap: break-word;
+  }
+
+  .shopify-policy__body {
+    background: var(--color-background, #fff);
+    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    border-radius: 4px;
   }
 
   .page-content--policy .shopify-policy__container {
@@ -57,10 +60,6 @@
   .page-content--faq .page-content__accent,
   .page-content--faq hr {
     display: none;
-  }
-
-  .page-content--faq .page-content__body {
-    border: 0;
   }
 
   :is(.page-content__richtext, .shopify-policy__body > div) > * + * {

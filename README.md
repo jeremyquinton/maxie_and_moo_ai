@@ -64,6 +64,10 @@ Select the theme to update. This skips JSON templates, settings, and locale file
 
 When you're ready to make an unpublished theme live, run `shopify theme publish` and select the theme. See the [Shopify CLI theme push documentation](https://shopify.dev/docs/api/shopify-cli/theme/theme-push) for more options.
 
+### Measuring storefront performance
+
+For Lighthouse in Chrome, open the development preview and use the mobile preset. For PageSpeed Insights, use the public storefront URL once the theme is live, or a Shopify share preview link that works when signed out. Confirm the tested page is the intended theme. Preview tooling adds requests that customers do not see, so compare scores only under matching conditions and retest the primary domain after publishing.
+
 ### Section color schemes
 
 In the theme editor, open **Theme settings > Colors** to edit or add reusable color schemes. Three starting schemes are included: white, pale green, and charcoal. Each scheme defines background, optional gradient, text, link, and button colors.
@@ -76,9 +80,11 @@ Select a section and enable **Customize heading typography** to choose a font an
 
 ### Wide flow selection
 
-Add **Wide flow selection** in the theme editor and select a collection. It displays a full-width carousel on desktop and a two-column grid on mobile. Product cards link to their product pages; on hover, desktop cards show the second image when available.
+Add **Wide flow selection** in the theme editor and select a collection. It displays a full-width carousel on desktop and a two-column grid on mobile. Product cards link to their product pages; on hover, the second image replaces the first without cropping. Gaps around it use the solid background colour from the section's colour scheme, or the theme's background colour if no scheme is enabled.
 
-Product galleries, collection product cards, and featured collection carousels use circular previous/next buttons.
+**Featured collection** uses the same background colour for gaps around images shown on hover or while browsing a product card's gallery.
+
+Product galleries, collection product cards, and featured collection carousels use circular previous/next buttons with matching Wide flow chevrons.
 
 ### Product display names
 
@@ -90,15 +96,21 @@ In the product template, select a collection in the **Product color picker** blo
 
 The selection applies to every product using that template. Add a picker block for each color collection or use separate product templates. Existing picker blocks need a collection selected after updating the theme.
 
+The selected color swatch and size box use the custom **Add to cart button color** if enabled, otherwise the section's color scheme or the theme's primary button color.
+
 ### Product size chart
 
-Size options appear as selectable boxes without prices, all visible on page load and arranged two per row on desktop. Selecting a box updates the product variant, main price, and availability.
+Size options appear as selectable boxes without prices, all visible on page load and arranged two per row on desktop. Selecting a box updates the product variant, main price, and availability. The selected box uses the primary button color for its border and a 15% tint of that color for its fill.
 
 Select a **Size chart page** in the product section settings. Its link appears right-aligned beside the size label, with a single underline and no arrow. Products without a size option keep a standalone link.
 
+### Informational pages
+
+Pages using the default Page template use one background across the heading and content, with no border around the content. The Page section's colour scheme still controls the background when enabled.
+
 ### FAQ page
 
-The page at `/pages/frequently-asked-questions` has no content border, heading accent line, or horizontal rules. Other informational pages keep their existing styling.
+The page at `/pages/frequently-asked-questions` also hides its heading accent line and horizontal rules.
 
 FAQ accordion blocks have a subtle bottom divider on each item, without a top border.
 

@@ -32,6 +32,9 @@
 
 <product-details
   class="product-page"
+  {% if section.settings.customize_add_to_cart_colors %}
+    style="--product-custom-button-color: {{ section.settings.add_to_cart_button_color }};"
+  {% endif %}
   data-product-page
   data-section-id="{{ section.id }}"
   data-store-name="{{ shop.name | escape }}"
@@ -79,8 +82,8 @@
         {%- endif -%}
         {%- if product_images.size > 1 -%}
           <span class="product-gallery__count">{{ 'products.product.image_count' | t: count: product_images.size }}</span>
-          <button class="product-gallery__step product-gallery__step--previous" type="button" data-gallery-step="-1" aria-label="{{ 'products.product.previous_image' | t }}">&#8592;</button>
-          <button class="product-gallery__step product-gallery__step--next" type="button" data-gallery-step="1" aria-label="{{ 'products.product.next_image' | t }}">&#8594;</button>
+          <button class="product-gallery__step product-gallery__step--previous" type="button" data-gallery-step="-1" aria-label="{{ 'products.product.previous_image' | t }}">{% render 'carousel-chevron', previous: true %}</button>
+          <button class="product-gallery__step product-gallery__step--next" type="button" data-gallery-step="1" aria-label="{{ 'products.product.next_image' | t }}">{% render 'carousel-chevron' %}</button>
         {%- endif -%}
       </div>
 
@@ -103,7 +106,7 @@
 
       <dialog class="product-lightbox" data-product-lightbox aria-label="{{ 'products.product.image_viewer' | t }}">
         <button class="product-lightbox__close" type="button" data-lightbox-close aria-label="{{ 'products.product.close_image' | t }}">&times;</button>
-        <button class="product-lightbox__step product-lightbox__step--previous" type="button" data-gallery-step="-1" aria-label="{{ 'products.product.previous_image' | t }}">&#8592;</button>
+        <button class="product-lightbox__step product-lightbox__step--previous" type="button" data-gallery-step="-1" aria-label="{{ 'products.product.previous_image' | t }}">{% render 'carousel-chevron', previous: true %}</button>
         <img
           class="product-lightbox__image"
           data-lightbox-image
@@ -112,7 +115,7 @@
           height="{{ active_media.preview_image.height | default: 1500 }}"
           alt="{{ active_media.alt | default: product.title | escape }}"
         >
-        <button class="product-lightbox__step product-lightbox__step--next" type="button" data-gallery-step="1" aria-label="{{ 'products.product.next_image' | t }}">&#8594;</button>
+        <button class="product-lightbox__step product-lightbox__step--next" type="button" data-gallery-step="1" aria-label="{{ 'products.product.next_image' | t }}">{% render 'carousel-chevron' %}</button>
         <span class="product-lightbox__count" data-lightbox-count></span>
       </dialog>
     </div>
@@ -264,11 +267,11 @@
               data-add-button
               {% if section.settings.customize_add_to_cart_colors %}
                 style="
-                  --button-custom-color: {{ section.settings.add_to_cart_button_color }};
+                  --button-custom-color: var(--product-selection-accent);
                   --button-custom-text-color: {{ section.settings.add_to_cart_button_text_color }};
-                  background-color: {% if section.settings.add_to_cart_button_style == 'secondary' or section.settings.add_to_cart_button_style == 'tertiary' %}transparent{% else %}{{ section.settings.add_to_cart_button_color }}{% endif %};
-                  color: {% if section.settings.add_to_cart_button_style == 'secondary' or section.settings.add_to_cart_button_style == 'tertiary' %}{{ section.settings.add_to_cart_button_color }}{% else %}{{ section.settings.add_to_cart_button_text_color }}{% endif %};
-                  border-color: {% if section.settings.add_to_cart_button_style == 'tertiary' %}transparent{% else %}{{ section.settings.add_to_cart_button_color }}{% endif %};
+                  background-color: {% if section.settings.add_to_cart_button_style == 'secondary' or section.settings.add_to_cart_button_style == 'tertiary' %}transparent{% else %}var(--product-selection-accent){% endif %};
+                  color: {% if section.settings.add_to_cart_button_style == 'secondary' or section.settings.add_to_cart_button_style == 'tertiary' %}var(--product-selection-accent){% else %}{{ section.settings.add_to_cart_button_text_color }}{% endif %};
+                  border-color: {% if section.settings.add_to_cart_button_style == 'tertiary' %}transparent{% else %}var(--product-selection-accent){% endif %};
                 "
               {% endif %}
               {% unless has_selected_variant and current_variant.available %}disabled{% endunless %}
@@ -330,6 +333,7 @@
 
 {% stylesheet %}
   .product-page {
+    --product-selection-accent: var(--product-custom-button-color, var(--section-button, var(--button-primary-background, #333)));
     --product-ink: #20211e;
     --product-muted: #777971;
     --product-line: #d8d9d2;
@@ -692,8 +696,8 @@
   }
 
   .product-option__choice input:checked + .product-option__size {
-    border-color: var(--product-ink);
-    background: var(--product-surface);
+    border-color: var(--product-selection-accent);
+    background-color: color-mix(in srgb, var(--product-selection-accent) 15%, transparent);
     color: var(--product-ink);
   }
 
@@ -739,7 +743,7 @@
   }
 
   .product-option__choice input:checked + .product-option__swatch {
-    outline: 1px solid var(--product-ink);
+    outline: 1px solid var(--product-selection-accent);
     outline-offset: 2px;
   }
 

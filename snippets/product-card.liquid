@@ -82,8 +82,8 @@
     {%- unless image_preview_only -%}
       <script type="application/json" data-card-gallery-data>{{ card_gallery_json }}</script>
       <div class="featured-collection__gallery-controls" data-card-gallery-controls{% if product.images.size < 2 %} hidden{% endif %}>
-        <button type="button" data-card-gallery-step="-1" aria-label="{{ 'products.product.previous_image' | t }}">&#8592;</button>
-        <button type="button" data-card-gallery-step="1" aria-label="{{ 'products.product.next_image' | t }}">&#8594;</button>
+        <button type="button" data-card-gallery-step="-1" aria-label="{{ 'products.product.previous_image' | t }}">{% render 'carousel-chevron', previous: true %}</button>
+        <button type="button" data-card-gallery-step="1" aria-label="{{ 'products.product.next_image' | t }}">{% render 'carousel-chevron' %}</button>
       </div>
     {%- endunless -%}
   </div>
@@ -266,6 +266,12 @@
     .featured-collection__card:not(.is-gallery-browsing) .featured-collection__image.has-preview:hover .featured-collection__image-alternate,
     .featured-collection__card:not(.is-gallery-browsing) .featured-collection__image.has-preview:focus-visible .featured-collection__image-alternate {
       opacity: 1;
+    }
+  }
+
+  @media not all and (hover: hover) and (pointer: fine) {
+    .featured-collection__image .featured-collection__image-alternate {
+      display: none;
     }
   }
 

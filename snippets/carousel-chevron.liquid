@@ -1,0 +1,9 @@
+{% doc %}
+  Renders a decorative chevron for a labelled carousel button.
+
+  @param {boolean} [previous] - Point left instead of right.
+{% enddoc %}
+
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+  <path d="{% if previous %}m15 4-8 8 8 8{% else %}m9 4 8 8-8 8{% endif %}"/>
+</svg>

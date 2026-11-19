@@ -12,9 +12,9 @@
         <p class="featured-collection__eyebrow">{{ section.settings.eyebrow | escape }}</p>
       {%- endif -%}
       <div class="featured-collection__title-row">
-        <button class="featured-collection__scroll featured-collection__scroll--previous" type="button" data-featured-scroll="-1" aria-label="{{ 'products.product.previous_image' | t }}" disabled>&#8592;</button>
+        <button class="featured-collection__scroll featured-collection__scroll--previous" type="button" data-featured-scroll="-1" aria-label="{{ 'products.product.previous_image' | t }}" disabled>{% render 'carousel-chevron', previous: true %}</button>
         <h2 class="section-heading--primary">{{ featured_heading | escape }}</h2>
-        <button class="featured-collection__scroll featured-collection__scroll--next" type="button" data-featured-scroll="1" aria-label="{{ 'products.product.next_image' | t }}">&#8594;</button>
+        <button class="featured-collection__scroll featured-collection__scroll--next" type="button" data-featured-scroll="1" aria-label="{{ 'products.product.next_image' | t }}">{% render 'carousel-chevron' %}</button>
       </div>
       {%- if section.settings.show_view_all -%}
         <a class="featured-collection__view-all" href="{{ featured_collection.url }}">
@@ -44,6 +44,11 @@
     margin-inline: 0;
     padding-inline: var(--page-margin, 24px);
     padding-block: 48px 64px;
+  }
+
+  .featured-collection .featured-collection__image-alternate,
+  .featured-collection .is-gallery-browsing .featured-collection__image-primary {
+    background-color: var(--color-background, #fff);
   }
 
   .featured-collection__header {

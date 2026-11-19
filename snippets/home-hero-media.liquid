@@ -1,0 +1,22 @@
+{% doc %}
+  Renders a hero photo with an optional mobile-specific crop.
+
+  @param {image} image - Fallback hero image
+  @param {image} [mobile_image] - Image for viewports below 750px
+  @param {string} loading - Browser loading policy
+  @param {string} priority - Browser fetch priority
+  @param {string} [alt] - Image alternative text
+{% enddoc %}
+
+<picture class="home-hero__media">
+  {%- if mobile_image != blank -%}
+    {%- assign mobile_max_width = mobile_image.width | at_most: 1200 -%}
+    {%- assign mobile_widths = '400,600,800,1000' | split: ',' -%}
+    <source
+      media="(max-width: 749px)"
+      sizes="100vw"
+      srcset="{% for candidate in mobile_widths %}{% assign candidate_width = candidate | plus: 0 %}{% if candidate_width < mobile_max_width %}{{ mobile_image | image_url: width: candidate_width | escape }} {{ candidate_width }}w, {% endif %}{% endfor %}{{ mobile_image | image_url: width: mobile_max_width | escape }} {{ mobile_max_width }}w"
+    >
+  {%- endif -%}
+  {{ image | image_url: width: 2400 | image_tag: class: 'home-hero__image', widths: '750, 1100, 1500, 1900, 2400', sizes: '100vw', loading: loading, fetchpriority: priority, alt: alt }}
+</picture>

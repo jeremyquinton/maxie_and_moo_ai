@@ -6,12 +6,12 @@
 <div class="site-logo full-width" style="--site-logo-width: {{ section.settings.logo_width }}px">
   <a class="site-logo__link" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
     {%- if standard_logo != blank -%}
-      {{ standard_logo | image_url: width: 1000 | image_tag: class: 'site-logo__image site-logo__image--standard', widths: '160, 240, 320, 480, 640, 800, 1000', sizes: '(max-width: 600px) 70vw, 500px', loading: 'eager', alt: shop.name }}
+      {% render 'site-logo-image', image: standard_logo, max_width: section.settings.logo_width, class: 'site-logo__image site-logo__image--standard', alt: shop.name %}
     {%- else -%}
       <span class="site-logo__text site-logo__image--standard">{{ shop.name | escape }}</span>
     {%- endif -%}
     {%- if overlay_logo != blank -%}
-      {{ overlay_logo | image_url: width: 1000 | image_tag: class: 'site-logo__image site-logo__image--overlay', widths: '160, 240, 320, 480, 640, 800, 1000', sizes: '(max-width: 600px) 70vw, 500px', loading: 'eager', alt: '' }}
+      {% render 'site-logo-image', image: overlay_logo, max_width: section.settings.logo_width, class: 'site-logo__image site-logo__image--overlay', alt: '' %}
     {%- else -%}
       <span class="site-logo__text site-logo__image--overlay" aria-hidden="true">{{ shop.name | escape }}</span>
     {%- endif -%}
