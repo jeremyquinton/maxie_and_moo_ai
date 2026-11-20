@@ -1,6 +1,6 @@
 <section
-  class="background-video full-width"
-  style="--background-video-height: {{ section.settings.desktop_height }}px; --background-video-mobile-height: {{ section.settings.mobile_height }}px; --background-video-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }}"
+  class="background-video full-width{% if section.settings.show_full_video %} background-video--full-frame{% endif %}"
+  style="--background-video-height: {{ section.settings.desktop_height }}px; --background-video-mobile-height: {{ section.settings.mobile_height }}px; --background-video-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }}; --background-video-aspect-ratio: {{ section.settings.video.aspect_ratio | default: 1.7778 }}"
 >
   <div class="background-video__media" aria-hidden="true">
     {%- if section.settings.video != blank -%}
@@ -52,6 +52,27 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  .background-video.background-video--full-frame {
+    height: auto;
+  }
+
+  .background-video--full-frame::before {
+    content: '';
+    display: block;
+    grid-area: 1 / 1;
+    width: 100%;
+    aspect-ratio: var(--background-video-aspect-ratio);
+  }
+
+  .background-video--full-frame .background-video__asset {
+    object-fit: contain;
+  }
+
+  .background-video--full-frame .background-video__content {
+    grid-area: 1 / 1;
+    padding-block: 16px;
   }
 
   .background-video__placeholder {
@@ -188,6 +209,13 @@
       "id": "video",
       "label": "t:sections.background_video.settings.video.label",
       "info": "t:sections.background_video.settings.video.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_full_video",
+      "label": "t:sections.background_video.settings.show_full_video.label",
+      "info": "t:sections.background_video.settings.show_full_video.info",
+      "default": false
     },
     {
       "type": "text",

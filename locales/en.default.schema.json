@@ -286,9 +286,13 @@
         "heading": { "label": "Heading" },
         "mobile_height": { "label": "Mobile height" },
         "overlay_opacity": { "label": "Overlay strength" },
+        "show_full_video": {
+          "label": "Show full video",
+          "info": "Match the video aspect ratio on desktop and mobile instead of using fixed heights. Long text may add space around the video."
+        },
         "video": {
           "label": "Video",
-          "info": "Recommended: 1920 × 1080 px (16:9). The video fills the selected desktop and mobile heights, so keep important content near the center."
+          "info": "Recommended: 1920 × 1080 px (16:9). With fixed heights, the video is cropped to fill the section."
         }
       }
     }

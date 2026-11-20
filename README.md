@@ -64,9 +64,36 @@ Select the theme to update. This skips JSON templates, settings, and locale file
 
 When you're ready to make an unpublished theme live, run `shopify theme publish` and select the theme. See the [Shopify CLI theme push documentation](https://shopify.dev/docs/api/shopify-cli/theme/theme-push) for more options.
 
+#### Versioning after launch
+
+Use Git for theme code history and Shopify draft themes for preview and rollback. Avoid pushing development changes directly to the live theme.
+
+1. **Mark the first live release.** Name the live theme `Maxie & Moo v1.0.0` and tag the exact Git commit that matches the published code. Push the tag to GitHub. Do not tag a working copy with unreleased changes as `v1.0.0`.
+2. **Develop on a branch.** Use `shopify theme dev` for local preview and `shopify theme check` before release. Use a patch version such as `v1.0.1` for a fix or a minor version such as `v1.1.0` for a new feature.
+3. **Duplicate the live theme.** In **Shopify Admin > Online Store > Themes**, [duplicate the live theme](https://help.shopify.com/en/manual/online-store/themes/managing-themes/duplicating-themes) and name the draft for the next release, for example `Maxie & Moo v1.1.0`. Note its theme ID and confirm it is unpublished before uploading.
+4. **Upload and review the draft.** For code-only changes, use `--only` for each changed file the release needs. For example, replace `DRAFT_THEME_ID` with the duplicate's ID:
+
+   ```bash
+   shopify theme push --theme DRAFT_THEME_ID --nodelete \
+     --only sections/header.liquid \
+     --only sections/logo.liquid \
+     --only snippets/site-logo-image.liquid
+   ```
+
+   A duplicate starts with the live theme's current Theme Editor settings. A full push from an older local copy can overwrite them. If a release changes templates or settings, merge the relevant changes deliberately rather than overwriting them or skipping all JSON. Before publishing, check for Theme Editor changes made to the live theme since the duplicate was created and carry them over as needed.
+5. **Publish and keep a rollback option.** Preview the draft on mobile and desktop, then publish the tested draft and tag its Git commit with the release version. Keep the previous live theme in the Shopify library. To roll back, republish that previous theme; doing so changes the storefront theme, not orders or inventory.
+
 ### Measuring storefront performance
 
 For Lighthouse in Chrome, open the development preview and use the mobile preset. For PageSpeed Insights, use the public storefront URL once the theme is live, or a Shopify share preview link that works when signed out. Confirm the tested page is the intended theme. Preview tooling adds requests that customers do not see, so compare scores only under matching conditions and retest the primary domain after publishing.
+
+### Background video
+
+For a landscape video, enable **Show full video** in the Background video section. The section follows the uploaded video's aspect ratio on desktop and mobile instead of cropping it to the fixed height settings. Long overlay text may add space around the video. Leave the setting off to keep the existing fixed-height layout.
+
+### Header logo
+
+The header logo links to the storefront home page. Its **Logo width** setting caps the size; on mobile, the header also leaves space for the menu and cart.
 
 ### Section color schemes
 
@@ -80,7 +107,7 @@ Select a section and enable **Customize heading typography** to choose a font an
 
 ### Wide flow selection
 
-Add **Wide flow selection** in the theme editor and select a collection. It displays a full-width carousel on desktop and a two-column grid on mobile. Product cards link to their product pages; on hover, the second image replaces the first without cropping. Gaps around it use the solid background colour from the section's colour scheme, or the theme's background colour if no scheme is enabled.
+Add **Wide flow selection** in the theme editor and select a collection. It displays a full-width carousel with arrows on desktop. On mobile, two mats are visible at a time in a single row, with the next mat peeking in where available; swipe horizontally to see more. Product cards link to their product pages; on hover, the second image replaces the first without cropping. Gaps around it use the solid background colour from the section's colour scheme, or the theme's background colour if no scheme is enabled.
 
 **Featured collection** uses the same background colour for gaps around images shown on hover or while browsing a product card's gallery.
 

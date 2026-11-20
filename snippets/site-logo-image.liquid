@@ -8,10 +8,10 @@
 {% enddoc %}
 
 {%- liquid
-  assign mobile_width = image.aspect_ratio | times: 56 | ceil | at_most: max_width
-  assign desktop_width = image.aspect_ratio | times: 68 | ceil | at_most: max_width
+  assign mobile_width = image.aspect_ratio | times: 70 | ceil | at_most: max_width
+  assign desktop_width = image.aspect_ratio | times: 80 | ceil | at_most: max_width
 -%}
 {%- capture logo_sizes -%}
-  (max-width: 749px) min({{ mobile_width }}px, calc(100vw - 32px)), min({{ desktop_width }}px, calc(100vw - 32px))
+  (max-width: 749px) min({{ mobile_width }}px, calc(100vw - 144px)), min({{ desktop_width }}px, calc(100vw - 32px))
 {%- endcapture -%}
 {{ image | image_url: width: 1000 | image_tag: class: class, widths: '120, 160, 240, 320, 480, 640, 800, 1000', sizes: logo_sizes, loading: 'eager', alt: alt }}

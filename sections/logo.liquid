@@ -42,7 +42,7 @@
   }
 
   .site-header-shell--solid .site-logo {
-    height: 68px;
+    height: var(--site-header-bar-height);
     color: #20211e;
   }
 
@@ -50,14 +50,14 @@
   .site-header-shell--solid.is-sticky .site-logo {
     position: fixed;
     top: 0;
-    height: 68px;
+    height: var(--site-header-bar-height);
     color: #20211e;
   }
 
   .site-logo__link {
     display: grid;
     width: min(var(--site-logo-width), calc(100vw - 32px));
-    height: 68px;
+    height: 80px;
     max-width: 100%;
     max-height: 100%;
     align-items: center;
@@ -111,23 +111,17 @@
 
   @media (max-width: 749px) {
     .site-header-shell--overlay .site-logo,
-    .site-header-shell--solid .site-logo {
-      height: 58px;
+    .site-header-shell--solid .site-logo,
+    .site-header-shell--overlay.is-sticky .site-logo,
+    .site-header-shell--solid.is-sticky .site-logo {
+      height: var(--site-header-bar-height);
       min-height: 0;
       padding-block: 0;
     }
 
-    .site-header-shell--overlay .site-logo__link,
-    .site-header-shell--solid .site-logo__link {
-      height: 56px;
-    }
-
-    .site-header-shell--overlay.is-sticky .site-logo {
-      height: 58px;
-    }
-
-    .site-header-shell--solid.is-sticky .site-logo {
-      height: 58px;
+    .site-logo__link {
+      width: min(var(--site-logo-width), calc(100vw - 144px));
+      height: 70px;
     }
 
     .site-header-shell--overlay.is-sticky .site-logo,
