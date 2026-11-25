@@ -1,7 +1,15 @@
 {% liquid
   assign has_header_menu = false
   if section.settings.menu_column_1 != blank or section.settings.menu_column_2 != blank or section.settings.menu_column_3 != blank
-    assign has_header_menu = true
+    if section.settings.menu_label != blank
+      assign has_header_menu = true
+    endif
+  endif
+  assign has_second_header_menu = false
+  if section.settings.second_menu_column_1 != blank or section.settings.second_menu_column_2 != blank or section.settings.second_menu_column_3 != blank
+    if section.settings.second_menu_label != blank
+      assign has_second_header_menu = true
+    endif
   endif
 %}
 
@@ -20,9 +28,14 @@
     <span class="header__menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
   </button>
 
-  {% if has_header_menu and section.settings.menu_label != blank %}
+  {% if has_header_menu or has_second_header_menu %}
     <nav class="header__menu header__menu-groups" id="PrimaryMenu-{{ section.id }}" aria-label="{{ 'sections.header.navigation' | t | escape }}" data-primary-menu>
-      {% render 'header-menu-group', label: section.settings.menu_label, menu_1: section.settings.menu_column_1, menu_2: section.settings.menu_column_2, menu_3: section.settings.menu_column_3 %}
+      {% if has_header_menu %}
+        {% render 'header-menu-group', label: section.settings.menu_label, menu_1: section.settings.menu_column_1, menu_2: section.settings.menu_column_2, menu_3: section.settings.menu_column_3 %}
+      {% endif %}
+      {% if has_second_header_menu %}
+        {% render 'header-menu-group', label: section.settings.second_menu_label, menu_1: section.settings.second_menu_column_1, menu_2: section.settings.second_menu_column_2, menu_3: section.settings.second_menu_column_3 %}
+      {% endif %}
     </nav>
   {% endif %}
 
@@ -54,8 +67,8 @@
       </div>
 
       <nav class="header__mobile-navigation" aria-label="{{ 'sections.header.navigation' | t | escape }}">
-        {% if has_header_menu and section.settings.menu_label != blank %}
-          {% render 'header-mobile-menu-group', menu_1: section.settings.menu_column_1, menu_2: section.settings.menu_column_2, menu_3: section.settings.menu_column_3, section_id: section.id %}
+        {% if has_header_menu or has_second_header_menu %}
+          {% render 'header-mobile-menu-group', menu_1: section.settings.menu_column_1, menu_2: section.settings.menu_column_2, menu_3: section.settings.menu_column_3, menu_4: section.settings.second_menu_column_1, menu_5: section.settings.second_menu_column_2, menu_6: section.settings.second_menu_column_3, label_1: section.settings.menu_label, label_2: section.settings.second_menu_label, show_first_group: has_header_menu, show_second_group: has_second_header_menu, section_id: section.id %}
         {% endif %}
       </nav>
     </div>
@@ -521,6 +534,12 @@
       align-items: center;
     }
 
+    .header__mobile-group-heading {
+      margin: 16px 0 0;
+      font-size: var(--font-size-base, 14px);
+      font-weight: 600;
+    }
+
     .header__mobile-item > a,
     .header__mobile-open {
       min-width: 0;
@@ -950,6 +969,26 @@
       "type": "link_list",
       "id": "menu_column_3",
       "label": "t:sections.header.settings.menu_column_3.label"
+    },
+    {
+      "type": "text",
+      "id": "second_menu_label",
+      "label": "t:sections.header.settings.second_menu_label.label"
+    },
+    {
+      "type": "link_list",
+      "id": "second_menu_column_1",
+      "label": "t:sections.header.settings.second_menu_column_1.label"
+    },
+    {
+      "type": "link_list",
+      "id": "second_menu_column_2",
+      "label": "t:sections.header.settings.second_menu_column_2.label"
+    },
+    {
+      "type": "link_list",
+      "id": "second_menu_column_3",
+      "label": "t:sections.header.settings.second_menu_column_3.label"
     },
     {
       "type": "link_list",

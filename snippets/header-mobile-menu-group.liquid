@@ -4,26 +4,58 @@
   @param {object} menu_1 - The first menu
   @param {object} menu_2 - The second menu
   @param {object} menu_3 - The third menu
+  @param {object} menu_4 - The first menu in the second group
+  @param {object} menu_5 - The second menu in the second group
+  @param {object} menu_6 - The third menu in the second group
+  @param {string} label_1 - The first group label
+  @param {string} label_2 - The second group label
+  @param {boolean} show_first_group - Whether the first group is configured
+  @param {boolean} show_second_group - Whether the second group is configured
   @param {string} section_id - The header section ID
 {% enddoc %}
 
 <ul class="header__mobile-list" data-menu-root aria-hidden="false">
-  {%- for menu_slot in (1..3) -%}
+  {%- for menu_slot in (1..6) -%}
+    {% if menu_slot == 1 and show_first_group and show_second_group %}
+      <li><h2 class="header__mobile-group-heading">{{ label_1 | escape }}</h2></li>
+    {% endif %}
+    {% if menu_slot == 4 and show_second_group %}
+      <li><h2 class="header__mobile-group-heading">{{ label_2 | escape }}</h2></li>
+    {% endif %}
     {% liquid
-      assign column_menu = blank
+      assign column_menu = ''
+      assign column_number = menu_slot | minus: 1 | modulo: 3 | plus: 1
       case menu_slot
         when 1
-          assign column_menu = menu_1
+          if show_first_group
+            assign column_menu = menu_1
+          endif
         when 2
-          assign column_menu = menu_2
+          if show_first_group
+            assign column_menu = menu_2
+          endif
         when 3
-          assign column_menu = menu_3
+          if show_first_group
+            assign column_menu = menu_3
+          endif
+        when 4
+          if show_second_group
+            assign column_menu = menu_4
+          endif
+        when 5
+          if show_second_group
+            assign column_menu = menu_5
+          endif
+        when 6
+          if show_second_group
+            assign column_menu = menu_6
+          endif
       endcase
     %}
     {% if column_menu != blank %}
       {% assign column_menu_title = column_menu.title | replace: '&nbsp;', '' | strip %}
       {% if column_menu_title == blank %}
-        {% assign column_menu_title = 'sections.header.menu_column_fallback' | t: number: menu_slot %}
+        {% assign column_menu_title = 'sections.header.menu_column_fallback' | t: number: column_number %}
       {% endif %}
       <li class="header__mobile-item">
         <button
@@ -44,16 +76,34 @@
   {%- endfor -%}
 </ul>
 
-{%- for menu_slot in (1..3) -%}
+{%- for menu_slot in (1..6) -%}
   {% liquid
-    assign column_menu = blank
+    assign column_menu = ''
     case menu_slot
       when 1
-        assign column_menu = menu_1
+        if show_first_group
+          assign column_menu = menu_1
+        endif
       when 2
-        assign column_menu = menu_2
+        if show_first_group
+          assign column_menu = menu_2
+        endif
       when 3
-        assign column_menu = menu_3
+        if show_first_group
+          assign column_menu = menu_3
+        endif
+      when 4
+        if show_second_group
+          assign column_menu = menu_4
+        endif
+      when 5
+        if show_second_group
+          assign column_menu = menu_5
+        endif
+      when 6
+        if show_second_group
+          assign column_menu = menu_6
+        endif
     endcase
   %}
   {% if column_menu != blank %}

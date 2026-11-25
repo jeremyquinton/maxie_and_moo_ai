@@ -157,6 +157,10 @@
         "menu_column_1": { "label": "First menu column" },
         "menu_column_2": { "label": "Second menu column" },
         "menu_column_3": { "label": "Third menu column" },
+        "second_menu_label": { "label": "Second header label" },
+        "second_menu_column_1": { "label": "Second header: first menu column" },
+        "second_menu_column_2": { "label": "Second header: second menu column" },
+        "second_menu_column_3": { "label": "Second header: third menu column" },
         "sticky_threshold": { "label": "Stick header after scrolling" }
       }
     },
