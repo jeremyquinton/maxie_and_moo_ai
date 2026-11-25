@@ -68,7 +68,7 @@
 
       <nav class="header__mobile-navigation" aria-label="{{ 'sections.header.navigation' | t | escape }}">
         {% if has_header_menu or has_second_header_menu %}
-          {% render 'header-mobile-menu-group', menu_1: section.settings.menu_column_1, menu_2: section.settings.menu_column_2, menu_3: section.settings.menu_column_3, menu_4: section.settings.second_menu_column_1, menu_5: section.settings.second_menu_column_2, menu_6: section.settings.second_menu_column_3, label_1: section.settings.menu_label, label_2: section.settings.second_menu_label, show_first_group: has_header_menu, show_second_group: has_second_header_menu, section_id: section.id %}
+          {% render 'header-mobile-menu-group', menu_1: section.settings.menu_column_1, menu_2: section.settings.menu_column_2, menu_3: section.settings.menu_column_3, menu_4: section.settings.second_menu_column_1, menu_5: section.settings.second_menu_column_2, menu_6: section.settings.second_menu_column_3, show_first_group: has_header_menu, show_second_group: has_second_header_menu, section_id: section.id %}
         {% endif %}
       </nav>
     </div>
@@ -532,12 +532,6 @@
       display: flex;
       min-height: 60px;
       align-items: center;
-    }
-
-    .header__mobile-group-heading {
-      margin: 16px 0 0;
-      font-size: var(--font-size-base, 14px);
-      font-weight: 600;
     }
 
     .header__mobile-item > a,

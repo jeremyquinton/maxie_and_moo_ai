@@ -7,8 +7,6 @@
   @param {object} menu_4 - The first menu in the second group
   @param {object} menu_5 - The second menu in the second group
   @param {object} menu_6 - The third menu in the second group
-  @param {string} label_1 - The first group label
-  @param {string} label_2 - The second group label
   @param {boolean} show_first_group - Whether the first group is configured
   @param {boolean} show_second_group - Whether the second group is configured
   @param {string} section_id - The header section ID
@@ -16,12 +14,6 @@
 
 <ul class="header__mobile-list" data-menu-root aria-hidden="false">
   {%- for menu_slot in (1..6) -%}
-    {% if menu_slot == 1 and show_first_group and show_second_group %}
-      <li><h2 class="header__mobile-group-heading">{{ label_1 | escape }}</h2></li>
-    {% endif %}
-    {% if menu_slot == 4 and show_second_group %}
-      <li><h2 class="header__mobile-group-heading">{{ label_2 | escape }}</h2></li>
-    {% endif %}
     {% liquid
       assign column_menu = ''
       assign column_number = menu_slot | minus: 1 | modulo: 3 | plus: 1
